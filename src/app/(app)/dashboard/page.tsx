@@ -81,7 +81,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
                <div className="flex w-full max-w-sm items-center space-x-2">
-                <Input type="text" readOnly value={`https://tokenflow.app/register?ref=${user.referralCode}`} />
+                <Input type="text" readOnly value={`https://nplus.app/register?ref=${user.referralCode}`} />
                 <Button type="submit" size="icon">
                   <Copy className="h-4 w-4" />
                 </Button>

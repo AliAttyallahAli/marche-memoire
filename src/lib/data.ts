@@ -129,7 +129,7 @@ export const products: Product[] = [
     description: 'Get a head start with this exclusive token pack. Includes 500 bonus tokens.',
     price: 50,
     image: 'https://placehold.co/600x400.png',
-    seller: 'TokenFlow Official',
+    seller: 'N+ Official',
     aiHint: 'token pack'
   },
   {
@@ -156,7 +156,7 @@ export const products: Product[] = [
     description: 'Professionally designed marketing materials to grow your network.',
     price: 75,
     image: 'https://placehold.co/600x400.png',
-    seller: 'TokenFlow Official',
+    seller: 'N+ Official',
     aiHint: 'marketing kit'
   },
 ];

@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'TokenFlow MLM',
-  description: 'A modern MLM platform for token generation and management.',
+  title: 'N+',
+  description: 'A modern platform for token generation and management.',
 };
 
 export default function RootLayout({

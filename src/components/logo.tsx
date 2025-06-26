@@ -4,10 +4,10 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="160"
+      width="90"
       height="40"
-      viewBox="0 0 160 40"
-      aria-label="TokenFlow logo"
+      viewBox="0 0 90 40"
+      aria-label="N+ logo"
       {...props}
     >
       <g fill="none" fillRule="evenodd">
@@ -40,7 +40,7 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
           fontWeight="600"
           letterSpacing=".5"
         >
-          TokenFlow
+          N+
         </text>
       </g>
     </svg>
