@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   User,
   Wallet,
+  Store,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -68,6 +69,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 <Link href="/transactions">
                   <ArrowLeftRight />
                   <span>Transactions</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={isActive("/marketplace")} tooltip="Marketplace">
+                <Link href="/marketplace">
+                  <Store />
+                  <span>Marketplace</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

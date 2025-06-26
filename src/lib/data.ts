@@ -19,6 +19,16 @@ export type Transaction = {
   description: string;
 };
 
+export type Product = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  seller: string;
+  aiHint: string;
+};
+
 export const user: User = {
   name: 'Alex Johnson',
   email: 'alex.j@example.com',
@@ -50,4 +60,43 @@ export const allTransactions: Transaction[] = [
     { id: 'TXN123461', date: '2024-07-19', type: 'Deposit', amount: 2000.00, status: 'Completed', description: 'Monthly deposit' },
     { id: 'TXN123462', date: '2024-07-18', type: 'Purchase', amount: -300.00, status: 'Failed', description: 'Product Gamma Pack' },
     { id: 'TXN123463', date: '2024-07-15', type: 'Referral Bonus', amount: 100.00, status: 'Completed', description: 'Bonus from user_emily' },
+];
+
+export const products: Product[] = [
+  {
+    id: 'prod_1',
+    name: 'Token Booster Pack',
+    description: 'Get a head start with this exclusive token pack. Includes 500 bonus tokens.',
+    price: 50,
+    image: 'https://placehold.co/600x400.png',
+    seller: 'TokenFlow Official',
+    aiHint: 'token pack'
+  },
+  {
+    id: 'prod_2',
+    name: 'Advanced Analytics Course',
+    description: 'Unlock the secrets of MLM analytics and maximize your downline earnings.',
+    price: 120,
+    image: 'https://placehold.co/600x400.png',
+    seller: 'Alex Johnson',
+    aiHint: 'online course'
+  },
+  {
+    id: 'prod_3',
+    name: '1-on-1 Coaching Session',
+    description: 'Personalized coaching session with a top earner to boost your strategy.',
+    price: 250,
+    image: 'https://placehold.co/600x400.png',
+    seller: 'Jane Doe',
+    aiHint: 'coaching session'
+  },
+  {
+    id: 'prod_4',
+    name: 'Marketing Material Kit',
+    description: 'Professionally designed marketing materials to grow your network.',
+    price: 75,
+    image: 'https://placehold.co/600x400.png',
+    seller: 'TokenFlow Official',
+    aiHint: 'marketing kit'
+  },
 ];
