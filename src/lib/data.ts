@@ -8,6 +8,7 @@ export type User = {
   walletKey: string;
   kycStatus: 'Verified' | 'Pending' | 'Not Submitted' | 'Rejected';
   transactions: Transaction[];
+  role: 'admin' | 'user';
 };
 
 export type Transaction = {
@@ -38,6 +39,7 @@ export const user: User = {
   referralCode: 'ALEXJ2024',
   walletKey: '0x1A3B5C7D9E1F3G5H7I9J1K3L5M7N9O1P3Q5',
   kycStatus: 'Verified',
+  role: 'admin',
   transactions: [
     { id: 'TXN789012', date: '2024-07-29', type: 'Referral Bonus', amount: 50.00, status: 'Completed', description: 'Bonus from user_jane' },
     { id: 'TXN456789', date: '2024-07-28', type: 'Purchase', amount: -200.00, status: 'Completed', description: 'Product Alpha Pack' },
@@ -48,6 +50,64 @@ export const user: User = {
     { id: 'TXN123460', date: '2024-07-20', type: 'Referral Bonus', amount: 25.00, status: 'Completed', description: 'Bonus from user_doe' },
   ],
 };
+
+export const allUsers: Omit<User, 'transactions'>[] = [
+    {
+        name: 'Alex Johnson',
+        email: 'alex.j@example.com',
+        avatar: 'https://placehold.co/100x100.png',
+        tokenBalance: 12580.75,
+        totalReferrals: 23,
+        referralCode: 'ALEXJ2024',
+        walletKey: '0x1A3B5C7D9E1F3G5H7I9J1K3L5M7N9O1P3Q5',
+        kycStatus: 'Verified',
+        role: 'admin',
+    },
+    {
+        name: 'Jane Doe',
+        email: 'jane.d@example.com',
+        avatar: 'https://placehold.co/100x100.png',
+        tokenBalance: 5400.20,
+        totalReferrals: 10,
+        referralCode: 'JANED2024',
+        walletKey: '0x2B4C6D8E2F4G6H8J2K4L6M8N1O2P4Q6',
+        kycStatus: 'Pending',
+        role: 'user',
+    },
+    {
+        name: 'John Smith',
+        email: 'john.s@example.com',
+        avatar: 'https://placehold.co/100x100.png',
+        tokenBalance: 890.00,
+        totalReferrals: 2,
+        referralCode: 'JOHNS2024',
+        walletKey: '0x3C5D7E9F3G7H9I1K3L5M7N9O2P4Q6R7',
+        kycStatus: 'Not Submitted',
+        role: 'user',
+    },
+     {
+        name: 'Emily White',
+        email: 'emily.w@example.com',
+        avatar: 'https://placehold.co/100x100.png',
+        tokenBalance: 15200.50,
+        totalReferrals: 35,
+        referralCode: 'EMILYW2024',
+        walletKey: '0x4D6E8F1A4G8H1I3K5L7M9N1O3P5Q7R8',
+        kycStatus: 'Verified',
+        role: 'user',
+    },
+    {
+        name: 'Michael Brown',
+        email: 'michael.b@example.com',
+        avatar: 'https://placehold.co/100x100.png',
+        tokenBalance: 730.10,
+        totalReferrals: 1,
+        referralCode: 'MICHAELB2024',
+        walletKey: '0x5E7F9A2B5H9I2J4L6M8N1O3P5Q7R9T9',
+        kycStatus: 'Rejected',
+        role: 'user',
+    }
+];
 
 export const allTransactions: Transaction[] = [
     { id: 'TXN789012', date: '2024-07-29', type: 'Referral Bonus', amount: 50.00, status: 'Completed', description: 'Bonus from user_jane' },

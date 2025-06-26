@@ -7,9 +7,11 @@ import {
   User,
   Wallet,
   Store,
+  Shield,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { user } from "@/lib/data"
 import {
   SidebarProvider,
   Sidebar,
@@ -88,6 +90,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
+            {user.role === 'admin' && (
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive("/admin")} tooltip="Admin">
+                  <Link href="/admin">
+                    <Shield />
+                    <span>Admin Panel</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            )}
           </SidebarMenu>
         </SidebarContent>
       </Sidebar>
