@@ -1,9 +1,9 @@
 
 "use client"
 import * as React from "react"
-import { PlusCircle } from "lucide-react"
+import { PlusCircle, Download, Check, X } from "lucide-react"
 
-import { leaveRequests } from "@/lib/data"
+import { leaveRequests as initialLeaveRequests, LeaveRequest } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -37,11 +37,42 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 export default function CongesPage() {
     const [open, setOpen] = React.useState(false)
+    const [leaveRequests, setLeaveRequests] = React.useState<LeaveRequest[]>(initialLeaveRequests);
+
     const statusVariant = {
         'Approuvé': 'default',
         'En attente': 'secondary',
         'Rejeté': 'destructive',
     } as const
+
+    const handleStatusChange = (id: string, status: 'Approuvé' | 'Rejeté') => {
+        setLeaveRequests(currentRequests =>
+            currentRequests.map(req =>
+                req.id === id ? { ...req, status: status } : req
+            )
+        );
+    };
+
+    const handleDownload = (request: LeaveRequest) => {
+        const fileContent = `
+Justificatif de congé
+----------------------
+Employé: ${request.employeeName}
+Type de congé: ${request.type}
+Période: du ${new Date(request.startDate).toLocaleDateString('fr-FR')} au ${new Date(request.endDate).toLocaleDateString('fr-FR')}
+Statut: ${request.status}
+Date de la décision: ${new Date().toLocaleDateString('fr-FR')}
+`;
+        const blob = new Blob([fileContent.trim()], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `justificatif_conge_${request.employeeName.replace(' ', '_')}.txt`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    };
 
   return (
     <Card>
@@ -105,6 +136,7 @@ export default function CongesPage() {
               <TableHead>Type</TableHead>
               <TableHead>Période</TableHead>
               <TableHead>Statut</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -117,6 +149,23 @@ export default function CongesPage() {
                 </TableCell>
                 <TableCell>
                   <Badge variant={statusVariant[request.status]}>{request.status}</Badge>
+                </TableCell>
+                <TableCell className="text-right">
+                    {request.status === 'En attente' ? (
+                        <div className="flex gap-2 justify-end">
+                            <Button variant="outline" size="icon" onClick={() => handleStatusChange(request.id, 'Approuvé')}>
+                                <Check className="h-4 w-4 text-green-500"/>
+                            </Button>
+                             <Button variant="outline" size="icon" onClick={() => handleStatusChange(request.id, 'Rejeté')}>
+                                <X className="h-4 w-4 text-red-500"/>
+                            </Button>
+                        </div>
+                    ) : (
+                        <Button variant="outline" size="sm" onClick={() => handleDownload(request)}>
+                            <Download className="mr-2 h-4 w-4" />
+                            Télécharger
+                        </Button>
+                    )}
                 </TableCell>
               </TableRow>
             ))}
