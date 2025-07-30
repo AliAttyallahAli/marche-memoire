@@ -2,16 +2,15 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
-  ArrowLeftRight,
+  Building,
   LayoutDashboard,
-  User,
-  Wallet,
-  Store,
-  Shield,
+  Users,
+  DollarSign,
+  CalendarOff,
+  Briefcase,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { user } from "@/lib/data"
 import {
   SidebarProvider,
   Sidebar,
@@ -29,7 +28,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
   const isActive = (path: string) => {
-    return pathname === path
+    return pathname.startsWith(path)
   }
 
   return (
@@ -46,60 +45,58 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <SidebarMenuButton
                 asChild
                 isActive={isActive("/dashboard")}
-                tooltip="Dashboard"
+                tooltip="Tableau de bord"
               >
                 <Link href="/dashboard">
                   <LayoutDashboard />
-                  <span>Dashboard</span>
+                  <span>Tableau de bord</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isActive("/wallet")} tooltip="Wallet">
-                <Link href="/wallet">
-                  <Wallet />
-                  <span>Wallet</span>
+              <SidebarMenuButton asChild isActive={isActive("/personnel")} tooltip="Personnel">
+                <Link href="/personnel">
+                  <Users />
+                  <span>Personnel</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                isActive={isActive("/transactions")}
-                tooltip="Transactions"
+                isActive={isActive("/departements")}
+                tooltip="Départements"
               >
-                <Link href="/transactions">
-                  <ArrowLeftRight />
-                  <span>Transactions</span>
+                <Link href="/departements">
+                  <Building />
+                  <span>Départements</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isActive("/marketplace")} tooltip="Marketplace">
-                <Link href="/marketplace">
-                  <Store />
-                  <span>Marketplace</span>
+              <SidebarMenuButton asChild isActive={isActive("/salaires")} tooltip="Salaires">
+                <Link href="/salaires">
+                  <DollarSign />
+                  <span>Salaires</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isActive("/profile")} tooltip="Profile">
-                <Link href="/profile">
-                  <User />
-                  <span>Profile & KYC</span>
+              <SidebarMenuButton asChild isActive={isActive("/conges")} tooltip="Congés">
+                <Link href="/conges">
+                  <CalendarOff />
+                  <span>Congés</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            {user.role === 'admin' && (
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive("/admin")} tooltip="Admin">
-                  <Link href="/admin">
-                    <Shield />
-                    <span>Admin Panel</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            )}
+             <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={isActive("/fonctions")} tooltip="Fonctions">
+                <Link href="/fonctions">
+                  <Briefcase />
+                  <span>Fonctions & Services</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
       </Sidebar>
