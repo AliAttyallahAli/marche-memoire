@@ -14,13 +14,15 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
 
 export default function SalairesPage() {
+  const totalSalaries = salaries.reduce((sum, salary) => sum + salary.amount, 0)
+
   return (
     <Card>
       <CardHeader>
@@ -57,6 +59,14 @@ export default function SalairesPage() {
               </TableRow>
             ))}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={2} className="text-right font-bold">Total</TableCell>
+              <TableCell className="text-right font-bold">
+                {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(totalSalaries)}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
         </Table>
       </CardContent>
     </Card>
