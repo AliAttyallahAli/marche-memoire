@@ -7,7 +7,6 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -25,25 +24,16 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
-// Mock data - replace with actual data from your API
-const employees = [
-  { id: 1, name: "Alice Durand", role: "Développeuse", department: "Technologie", avatar: "https://placehold.co/100x100.png" },
-  { id: 2, name: "Bob Martin", role: "Designer UX", department: "Design", avatar: "https://placehold.co/100x100.png" },
-  { id: 3, name: "Charlie Dubois", role: "Chef de Projet", department: "Produit", avatar: "https://placehold.co/100x100.png" },
-  { id: 4, name: "Diana Lefebvre", role: "Marketing", department: "Ventes", avatar: "https://placehold.co/100x100.png" },
-];
-
-const recentLeaveRequests = [
-    { id: 1, employee: "Bob Martin", type: "Vacances", status: "Approuvé" },
-    { id: 2, employee: "Alice Durand", type: "Maladie", status: "En attente" },
-];
+import { employees as allEmployees, leaveRequests } from "@/lib/data"
 
 export default function Dashboard() {
-  const totalEmployees = 58;
-  const totalDepartments = 6;
-  const pendingLeaves = 3;
+  const totalEmployees = allEmployees.length;
+  const totalDepartments = 6; // This should be dynamic later
+  const pendingLeaves = leaveRequests.filter(r => r.status === 'En attente').length;
   const latestSalaryCycle = "Juillet 2024";
+
+  const newEmployees = allEmployees.slice(0, 4);
+  const recentLeaveRequests = leaveRequests.slice(0, 2);
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -126,7 +116,7 @@ export default function Dashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {employees.map((employee) => (
+                    {newEmployees.map((employee) => (
                       <TableRow key={employee.id}>
                         <TableCell>
                            <div className="flex items-center gap-4">
@@ -162,10 +152,10 @@ export default function Dashboard() {
                         <TableBody>
                             {recentLeaveRequests.map((request) => (
                                 <TableRow key={request.id}>
-                                    <TableCell className="font-medium">{request.employee}</TableCell>
+                                    <TableCell className="font-medium">{request.employeeName}</TableCell>
                                     <TableCell>{request.type}</TableCell>
                                     <TableCell>
-                                        <Badge variant={request.status === 'Approuvé' ? 'default' : 'secondary'}>{request.status}</Badge>
+                                        <Badge variant={request.status === 'Approuvé' ? 'default' : (request.status === 'En attente' ? 'secondary' : 'destructive')}>{request.status}</Badge>
                                     </TableCell>
                                 </TableRow>
                             ))}
