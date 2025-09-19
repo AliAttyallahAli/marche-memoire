@@ -1,4 +1,5 @@
 
+
 export type User = {
   name: string;
   email: string;
@@ -8,7 +9,24 @@ export type User = {
   kycStatus: 'Verified' | 'Pending' | 'Rejected' | 'Not Submitted';
   role: 'user' | 'admin' | 'vendor';
   status: 'online' | 'offline';
+  stories: Story[];
 };
+
+export type Story = {
+    id: string;
+    authorName: string;
+    authorAvatar: string;
+    imageUrl: string;
+    timestamp: string;
+}
+
+export const stories: Story[] = [
+    { id: 'story1', authorName: 'Maria Garcia', authorAvatar: 'https://placehold.co/100x100.png', imageUrl: 'https://placehold.co/300x500.png', timestamp: '2024-07-18T10:00:00Z' },
+    { id: 'story2', authorName: 'James Smith', authorAvatar: 'https://placehold.co/100x100.png', imageUrl: 'https://placehold.co/300x500.png', timestamp: '2024-07-18T09:00:00Z' },
+    { id: 'story3', authorName: 'Patricia Brown', authorAvatar: 'https://placehold.co/100x100.png', imageUrl: 'https://placehold.co/300x500.png', timestamp: '2024-07-18T08:00:00Z' },
+     { id: 'story4', authorName: 'Robert Miller', authorAvatar: 'https://placehold.co/100x100.png', imageUrl: 'https://placehold.co/300x500.png', timestamp: '2024-07-18T07:00:00Z' },
+];
+
 
 export const user: User = {
   name: 'Ali Atty',
@@ -19,14 +37,15 @@ export const user: User = {
   kycStatus: 'Not Submitted',
   role: 'admin',
   status: 'online',
+  stories: [],
 };
 
 export const allUsers: User[] = [
     user,
-    { name: 'Maria Garcia', email: 'maria.g@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 850.00, walletKey: '0x...1234', kycStatus: 'Not Submitted', role: 'user', status: 'online' },
-    { name: 'James Smith', email: 'james.s@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 2300.50, walletKey: '0x...5678', kycStatus: 'Pending', role: 'vendor', status: 'offline' },
-    { name: 'Patricia Brown', email: 'patricia.b@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 450.25, walletKey: '0x...9101', kycStatus: 'Rejected', role: 'user', status: 'offline' },
-    { name: 'Robert Miller', email: 'robert.m@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 5000.00, walletKey: '0x...1121', kycStatus: 'Not Submitted', role: 'user', status: 'online' },
+    { name: 'Maria Garcia', email: 'maria.g@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 850.00, walletKey: '0x...1234', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[0]] },
+    { name: 'James Smith', email: 'james.s@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 2300.50, walletKey: '0x...5678', kycStatus: 'Pending', role: 'vendor', status: 'offline', stories: [stories[1]] },
+    { name: 'Patricia Brown', email: 'patricia.b@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 450.25, walletKey: '0x...9101', kycStatus: 'Rejected', role: 'user', status: 'offline', stories: [stories[2]] },
+    { name: 'Robert Miller', email: 'robert.m@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 5000.00, walletKey: '0x...1121', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[3]] },
 ]
 
 export type Transaction = {
@@ -126,6 +145,7 @@ export type Conversation = {
   lastMessageTimestamp: string;
   unreadCount: number;
   status: 'online' | 'offline';
+  hasStory: boolean;
 };
 
 export type Message = {
@@ -137,9 +157,9 @@ export type Message = {
 };
 
 export const conversations: Conversation[] = [
-  { id: 'convo1', name: 'Maria Garcia', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Super ! Merci pour l\'info.', lastMessageTimestamp: '10:42', unreadCount: 0, status: 'online' },
-  { id: 'convo2', name: 'James Smith', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Oui, je serai disponible demain.', lastMessageTimestamp: 'Hier', unreadCount: 2, status: 'offline' },
-  { id: 'convo3', name: 'Support ZOUDOU', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Votre ticket a été mis à jour.', lastMessageTimestamp: 'Hier', unreadCount: 0, status: 'online' },
+  { id: 'convo1', name: 'Maria Garcia', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Super ! Merci pour l\'info.', lastMessageTimestamp: '10:42', unreadCount: 0, status: 'online', hasStory: true },
+  { id: 'convo2', name: 'James Smith', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Oui, je serai disponible demain.', lastMessageTimestamp: 'Hier', unreadCount: 2, status: 'offline', hasStory: true },
+  { id: 'convo3', name: 'Support ZOUDOU', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Votre ticket a été mis à jour.', lastMessageTimestamp: 'Hier', unreadCount: 0, status: 'online', hasStory: false },
 ];
 
 export const messages: Message[] = [

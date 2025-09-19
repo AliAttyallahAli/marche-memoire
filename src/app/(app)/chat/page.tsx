@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import * as React from "react"
@@ -91,7 +92,10 @@ export default function ChatPage() {
                             )}
                         >
                             <div className="relative">
-                                <Avatar>
+                                <Avatar className={cn(
+                                    "h-12 w-12",
+                                    convo.hasStory && "ring-2 ring-offset-2 ring-primary ring-offset-background"
+                                )}>
                                     <AvatarImage src={convo.avatar} data-ai-hint="user avatar" />
                                     <AvatarFallback>{convo.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                                 </Avatar>
@@ -123,7 +127,9 @@ export default function ChatPage() {
                         <span className="sr-only">Retour</span>
                     </Button>
                     <div className="relative">
-                        <Avatar>
+                        <Avatar className={cn(
+                          selectedConversation.hasStory && "ring-2 ring-offset-2 ring-primary ring-offset-card"
+                        )}>
                             <AvatarImage src={selectedConversation.avatar} data-ai-hint="user avatar" />
                             <AvatarFallback>{selectedConversation.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                         </Avatar>
@@ -191,3 +197,5 @@ export default function ChatPage() {
     </Card>
   )
 }
+
+    

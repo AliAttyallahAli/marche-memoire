@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import * as React from "react"
@@ -12,9 +13,10 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { useToast } from "@/hooks/use-toast"
-import { posts as initialPosts, user } from "@/lib/data"
+import { posts as initialPosts, user, allUsers, stories } from "@/lib/data"
 import type { Post } from "@/lib/data"
-import { MessageSquare, ThumbsUp, Share2 } from "lucide-react"
+import { MessageSquare, ThumbsUp, Share2, PlusCircle } from "lucide-react"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 const postFormSchema = z.object({
   content: z.string().min(1, "La publication ne peut pas être vide.").max(280, "La publication ne peut pas dépasser 280 caractères."),
@@ -69,10 +71,45 @@ export default function FeedPage() {
       description: "Votre mise à jour a été ajoutée au fil d'actualités.",
     })
   }
+  
+  const usersWithStories = [user, ...allUsers.filter(u => u.stories.length > 0)];
+
 
   return (
     <div className="max-w-xl mx-auto">
       <div className="flex flex-col gap-6">
+        <Card>
+            <CardContent className="p-4">
+                <h2 className="text-lg font-semibold mb-4">Stories</h2>
+                 <ScrollArea className="w-full whitespace-nowrap rounded-md">
+                    <div className="flex w-max space-x-4 pb-4">
+                        <div className="flex flex-col items-center space-y-2 w-20 text-center">
+                            <button className="relative">
+                                <Avatar className="h-16 w-16 border-2 border-dashed border-muted-foreground">
+                                    <div className="flex items-center justify-center h-full w-full">
+                                        <PlusCircle className="h-6 w-6 text-muted-foreground" />
+                                    </div>
+                                </Avatar>
+                            </button>
+                            <p className="text-xs font-medium truncate">Ajouter</p>
+                        </div>
+                        {stories.map((story) => (
+                            <div key={story.id} className="flex flex-col items-center space-y-2 w-20 text-center">
+                                <button className="relative">
+                                     <Avatar className="h-16 w-16 ring-2 ring-offset-2 ring-primary ring-offset-background">
+                                        <AvatarImage src={story.authorAvatar} data-ai-hint="user avatar story" />
+                                        <AvatarFallback>{story.authorName.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                                    </Avatar>
+                                </button>
+                                <p className="text-xs font-medium truncate">{story.authorName.split(' ')[0]}</p>
+                            </div>
+                        ))}
+                    </div>
+                    <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+            </CardContent>
+        </Card>
+
         <Card>
           <CardContent className="p-4">
             <Form {...form}>
