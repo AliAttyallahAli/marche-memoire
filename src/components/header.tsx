@@ -31,6 +31,7 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Logo } from "./logo"
+import { ThemeToggle } from "./theme-toggle"
 
 export function Header() {
   const pathname = usePathname()
@@ -67,6 +68,7 @@ export function Header() {
       </Link>
       
       <div className="flex items-center gap-4">
+        <ThemeToggle />
         <Button variant="outline" size="icon" className="h-8 w-8 rounded-full">
             <Bell className="h-4 w-4" />
             <span className="sr-only">Voir les notifications</span>
