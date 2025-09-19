@@ -89,7 +89,7 @@ export default function ProfilePage() {
     'Not Submitted': 'outline',
   } as const
   
-  const referralLink = `https://app.nplus/register?ref=${user.walletKey.substring(2, 10)}`
+  const referralLink = `https://app.zoudou/register?ref=${user.walletKey.substring(2, 10)}`
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referralLink)

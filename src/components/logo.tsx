@@ -4,10 +4,10 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="120"
+      width="150"
       height="40"
-      viewBox="0 0 120 40"
-      aria-label="N+ logo"
+      viewBox="0 0 150 40"
+      aria-label="ZOUDOU logo"
       {...props}
     >
       <g fill="none" fillRule="evenodd">
@@ -25,7 +25,7 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
           fontWeight="600"
           letterSpacing=".5"
         >
-          N+
+          ZOUDOU
         </text>
       </g>
     </svg>

@@ -61,7 +61,7 @@ export const products: Product[] = [
     { id: 'prod2', name: '1-on-1 Consulting Session', description: 'A one-hour consulting session with a token expert.', price: 75.50, image: 'https://placehold.co/600x400.png', seller: '@alex.j', aiHint: 'consulting business' },
     { id: 'prod3', name: 'Exclusive Content Bundle', description: 'Get access to a bundle of exclusive articles, videos, and tutorials.', price: 45.00, image: 'https://placehold.co/600x400.png', seller: '@maria.g', aiHint: 'digital content' },
     { id: 'prod4', name: 'Community Governance E-book', description: 'A comprehensive guide to setting up and running a DAO.', price: 25.00, image: 'https://placehold.co/600x400.png', seller: '@patricia.b', aiHint: 'book cover' },
-    { id: 'prod5', name: 'N+ Premium Membership', description: 'Unlock premium features, early access, and a special badge.', price: 15.00, image: 'https://placehold.co/600x400.png', seller: 'Official', aiHint: 'membership card' },
+    { id: 'prod5', name: 'ZOUDOU Premium Membership', description: 'Unlock premium features, early access, and a special badge.', price: 15.00, image: 'https://placehold.co/600x400.png', seller: 'Official', aiHint: 'membership card' },
 ];
 
 export type Post = {
@@ -132,7 +132,7 @@ export type Message = {
 export const conversations: Conversation[] = [
   { id: 'convo1', name: 'Maria Garcia', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Super ! Merci pour l\'info.', lastMessageTimestamp: '10:42', unreadCount: 0 },
   { id: 'convo2', name: 'James Smith', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Oui, je serai disponible demain.', lastMessageTimestamp: 'Hier', unreadCount: 2 },
-  { id: 'convo3', name: 'Support N+', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Votre ticket a été mis à jour.', lastMessageTimestamp: 'Hier', unreadCount: 0 },
+  { id: 'convo3', name: 'Support ZOUDOU', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Votre ticket a été mis à jour.', lastMessageTimestamp: 'Hier', unreadCount: 0 },
 ];
 
 export const messages: Message[] = [

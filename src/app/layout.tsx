@@ -11,7 +11,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'N+',
+  title: 'ZOUDOU',
   description: 'A modern platform for community tokens.',
 };
 

@@ -167,7 +167,7 @@ export default function ChatPage() {
                 </>
             ) : (
                 <div className="flex flex-col items-center justify-center h-full text-center">
-                    <h2 className="text-xl font-semibold">Bienvenue sur le Chat N+</h2>
+                    <h2 className="text-xl font-semibold">Bienvenue sur le Chat ZOUDOU</h2>
                     <p className="text-muted-foreground">Sélectionnez une conversation pour commencer à discuter.</p>
                 </div>
             )}

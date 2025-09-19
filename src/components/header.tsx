@@ -73,7 +73,7 @@ export function Header() {
           className="flex items-center gap-2 text-lg font-semibold"
         >
           <Logo />
-          <span className="hidden sm:inline-block">N+</span>
+          <span className="hidden sm:inline-block">ZOUDOU</span>
         </Link>
       </div>
 
@@ -141,7 +141,7 @@ export function Header() {
                   className="flex items-center gap-2 text-lg font-semibold"
                   >
                   <Logo />
-                  <span className="sr-only">N+</span>
+                  <span className="sr-only">ZOUDOU</span>
                   </Link>
                   {navLinks.map((link) => (
                       <Link
