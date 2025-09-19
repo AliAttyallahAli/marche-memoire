@@ -66,10 +66,13 @@ export default function ChatPage() {
             <div className="p-4 border-b">
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold tracking-tight">Messages</h2>
-                    <Avatar className="h-9 w-9">
-                        <AvatarImage src={user.avatar} data-ai-hint="user avatar" />
-                        <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                    </Avatar>
+                    <div className="relative">
+                        <Avatar className="h-9 w-9">
+                            <AvatarImage src={user.avatar} data-ai-hint="user avatar" />
+                            <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        </Avatar>
+                        <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-background" />
+                    </div>
                 </div>
                 <div className="relative mt-4">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -87,10 +90,15 @@ export default function ChatPage() {
                                 selectedConversation?.id === convo.id && "bg-muted"
                             )}
                         >
-                            <Avatar>
-                                <AvatarImage src={convo.avatar} data-ai-hint="user avatar" />
-                                <AvatarFallback>{convo.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                            </Avatar>
+                            <div className="relative">
+                                <Avatar>
+                                    <AvatarImage src={convo.avatar} data-ai-hint="user avatar" />
+                                    <AvatarFallback>{convo.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                                </Avatar>
+                                {convo.status === 'online' && (
+                                     <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-card" />
+                                )}
+                            </div>
                             <div className="flex-1 truncate">
                                 <p className="font-semibold">{convo.name}</p>
                                 <p className="text-sm text-muted-foreground truncate">{convo.lastMessage}</p>
@@ -114,11 +122,19 @@ export default function ChatPage() {
                         <ArrowLeft className="h-5 w-5" />
                         <span className="sr-only">Retour</span>
                     </Button>
-                    <Avatar>
-                         <AvatarImage src={selectedConversation.avatar} data-ai-hint="user avatar" />
-                         <AvatarFallback>{selectedConversation.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                    </Avatar>
-                    <p className="font-semibold">{selectedConversation.name}</p>
+                    <div className="relative">
+                        <Avatar>
+                            <AvatarImage src={selectedConversation.avatar} data-ai-hint="user avatar" />
+                            <AvatarFallback>{selectedConversation.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        </Avatar>
+                         {selectedConversation.status === 'online' && (
+                            <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-card" />
+                        )}
+                    </div>
+                    <div>
+                        <p className="font-semibold">{selectedConversation.name}</p>
+                        <p className="text-xs text-muted-foreground">{selectedConversation.status === 'online' ? 'En ligne' : 'Hors ligne'}</p>
+                    </div>
                 </div>
                 
                 <div className="flex-1 p-4 overflow-y-auto" ref={scrollAreaRef}>
@@ -175,3 +191,5 @@ export default function ChatPage() {
     </Card>
   )
 }
+
+    

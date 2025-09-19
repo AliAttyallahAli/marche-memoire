@@ -55,6 +55,7 @@ export default function FeedPage() {
       authorName: user.name,
       authorHandle: user.email.split('@')[0],
       authorAvatar: user.avatar,
+      authorStatus: user.status,
       content: values.content,
       timestamp: new Date().toISOString(),
       likes: 0,
@@ -77,10 +78,13 @@ export default function FeedPage() {
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <div className="flex items-start gap-4">
-                  <Avatar>
-                    <AvatarImage src={user.avatar} data-ai-hint="user avatar" />
-                    <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                  </Avatar>
+                  <div className="relative">
+                    <Avatar>
+                      <AvatarImage src={user.avatar} data-ai-hint="user avatar" />
+                      <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+                     <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-card" />
+                  </div>
                   <div className="w-full">
                     <FormField
                       control={form.control}
@@ -115,10 +119,15 @@ export default function FeedPage() {
             <Card key={post.id}>
               <CardContent className="p-4 flex flex-col gap-4">
                 <div className="flex items-center gap-3">
-                    <Avatar>
-                        <AvatarImage src={post.authorAvatar} data-ai-hint="user avatar" />
-                        <AvatarFallback>{post.authorName.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                    </Avatar>
+                    <div className="relative">
+                        <Avatar>
+                            <AvatarImage src={post.authorAvatar} data-ai-hint="user avatar" />
+                            <AvatarFallback>{post.authorName.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        </Avatar>
+                        {post.authorStatus === 'online' && (
+                             <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-card" />
+                        )}
+                    </div>
                     <div>
                         <p className="font-semibold">{post.authorName}</p>
                         <PostTimestamp timestamp={post.timestamp} />
@@ -159,3 +168,5 @@ export default function FeedPage() {
     </div>
   )
 }
+
+    
