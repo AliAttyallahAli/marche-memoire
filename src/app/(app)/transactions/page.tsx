@@ -4,8 +4,9 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import QRCode from "qrcode.react"
 
-import { allTransactions } from "@/lib/data"
+import { allTransactions, user } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -33,8 +34,15 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
-import { Send } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import { Send, ArrowDownLeft, Copy } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 const p2pTransferSchema = z.object({
   recipient: z.string().min(10, "L'adresse du destinataire est requise."),
@@ -62,6 +70,14 @@ export default function P2PPage() {
     })
     form.reset()
   }
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(user.walletKey);
+    toast({
+      title: "Copié !",
+      description: "L'adresse de votre portefeuille a été copiée dans le presse-papiers.",
+    });
+  };
 
   return (
     <div className="grid gap-8 md:grid-cols-2">
@@ -100,11 +116,44 @@ export default function P2PPage() {
                 )}
               />
             </CardContent>
-            <CardFooter>
-              <Button type="submit" className="w-full">
+            <CardFooter className="flex gap-2">
+              <Button type="submit" className="flex-1">
                 <Send className="mr-2 h-4 w-4" />
                 Envoyer les Tokens
               </Button>
+               <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">
+                    <ArrowDownLeft className="mr-2 h-4 w-4" />
+                    Recevoir
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Recevoir des BZD</DialogTitle>
+                    <DialogDescription>
+                      Partagez cette adresse ou le QR code pour recevoir des tokens.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="flex flex-col items-center gap-4 py-4">
+                     <div className="p-4 bg-white rounded-lg">
+                        <QRCode value={user.walletKey} size={160} />
+                     </div>
+                    <div className="flex items-center space-x-2 w-full">
+                      <Input
+                        id="wallet-key"
+                        defaultValue={user.walletKey}
+                        readOnly
+                        className="flex-1 font-mono text-xs"
+                      />
+                      <Button type="button" size="icon" onClick={handleCopy}>
+                        <Copy className="h-4 w-4" />
+                        <span className="sr-only">Copier l'adresse</span>
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </CardFooter>
           </form>
         </Form>
