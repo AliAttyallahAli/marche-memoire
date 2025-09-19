@@ -84,11 +84,11 @@ export default function MiningPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-6 pt-6">
-          <CircularProgress value={canMine ? 100 : progress}>
+          <CircularProgress value={canMine ? 100 : progress} className="w-40 h-40">
             {!canMine && (
                 <div className="text-center">
                 <p className="text-muted-foreground text-sm">Prochaine session</p>
-                <p className="text-4xl font-mono font-bold tracking-wider">
+                <p className="text-3xl font-mono font-bold tracking-wider">
                     {formatTime(timeLeft)}
                 </p>
                 </div>
@@ -96,12 +96,11 @@ export default function MiningPage() {
           </CircularProgress>
 
           <Button
-            size="lg"
-            className="w-full h-16 text-lg font-semibold"
+            className="w-full"
             onClick={handleMine}
             disabled={!canMine}
           >
-            <Pickaxe className="mr-2 h-6 w-6" />
+            <Pickaxe className="mr-2 h-5 w-5" />
             {canMine ? "Démarrer la session de minage" : "Minage en cours"}
           </Button>
 

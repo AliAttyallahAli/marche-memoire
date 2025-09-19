@@ -44,7 +44,7 @@ export default function Dashboard() {
               <CircleDollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'BZD ')}</div>
+              <div className="text-xl font-bold">{user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'BZD ')}</div>
               <p className="text-xs text-muted-foreground">
                 +20.1% depuis le mois dernier
               </p>
@@ -58,7 +58,7 @@ export default function Dashboard() {
               <ShoppingBag className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{allTransactions.length}</div>
+              <div className="text-xl font-bold">{allTransactions.length}</div>
               <p className="text-xs text-muted-foreground">
                 +180.1% depuis le mois dernier
               </p>
@@ -70,7 +70,7 @@ export default function Dashboard() {
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{user.kycStatus}</div>
+              <div className="text-xl font-bold">{user.kycStatus}</div>
               <p className="text-xs text-muted-foreground">
                 Votre statut de vérification d'identité.
               </p>

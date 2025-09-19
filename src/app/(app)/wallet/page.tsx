@@ -37,7 +37,7 @@ export default function WalletPage() {
           <div className="flex items-center justify-between p-6 bg-secondary/50 rounded-lg">
             <div>
               <p className="text-sm text-muted-foreground">Solde Total</p>
-              <p className="text-4xl font-bold">
+              <p className="text-3xl font-bold">
                 {user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'BZD ')}
               </p>
             </div>
