@@ -12,6 +12,9 @@ import {
 import { useToast } from "@/hooks/use-toast"
 import { Pickaxe } from "lucide-react"
 import { useUser } from "@/context/user-context"
+import { CircularProgress } from "@/components/ui/circular-progress"
+
+const TWENTY_FOUR_HOURS_IN_SECONDS = 24 * 60 * 60
 
 export default function MiningPage() {
   const { toast } = useToast()
@@ -23,10 +26,9 @@ export default function MiningPage() {
     if (canMine) {
       addTokens(10)
       setCanMine(false)
-      const twentyFourHours = 24 * 60 * 60
-      setTimeLeft(twentyFourHours)
+      setTimeLeft(TWENTY_FOUR_HOURS_IN_SECONDS)
 
-      const nextMineTime = new Date().getTime() + twentyFourHours * 1000
+      const nextMineTime = new Date().getTime() + TWENTY_FOUR_HOURS_IN_SECONDS * 1000
       localStorage.setItem("nextMineTime", nextMineTime.toString())
 
       toast({
@@ -70,6 +72,8 @@ export default function MiningPage() {
     return `${h}:${m}:${s}`
   }
 
+  const progress = (1 - timeLeft / TWENTY_FOUR_HOURS_IN_SECONDS) * 100
+
   return (
     <div className="flex justify-center items-center h-full">
       <Card className="w-full max-w-md text-center">
@@ -79,7 +83,18 @@ export default function MiningPage() {
             Cliquez sur le bouton pour miner vos tokens quotidiens. Une nouvelle session commence toutes les 24 heures.
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center gap-6">
+        <CardContent className="flex flex-col items-center gap-6 pt-6">
+          <CircularProgress value={canMine ? 100 : progress}>
+            {!canMine && (
+                <div className="text-center">
+                <p className="text-muted-foreground text-sm">Prochaine session</p>
+                <p className="text-4xl font-mono font-bold tracking-wider">
+                    {formatTime(timeLeft)}
+                </p>
+                </div>
+            )}
+          </CircularProgress>
+
           <Button
             size="lg"
             className="w-full h-16 text-lg font-semibold"
@@ -89,14 +104,7 @@ export default function MiningPage() {
             <Pickaxe className="mr-2 h-6 w-6" />
             {canMine ? "Démarrer la session de minage" : "Minage en cours"}
           </Button>
-          {!canMine && (
-            <div className="text-center">
-              <p className="text-muted-foreground">Prochaine session disponible dans :</p>
-              <p className="text-4xl font-mono font-bold tracking-wider">
-                {formatTime(timeLeft)}
-              </p>
-            </div>
-          )}
+
         </CardContent>
       </Card>
     </div>
