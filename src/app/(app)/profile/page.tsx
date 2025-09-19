@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { employee } from "@/lib/data"
+import { user } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -26,12 +26,12 @@ import {
 import { useToast } from "@/hooks/use-toast"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { Progress } from "@/components/ui/progress"
+import { Separator } from "@/components/ui/separator"
 
 const profileFormSchema = z.object({
-  fullName: z.string().min(2, "Le nom complet doit comporter au moins 2 caractères."),
-  email: z.string().email("Veuillez saisir une adresse e-mail valide."),
-  role: z.string(),
-  department: z.string(),
+  fullName: z.string().min(2, "Full name must be at least 2 characters."),
+  email: z.string().email("Please enter a valid email address."),
 })
 
 export default function ProfilePage() {
@@ -40,19 +40,24 @@ export default function ProfilePage() {
   const profileForm = useForm<z.infer<typeof profileFormSchema>>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      fullName: employee.name,
-      email: employee.email,
-      role: employee.role,
-      department: employee.department,
+      fullName: user.name,
+      email: user.email,
     },
   })
 
   function onProfileSubmit(values: z.infer<typeof profileFormSchema>) {
     toast({
-      title: "Profil mis à jour",
-      description: "Vos informations de profil ont été enregistrées.",
+      title: "Profile Updated",
+      description: "Your profile information has been saved.",
     })
   }
+  
+  const kycStatusVariant = {
+    Verified: 'default',
+    Pending: 'secondary',
+    Rejected: 'destructive',
+    'Not Submitted': 'outline',
+  } as const
 
   return (
     <div className="grid gap-8 md:grid-cols-3">
@@ -60,13 +65,18 @@ export default function ProfilePage() {
         <Card>
           <CardHeader className="items-center">
             <Avatar className="w-24 h-24 mb-2">
-                <AvatarImage src={employee.avatar} data-ai-hint="user avatar" />
-                <AvatarFallback>{employee.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                <AvatarImage src={user.avatar} data-ai-hint="user avatar" />
+                <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
             </Avatar>
-            <CardTitle>{employee.name}</CardTitle>
-            <CardDescription>{employee.email}</CardDescription>
-            <Badge className="mt-2" variant="outline">{employee.role}</Badge>
+            <CardTitle>{user.name}</CardTitle>
+            <CardDescription>{user.email}</CardDescription>
           </CardHeader>
+          <CardContent className="text-sm">
+             <div className="flex justify-between">
+                <span>KYC Status</span>
+                <Badge variant={kycStatusVariant[user.kycStatus]}>{user.kycStatus}</Badge>
+            </div>
+          </CardContent>
         </Card>
       </div>
       <div className="md:col-span-2 grid gap-8">
@@ -74,8 +84,8 @@ export default function ProfilePage() {
           <Form {...profileForm}>
             <form onSubmit={profileForm.handleSubmit(onProfileSubmit)}>
               <CardHeader>
-                <CardTitle>Informations sur le profil</CardTitle>
-                <CardDescription>Mettez à jour vos données personnelles ici.</CardDescription>
+                <CardTitle>Profile Information</CardTitle>
+                <CardDescription>Update your personal details here.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -83,9 +93,9 @@ export default function ProfilePage() {
                   name="fullName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nom complet</FormLabel>
+                      <FormLabel>Full Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Votre nom complet" {...field} />
+                        <Input placeholder="Your full name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -96,35 +106,9 @@ export default function ProfilePage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Adresse e-mail</FormLabel>
+                      <FormLabel>Email Address</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="Votre email" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                 <FormField
-                  control={profileForm.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Rôle</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Votre rôle" {...field} disabled />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                 <FormField
-                  control={profileForm.control}
-                  name="department"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Département</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Votre département" {...field} disabled />
+                        <Input type="email" placeholder="Your email" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -132,10 +116,28 @@ export default function ProfilePage() {
                 />
               </CardContent>
               <CardFooter className="border-t px-6 py-4">
-                <Button type="submit">Enregistrer les modifications</Button>
+                <Button type="submit">Save Changes</Button>
               </CardFooter>
             </form>
           </Form>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Referral Program</CardTitle>
+            <CardDescription>
+              Invite friends and earn tokens when they sign up.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <Label htmlFor="referral-link">Your Referral Link</Label>
+              <Input
+                id="referral-link"
+                readOnly
+                defaultValue={`https://n-plus.app/register?ref=${user.walletKey.slice(0, 8)}`}
+              />
+            </div>
+          </CardContent>
         </Card>
       </div>
     </div>

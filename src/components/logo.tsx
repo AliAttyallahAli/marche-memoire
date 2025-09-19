@@ -7,7 +7,7 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
       width="120"
       height="40"
       viewBox="0 0 120 40"
-      aria-label="HRM Pro logo"
+      aria-label="N+ logo"
       {...props}
     >
       <g fill="none" fillRule="evenodd">
@@ -21,11 +21,11 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
           y="27"
           fill="hsl(var(--sidebar-foreground))"
           fontFamily="Inter, sans-serif"
-          fontSize="20"
+          fontSize="24"
           fontWeight="600"
           letterSpacing=".5"
         >
-          HRM Pro
+          N+
         </text>
       </g>
     </svg>

@@ -1,85 +1,64 @@
-
-export type Employee = {
-  id: string;
+export type User = {
   name: string;
   email: string;
   avatar: string;
-  role: string;
-  department: string;
-  salary: number;
+  tokenBalance: number;
+  walletKey: string;
+  kycStatus: 'Verified' | 'Pending' | 'Rejected' | 'Not Submitted';
+  role: 'user' | 'admin';
 };
 
-export const employees: Employee[] = [
-    { id: '1', name: 'Alex Johnson', email: 'alex.j@example.com', avatar: 'https://placehold.co/100x100.png', role: 'Développeur Frontend', department: 'Technologie', salary: 60000 },
-    { id: '2', name: 'Maria Garcia', email: 'maria.g@example.com', avatar: 'https://placehold.co/100x100.png', role: 'Designer UX', department: 'Design', salary: 55000 },
-    { id: '3', name: 'James Smith', email: 'james.s@example.com', avatar: 'https://placehold.co/100x100.png', role: 'Chef de Projet', department: 'Produit', salary: 75000 },
-    { id: '4', name: 'Patricia Brown', email: 'patricia.b@example.com', avatar: 'https://placehold.co/100x100.png', role: 'Spécialiste Marketing', department: 'Ventes', salary: 52000 },
-     { id: '5', name: 'Robert Miller', email: 'robert.m@example.com', avatar: 'https://placehold.co/100x100.png', role: 'Ingénieur Backend', department: 'Technologie', salary: 68000 },
-];
+export const user: User = {
+  name: 'Alex Johnson',
+  email: 'alex.j@example.com',
+  avatar: 'https://placehold.co/100x100.png',
+  tokenBalance: 1250.75,
+  walletKey: '0x1A2b3C4d5E6f7A8b9C0d1E2f3A4b5C6d7E8f9A0b',
+  kycStatus: 'Verified',
+  role: 'admin',
+};
 
-export const employee: Employee = employees[0];
+export const allUsers: User[] = [
+    user,
+    { name: 'Maria Garcia', email: 'maria.g@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 850.00, walletKey: '0x...1234', kycStatus: 'Verified', role: 'user' },
+    { name: 'James Smith', email: 'james.s@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 2300.50, walletKey: '0x...5678', kycStatus: 'Pending', role: 'user' },
+    { name: 'Patricia Brown', email: 'patricia.b@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 450.25, walletKey: '0x...9101', kycStatus: 'Rejected', role: 'user' },
+    { name: 'Robert Miller', email: 'robert.m@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 5000.00, walletKey: '0x...1121', kycStatus: 'Not Submitted', role: 'user' },
+]
 
-
-export type Department = {
+export type Transaction = {
   id: string;
-  name: string;
-  manager: string;
-  employeeCount: number;
+  description: string;
+  type: 'Purchase' | 'Deposit' | 'Withdrawal' | 'Referral Bonus';
+  status: 'Completed' | 'Pending' | 'Failed';
+  date: string;
+  amount: number; // Positive for income, negative for expense
 };
 
-export const departments: Department[] = [
-    { id: 'tech', name: 'Technologie', manager: 'James Smith', employeeCount: 15 },
-    { id: 'design', name: 'Design', manager: 'Maria Garcia', employeeCount: 5 },
-    { id: 'product', name: 'Produit', manager: 'James Smith', employeeCount: 8 },
-    { id: 'sales', name: 'Ventes', manager: 'Patricia Brown', employeeCount: 12 },
-    { id: 'hr', name: 'Ressources Humaines', manager: 'Jessica Davis', employeeCount: 4 },
+export const allTransactions: Transaction[] = [
+  { id: 'txn1', description: 'Advanced Training Course', type: 'Purchase', status: 'Completed', date: '2024-07-15', amount: -100.00 },
+  { id: 'txn2', description: 'Initial Deposit', type: 'Deposit', status: 'Completed', date: '2024-07-14', amount: 500.00 },
+  { id: 'txn3', description: 'Referral Bonus from @mgarcia', type: 'Referral Bonus', status: 'Completed', date: '2024-07-12', amount: 50.00 },
+  { id: 'txn4', description: 'Withdrawal to Bank **** 1234', type: 'Withdrawal', status: 'Pending', date: '2024-07-11', amount: -200.00 },
+  { id: 'txn5', description: 'Consulting Service', type: 'Purchase', status: 'Completed', date: '2024-07-10', amount: -75.50 },
+  { id: 'txn6', description: 'Monthly staking reward', type: 'Deposit', status: 'Completed', date: '2024-07-01', amount: 25.25 },
 ];
 
 
-export type LeaveRequest = {
-  id: string;
-  employeeId: string;
-  employeeName: string;
-  startDate: string;
-  endDate: string;
-  type: 'Vacances' | 'Maladie' | 'Personnel';
-  status: 'En attente' | 'Approuvé' | 'Rejeté';
-};
-
-export const leaveRequests: LeaveRequest[] = [
-    { id: 'leave1', employeeId: '2', employeeName: 'Maria Garcia', startDate: '2024-08-01', endDate: '2024-08-10', type: 'Vacances', status: 'Approuvé' },
-    { id: 'leave2', employeeId: '1', employeeName: 'Alex Johnson', startDate: '2024-07-25', endDate: '2024-07-26', type: 'Maladie', status: 'En attente' },
-    { id: 'leave3', employeeId: '4', employeeName: 'Patricia Brown', startDate: '2024-09-01', endDate: '2024-09-05', type: 'Vacances', status: 'Rejeté' },
-    { id: 'leave4', employeeId: '3', employeeName: 'James Smith', startDate: '2024-08-15', endDate: '2024-08-15', type: 'Personnel', status: 'Approuvé' },
-];
-
-export type Salary = {
+export type Product = {
     id: string;
-    employeeId: string;
-    employeeName: string;
-    amount: number;
-    payDate: string;
-};
-
-export const salaries: Salary[] = [
-    { id: 'salary1', employeeId: '1', employeeName: 'Alex Johnson', amount: 5000, payDate: '2024-06-30' },
-    { id: 'salary2', employeeId: '2', employeeName: 'Maria Garcia', amount: 4583, payDate: '2024-06-30' },
-    { id: 'salary3', employeeId: '3', employeeName: 'James Smith', amount: 6250, payDate: '2024-06-30' },
-    { id: 'salary4', employeeId: '1', employeeName: 'Alex Johnson', amount: 5000, payDate: '2024-05-31' },
-    { id: 'salary5', employeeId: '4', employeeName: 'Patricia Brown', amount: 4333, payDate: '2024-06-30' },
-];
-
-export type JobRole = {
-    id: string;
-    title: string;
-    department: string;
+    name: string;
     description: string;
+    price: number;
+    image: string;
+    seller: string;
+    aiHint: string;
 }
 
-export const jobRoles: JobRole[] = [
-    { id: 'dev-front', title: 'Développeur Frontend', department: 'Technologie', description: 'Crée et maintient l\'interface utilisateur des applications web.' },
-    { id: 'dev-back', title: 'Ingénieur Backend', department: 'Technologie', description: 'Gère la logique serveur, les bases de données et les APIs.' },
-    { id: 'ux-designer', title: 'Designer UX/UI', department: 'Design', description: 'Conçoit des expériences utilisateur intuitives et esthétiques.' },
-    { id: 'pm', title: 'Chef de Projet', department: 'Produit', description: 'Planifie, exécute et supervise les projets de développement.' },
-    { id: 'mkt-spec', title: 'Spécialiste Marketing', department: 'Ventes', description: 'Développe et met en œuvre des stratégies marketing.' },
+export const products: Product[] = [
+    { id: 'prod1', name: 'Advanced Training Course', description: 'An in-depth course on community building and tokenomics.', price: 100.00, image: 'https://placehold.co/600x400.png', seller: '@james.s', aiHint: 'online course' },
+    { id: 'prod2', name: '1-on-1 Consulting Session', description: 'A one-hour consulting session with a token expert.', price: 75.50, image: 'https://placehold.co/600x400.png', seller: '@alex.j', aiHint: 'consulting business' },
+    { id: 'prod3', name: 'Exclusive Content Bundle', description: 'Get access to a bundle of exclusive articles, videos, and tutorials.', price: 45.00, image: 'https://placehold.co/600x400.png', seller: '@maria.g', aiHint: 'digital content' },
+    { id: 'prod4', name: 'Community Governance E-book', description: 'A comprehensive guide to setting up and running a DAO.', price: 25.00, image: 'https://placehold.co/600x400.png', seller: '@patricia.b', aiHint: 'book cover' },
+    { id: 'prod5', name: 'N+ Premium Membership', description: 'Unlock premium features, early access, and a special badge.', price: 15.00, image: 'https://placehold.co/600x400.png', seller: 'Official', aiHint: 'membership card' },
 ];

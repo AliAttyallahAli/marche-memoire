@@ -1,12 +1,13 @@
-
 import {
-  Building,
-  CalendarOff,
   Users,
-  WalletCards,
+  CircleDollarSign,
+  ShoppingBag,
+  MoreVertical,
+  ArrowUpRight,
 } from "lucide-react"
 import Link from "next/link"
 
+import { user, allTransactions, products } from "@/lib/data"
 import {
   Card,
   CardContent,
@@ -24,111 +25,95 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { employees as allEmployees, leaveRequests } from "@/lib/data"
+import { Button } from "@/components/ui/button"
+import Image from "next/image"
 
 export default function Dashboard() {
-  const totalEmployees = allEmployees.length;
-  const totalDepartments = 6; // This should be dynamic later
-  const pendingLeaves = leaveRequests.filter(r => r.status === 'En attente').length;
-  const latestSalaryCycle = "Juillet 2024";
-
-  const newEmployees = allEmployees.slice(0, 4);
-  const recentLeaveRequests = leaveRequests.slice(0, 2);
+  const recentTransactions = allTransactions.slice(0, 5)
+  const topProducts = products.slice(0,3)
 
   return (
     <div className="flex min-h-screen w-full flex-col">
       <main className="flex flex-1 flex-col gap-4 md:gap-8">
-        <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
-          <Link href="/personnel">
-            <Card className="hover:bg-muted/50 transition-colors">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total des Employés
-                </CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{totalEmployees}</div>
-                <p className="text-xs text-muted-foreground">
-                  +3 depuis le mois dernier
-                </p>
-              </CardContent>
-            </Card>
-          </Link>
-          <Link href="/departements">
-            <Card className="hover:bg-muted/50 transition-colors">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Départements
-                </CardTitle>
-                <Building className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{totalDepartments}</div>
-                 <p className="text-xs text-muted-foreground">
-                  Total des départements actifs
-                </p>
-              </CardContent>
-            </Card>
-          </Link>
-          <Link href="/conges">
-            <Card className="hover:bg-muted/50 transition-colors">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Congés en Attente</CardTitle>
-                <CalendarOff className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{pendingLeaves}</div>
-                <p className="text-xs text-muted-foreground">
-                  Demandes à approuver
-                </p>
-              </CardContent>
-            </Card>
-          </Link>
-          <Link href="/salaires">
-             <Card className="hover:bg-muted/50 transition-colors">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Dernier Cycle de Paie</CardTitle>
-                 <WalletCards className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                  <div className="text-2xl font-bold">{latestSalaryCycle}</div>
-                  <p className="text-xs text-muted-foreground">
-                      Statut : Terminé
-                  </p>
-              </CardContent>
-            </Card>
-          </Link>
+        <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Token Balance
+              </CardTitle>
+              <CircleDollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{user.tokenBalance.toLocaleString('en-US', { style: 'currency', currency: 'USD' }).replace('$', 'T ')}</div>
+              <p className="text-xs text-muted-foreground">
+                +20.1% from last month
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Total Transactions
+              </CardTitle>
+              <ShoppingBag className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{allTransactions.length}</div>
+              <p className="text-xs text-muted-foreground">
+                +180.1% from last month
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">KYC Status</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{user.kycStatus}</div>
+              <p className="text-xs text-muted-foreground">
+                Your identity verification status.
+              </p>
+            </CardContent>
+          </Card>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 md:gap-8">
+        <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-2">
             <Card>
-              <CardHeader>
-                <CardTitle>Nouveaux Employés</CardTitle>
-                <CardDescription>Les derniers membres à avoir rejoint l'équipe.</CardDescription>
+              <CardHeader className="flex flex-row items-center">
+                <div className="grid gap-2">
+                    <CardTitle>Recent Transactions</CardTitle>
+                    <CardDescription>
+                    A quick look at your latest account activity.
+                    </CardDescription>
+                </div>
+                <Button asChild size="sm" className="ml-auto gap-1">
+                    <Link href="/transactions">
+                    View All
+                    <ArrowUpRight className="h-4 w-4" />
+                    </Link>
+                </Button>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Employé</TableHead>
-                      <TableHead>Rôle</TableHead>
-                      <TableHead>Département</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead className="text-right">Amount</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {newEmployees.map((employee) => (
-                      <TableRow key={employee.id}>
+                    {recentTransactions.map((transaction) => (
+                      <TableRow key={transaction.id}>
                         <TableCell>
-                           <div className="flex items-center gap-4">
-                              <Avatar className="h-9 w-9">
-                                  <AvatarImage src={employee.avatar} alt={employee.name} data-ai-hint="user avatar" />
-                                  <AvatarFallback>{employee.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                              </Avatar>
-                              <div className="font-medium">{employee.name}</div>
-                           </div>
+                          <div className="font-medium">{transaction.description}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {transaction.date}
+                          </div>
                         </TableCell>
-                        <TableCell>{employee.role}</TableCell>
-                        <TableCell>{employee.department}</TableCell>
+                        <TableCell className={`text-right font-medium ${transaction.amount > 0 ? 'text-green-600' : 'text-destructive'}`}>
+                           {transaction.amount > 0 ? '+' : ''}
+                           {transaction.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' }).replace('$', 'T ')}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -136,31 +121,35 @@ export default function Dashboard() {
               </CardContent>
             </Card>
             <Card>
-                <CardHeader>
-                    <CardTitle>Demandes de Congés Récentes</CardTitle>
-                    <CardDescription>Aperçu des dernières demandes de congés.</CardDescription>
+                <CardHeader className="flex flex-row items-center">
+                    <div className="grid gap-2">
+                        <CardTitle>Top Products</CardTitle>
+                        <CardDescription>
+                        Most popular items on the marketplace.
+                        </CardDescription>
+                    </div>
+                     <Button asChild size="sm" className="ml-auto gap-1">
+                        <Link href="/marketplace">
+                        Shop All
+                        <ArrowUpRight className="h-4 w-4" />
+                        </Link>
+                    </Button>
                 </CardHeader>
                 <CardContent>
-                     <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Employé</TableHead>
-                                <TableHead>Type</TableHead>
-                                <TableHead>Statut</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {recentLeaveRequests.map((request) => (
-                                <TableRow key={request.id}>
-                                    <TableCell className="font-medium">{request.employeeName}</TableCell>
-                                    <TableCell>{request.type}</TableCell>
-                                    <TableCell>
-                                        <Badge variant={request.status === 'Approuvé' ? 'default' : (request.status === 'En attente' ? 'secondary' : 'destructive')}>{request.status}</Badge>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                     <div className="grid gap-8">
+                        {topProducts.map((product) => (
+                            <div key={product.id} className="flex items-center gap-4">
+                               <div className="relative aspect-square h-12 w-12">
+                                     <Image src={product.image} alt={product.name} fill className="rounded-md object-cover" data-ai-hint={product.aiHint} />
+                               </div>
+                                <div className="grid gap-1">
+                                    <p className="text-sm font-medium leading-none">{product.name}</p>
+                                    <p className="text-sm text-muted-foreground">{product.description.substring(0, 30)}...</p>
+                                </div>
+                                <div className="ml-auto font-medium">T {product.price.toFixed(2)}</div>
+                            </div>
+                        ))}
+                     </div>
                 </CardContent>
             </Card>
         </div>

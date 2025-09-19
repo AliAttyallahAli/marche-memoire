@@ -2,12 +2,12 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
-  Building,
-  LayoutDashboard,
+  Home,
+  ShoppingBag,
+  Wallet,
   Users,
-  DollarSign,
-  CalendarOff,
-  Briefcase,
+  BarChart3,
+  UserCog,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -23,11 +23,17 @@ import {
 } from "@/components/ui/sidebar"
 import { Logo } from "@/components/logo"
 import { Header } from "@/components/header"
+import { Badge } from "@/components/ui/badge"
+import { user } from "@/lib/data"
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
   const isActive = (path: string) => {
+    // Exact match for dashboard, startsWith for others
+    if (path === "/dashboard") {
+      return pathname === path
+    }
     return pathname.startsWith(path)
   }
 
@@ -45,58 +51,52 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <SidebarMenuButton
                 asChild
                 isActive={isActive("/dashboard")}
-                tooltip="Tableau de bord"
+                tooltip="Dashboard"
               >
                 <Link href="/dashboard">
-                  <LayoutDashboard />
-                  <span>Tableau de bord</span>
+                  <Home />
+                  <span>Dashboard</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isActive("/personnel")} tooltip="Personnel">
-                <Link href="/personnel">
-                  <Users />
-                  <span>Personnel</span>
+              <SidebarMenuButton asChild isActive={isActive("/wallet")} tooltip="Wallet">
+                <Link href="/wallet">
+                  <Wallet />
+                  <span>My Wallet</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                isActive={isActive("/departements")}
-                tooltip="Départements"
+                isActive={isActive("/transactions")}
+                tooltip="Transactions"
               >
-                <Link href="/departements">
-                  <Building />
-                  <span>Départements</span>
+                <Link href="/transactions">
+                  <BarChart3 />
+                  <span>Transactions</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isActive("/salaires")} tooltip="Salaires">
-                <Link href="/salaires">
-                  <DollarSign />
-                  <span>Salaires</span>
+              <SidebarMenuButton asChild isActive={isActive("/marketplace")} tooltip="Marketplace">
+                <Link href="/marketplace">
+                  <ShoppingBag />
+                  <span>Marketplace</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isActive("/conges")} tooltip="Congés">
-                <Link href="/conges">
-                  <CalendarOff />
-                  <span>Congés</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isActive("/fonctions")} tooltip="Fonctions">
-                <Link href="/fonctions">
-                  <Briefcase />
-                  <span>Fonctions & Services</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            {user.role === 'admin' && (
+               <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive("/admin")} tooltip="Admin Panel">
+                  <Link href="/admin">
+                    <UserCog />
+                    <span>Admin Panel</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            )}
           </SidebarMenu>
         </SidebarContent>
       </Sidebar>

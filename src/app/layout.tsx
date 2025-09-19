@@ -10,7 +10,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: 'N+',
-  description: 'Un système de gestion des ressources humaines moderne.',
+  description: 'A modern platform for community tokens.',
 };
 
 export default function RootLayout({
@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`h-full ${inter.variable}`}>
+    <html lang="en" className={`h-full ${inter.variable}`}>
       <body className="font-body antialiased h-full">
         {children}
         <Toaster />
