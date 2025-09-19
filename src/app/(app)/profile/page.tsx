@@ -37,6 +37,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { useUser } from "@/context/user-context"
 import { ArrowRight } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
 
 const profileFormSchema = z.object({
   fullName: z.string().min(2, "Le nom complet doit comporter au moins 2 caractères."),
@@ -47,6 +48,10 @@ const profileFormSchema = z.object({
   region: z.string().optional(),
   city: z.string().optional(),
   cv: z.any().optional(),
+  photo: z.any().optional(),
+  parcours: z.string().optional(),
+  experience: z.string().optional(),
+  loisir: z.string().optional(),
 })
 
 export default function ProfilePage() {
@@ -63,6 +68,9 @@ export default function ProfilePage() {
       country: "",
       region: "",
       city: "",
+      parcours: "",
+      experience: "",
+      loisir: "",
     },
   })
 
@@ -130,6 +138,22 @@ export default function ProfilePage() {
                 <CardDescription>Mettez à jour vos données personnelles ici.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                 <FormField
+                  control={profileForm.control}
+                  name="photo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Photo de profil</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...profileForm.register("photo")} />
+                      </FormControl>
+                      <FormDescription>
+                        Téléchargez une nouvelle photo de profil.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={profileForm.control}
                   name="fullName"
@@ -241,6 +265,45 @@ export default function ProfilePage() {
                       )}
                     />
                 </div>
+                <FormField
+                  control={profileForm.control}
+                  name="parcours"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Parcours</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Décrivez votre parcours académique et professionnel..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={profileForm.control}
+                  name="experience"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Expérience</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Détaillez vos expériences pertinentes..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={profileForm.control}
+                  name="loisir"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Loisirs</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Quels sont vos centres d'intérêt ?" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                  <FormField
                   control={profileForm.control}
                   name="cv"
