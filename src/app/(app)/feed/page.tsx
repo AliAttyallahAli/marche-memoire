@@ -14,7 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { useToast } from "@/hooks/use-toast"
 import { posts as initialPosts, user } from "@/lib/data"
 import type { Post } from "@/lib/data"
-import { MessageSquare, Repeat, Heart } from "lucide-react"
+import { MessageSquare, ThumbsUp, Share2 } from "lucide-react"
 
 const postFormSchema = z.object({
   content: z.string().min(1, "La publication ne peut pas être vide.").max(280, "La publication ne peut pas dépasser 280 caractères."),
@@ -52,20 +52,13 @@ export default function FeedPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="flex flex-col gap-8">
-        <div>
-            <h1 className="text-3xl font-bold tracking-tight">Fil d'actualités</h1>
-            <p className="text-muted-foreground">
-            Découvrez les dernières mises à jour de la communauté.
-            </p>
-        </div>
-        
+    <div className="max-w-xl mx-auto">
+      <div className="flex flex-col gap-6">
         <Card>
           <CardContent className="p-4">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <div className="flex gap-4">
+                <div className="flex items-start gap-4">
                   <Avatar>
                     <AvatarImage src={user.avatar} data-ai-hint="user avatar" />
                     <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
@@ -78,8 +71,9 @@ export default function FeedPage() {
                         <FormItem>
                           <FormControl>
                             <Textarea
-                              placeholder="Quoi de neuf ?"
-                              className="resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none text-base p-0"
+                              placeholder={`Quoi de neuf, ${user.name.split(' ')[0]} ?`}
+                              className="resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none text-lg p-0"
+                              rows={2}
                               {...field}
                             />
                           </FormControl>
@@ -89,51 +83,58 @@ export default function FeedPage() {
                     />
                   </div>
                 </div>
+                 <Separator />
                 <div className="flex justify-end">
-                  <Button type="submit">Publier</Button>
+                  <Button type="submit" className="w-full">Publier</Button>
                 </div>
               </form>
             </Form>
           </CardContent>
         </Card>
 
-        <div className="flex flex-col gap-4">
-          {posts.map((post, index) => (
-            <React.Fragment key={post.id}>
-              <Card className="shadow-none border-0 bg-transparent">
-                <CardContent className="p-4 flex gap-4">
-                  <Avatar>
-                    <AvatarImage src={post.authorAvatar} data-ai-hint="user avatar" />
-                    <AvatarFallback>{post.authorName.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col gap-2 w-full">
-                    <div className="flex items-center gap-2">
-                      <p className="font-semibold">{post.authorName}</p>
-                      <p className="text-muted-foreground text-sm">@{post.authorHandle}</p>
-                      <p className="text-muted-foreground text-sm">· {new Date(post.timestamp).toLocaleDateString()}</p>
+        <div className="flex flex-col gap-6">
+          {posts.map((post) => (
+            <Card key={post.id}>
+              <CardContent className="p-4 flex flex-col gap-4">
+                <div className="flex items-center gap-3">
+                    <Avatar>
+                        <AvatarImage src={post.authorAvatar} data-ai-hint="user avatar" />
+                        <AvatarFallback>{post.authorName.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <p className="font-semibold">{post.authorName}</p>
+                        <p className="text-muted-foreground text-xs">{new Date(post.timestamp).toLocaleString()}</p>
                     </div>
-                    <p className="text-base leading-snug">
-                      {post.content}
-                    </p>
-                    <div className="flex items-center justify-between mt-4 text-muted-foreground">
-                        <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                            <MessageSquare className="h-4 w-4" />
-                            <span>{post.comments}</span>
-                        </Button>
-                         <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                            <Repeat className="h-4 w-4" />
-                            <span>{post.shares}</span>
-                        </Button>
-                         <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                            <Heart className="h-4 w-4" />
-                            <span>{post.likes}</span>
-                        </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              {index < posts.length - 1 && <Separator />}
-            </React.Fragment>
+                </div>
+                
+                <p className="text-base leading-relaxed whitespace-pre-wrap">
+                  {post.content}
+                </p>
+
+                <div className="flex justify-between text-muted-foreground text-sm">
+                    <div>{post.likes} J'aime</div>
+                    <div>{post.comments} Commentaires</div>
+                </div>
+
+                <Separator />
+                
+                <div className="grid grid-cols-3 gap-2">
+                    <Button variant="ghost" className="flex items-center justify-center gap-2">
+                        <ThumbsUp className="h-5 w-5" />
+                        <span>J'aime</span>
+                    </Button>
+                    <Button variant="ghost" className="flex items-center justify-center gap-2">
+                        <MessageSquare className="h-5 w-5" />
+                        <span>Commenter</span>
+                    </Button>
+                    <Button variant="ghost" className="flex items-center justify-center gap-2">
+                        <Share2 className="h-5 w-5" />
+                        <span>Partager</span>
+                    </Button>
+                </div>
+
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
