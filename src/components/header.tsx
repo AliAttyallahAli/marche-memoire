@@ -13,7 +13,8 @@ import {
   LogOut,
   Menu,
   Store,
-  Rss
+  Rss,
+  MessageSquare
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -48,6 +49,7 @@ export function Header() {
   const allNavLinks = [
     { href: "/dashboard", label: "Tableau de Bord", icon: Home, roles: ['user', 'vendor', 'admin'] },
     { href: "/feed", label: "Feed", icon: Rss, roles: ['user', 'vendor', 'admin'] },
+    { href: "/chat", label: "Chat", icon: MessageSquare, roles: ['user', 'vendor', 'admin'] },
     { href: "/mining", label: "Minage", icon: Pickaxe, roles: ['user', 'vendor'] },
     { href: "/wallet", label: "Mon Portefeuille", icon: Wallet, roles: ['user', 'vendor'] },
     { href: "/transactions", label: "P2P", icon: Send, roles: ['user', 'vendor'] },

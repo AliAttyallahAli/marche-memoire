@@ -111,3 +111,36 @@ export const posts: Post[] = [
     shares: 3,
   },
 ];
+
+export type Conversation = {
+  id: string;
+  name: string;
+  avatar: string;
+  lastMessage: string;
+  lastMessageTimestamp: string;
+  unreadCount: number;
+};
+
+export type Message = {
+  id: string;
+  conversationId: string;
+  sender: 'user' | 'contact';
+  content: string;
+  timestamp: string;
+};
+
+export const conversations: Conversation[] = [
+  { id: 'convo1', name: 'Maria Garcia', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Super ! Merci pour l\'info.', lastMessageTimestamp: '10:42', unreadCount: 0 },
+  { id: 'convo2', name: 'James Smith', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Oui, je serai disponible demain.', lastMessageTimestamp: 'Hier', unreadCount: 2 },
+  { id: 'convo3', name: 'Support N+', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Votre ticket a été mis à jour.', lastMessageTimestamp: 'Hier', unreadCount: 0 },
+];
+
+export const messages: Message[] = [
+  { id: 'msg1', conversationId: 'convo1', sender: 'contact', content: 'Hey, tu as vu la nouvelle fonctionnalité sur la marketplace ?', timestamp: '10:40' },
+  { id: 'msg2', conversationId: 'convo1', sender: 'user', content: 'Non, pas encore. C\'est quoi ?', timestamp: '10:41' },
+  { id: 'msg3', conversationId: 'convo1', sender: 'contact', content: 'On peut maintenant lister des services en plus des produits.', timestamp: '10:41' },
+  { id: 'msg4', conversationId: 'convo1', sender: 'user', content: 'Super ! Merci pour l\'info.', timestamp: '10:42' },
+  { id: 'msg5', conversationId: 'convo2', sender: 'user', content: 'Salut James, tu es dispo pour un appel rapide ?', timestamp: '15:30' },
+  { id: 'msg6', conversationId: 'convo2', sender: 'contact', content: 'Salut Alex, je suis en réunion pour le moment. Demain matin ça te va ?', timestamp: '15:32' },
+  { id: 'msg7', conversationId: 'convo2', sender: 'user', content: 'Oui, je serai disponible demain.', timestamp: '15:35' },
+];
