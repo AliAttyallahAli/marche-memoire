@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Search, Send, Paperclip } from "lucide-react"
+import { Search, Send, Paperclip, ArrowLeft } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils"
 export default function ChatPage() {
   const [conversations, setConversations] = React.useState<Conversation[]>(initialConversations)
   const [messages, setMessages] = React.useState<Message[]>(initialMessages)
-  const [selectedConversation, setSelectedConversation] = React.useState<Conversation | null>(conversations[0] || null)
+  const [selectedConversation, setSelectedConversation] = React.useState<Conversation | null>(null)
   const [newMessage, setNewMessage] = React.useState("")
   const scrollAreaRef = React.useRef<HTMLDivElement>(null)
 
@@ -59,7 +59,10 @@ export default function ChatPage() {
   return (
     <Card className="h-[calc(100vh-8rem)] w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 overflow-hidden">
         {/* Sidebar */}
-        <div className="flex flex-col border-r h-full bg-muted/20">
+        <div className={cn(
+            "flex flex-col border-r h-full bg-muted/20",
+            selectedConversation && "hidden md:flex"
+        )}>
             <div className="p-4 border-b">
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold tracking-tight">Messages</h2>
@@ -100,10 +103,17 @@ export default function ChatPage() {
         </div>
 
         {/* Chat Area */}
-        <div className="md:col-span-2 lg:col-span-3 flex flex-col h-full bg-background">
+        <div className={cn(
+            "md:col-span-2 lg:col-span-3 flex-col h-full bg-background",
+            selectedConversation ? "flex" : "hidden md:flex"
+        )}>
             {selectedConversation ? (
                 <>
                 <div className="flex items-center gap-4 p-3 border-b bg-muted/20">
+                    <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setSelectedConversation(null)}>
+                        <ArrowLeft className="h-5 w-5" />
+                        <span className="sr-only">Retour</span>
+                    </Button>
                     <Avatar>
                          <AvatarImage src={selectedConversation.avatar} data-ai-hint="user avatar" />
                          <AvatarFallback>{selectedConversation.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
