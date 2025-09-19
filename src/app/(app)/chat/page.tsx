@@ -11,7 +11,6 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { conversations as initialConversations, messages as initialMessages, user } from "@/lib/data"
 import type { Conversation, Message } from "@/lib/data"
@@ -22,6 +21,7 @@ export default function ChatPage() {
   const [messages, setMessages] = React.useState<Message[]>(initialMessages)
   const [selectedConversation, setSelectedConversation] = React.useState<Conversation | null>(conversations[0] || null)
   const [newMessage, setNewMessage] = React.useState("")
+  const scrollAreaRef = React.useRef<HTMLDivElement>(null)
 
   const handleSelectConversation = (conversation: Conversation) => {
     setSelectedConversation(conversation)
@@ -42,20 +42,35 @@ export default function ChatPage() {
     setMessages([...messages, newMessageObj])
     setNewMessage("")
   }
+
+  React.useEffect(() => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTo({
+        top: scrollAreaRef.current.scrollHeight,
+        behavior: "smooth"
+      });
+    }
+  }, [messages, selectedConversation]);
   
   const currentMessages = selectedConversation 
     ? messages.filter(m => m.conversationId === selectedConversation.id)
     : []
 
   return (
-    <Card className="h-[calc(100vh-8rem)] w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
+    <Card className="h-[calc(100vh-8rem)] w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 overflow-hidden">
         {/* Sidebar */}
-        <div className="flex flex-col border-r h-full">
-            <div className="p-4">
-                <h2 className="text-xl font-semibold tracking-tight">Messages</h2>
+        <div className="flex flex-col border-r h-full bg-muted/20">
+            <div className="p-4 border-b">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-semibold tracking-tight">Messages</h2>
+                    <Avatar className="h-9 w-9">
+                        <AvatarImage src={user.avatar} data-ai-hint="user avatar" />
+                        <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+                </div>
                 <div className="relative mt-4">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Rechercher..." className="pl-8" />
+                    <Input placeholder="Rechercher..." className="pl-8 bg-background" />
                 </div>
             </div>
             <ScrollArea className="flex-1">
@@ -65,7 +80,7 @@ export default function ChatPage() {
                             key={convo.id}
                             onClick={() => handleSelectConversation(convo)}
                             className={cn(
-                                "flex items-center gap-3 p-4 text-left hover:bg-muted/50 transition-colors",
+                                "flex items-center gap-3 p-4 text-left hover:bg-muted/50 transition-colors border-b",
                                 selectedConversation?.id === convo.id && "bg-muted"
                             )}
                         >
@@ -77,7 +92,7 @@ export default function ChatPage() {
                                 <p className="font-semibold">{convo.name}</p>
                                 <p className="text-sm text-muted-foreground truncate">{convo.lastMessage}</p>
                             </div>
-                            <div className="text-xs text-muted-foreground">{convo.lastMessageTimestamp}</div>
+                            <div className="text-xs text-muted-foreground self-start">{convo.lastMessageTimestamp}</div>
                         </button>
                     ))}
                  </div>
@@ -85,69 +100,54 @@ export default function ChatPage() {
         </div>
 
         {/* Chat Area */}
-        <div className="md:col-span-2 lg:col-span-3 flex flex-col h-full">
+        <div className="md:col-span-2 lg:col-span-3 flex flex-col h-full bg-background">
             {selectedConversation ? (
                 <>
-                <div className="flex items-center gap-4 p-3 border-b">
+                <div className="flex items-center gap-4 p-3 border-b bg-muted/20">
                     <Avatar>
                          <AvatarImage src={selectedConversation.avatar} data-ai-hint="user avatar" />
                          <AvatarFallback>{selectedConversation.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>
                     <p className="font-semibold">{selectedConversation.name}</p>
                 </div>
-
-                <ScrollArea className="flex-1 p-4">
+                
+                <div className="flex-1 p-4 overflow-y-auto" ref={scrollAreaRef}>
                     <div className="flex flex-col gap-4">
                         {currentMessages.map((message) => (
                             <div
                                 key={message.id}
                                 className={cn(
-                                    "flex items-end gap-2",
+                                    "flex w-full",
                                     message.sender === 'user' ? "justify-end" : "justify-start"
                                 )}
                             >
-                                {message.sender !== 'user' && (
-                                    <Avatar className="h-8 w-8">
-                                        <AvatarImage src={selectedConversation.avatar} data-ai-hint="user avatar" />
-                                        <AvatarFallback>{selectedConversation.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                                    </Avatar>
-                                )}
-                                <div
-                                    className={cn(
-                                        "max-w-xs md:max-w-md lg:max-w-xl rounded-lg px-4 py-2",
-                                        message.sender === 'user'
-                                        ? "bg-primary text-primary-foreground"
-                                        : "bg-muted"
-                                    )}
-                                >
+                                <div className={cn(
+                                     "max-w-xs md:max-w-md lg:max-w-xl rounded-lg px-4 py-2 relative",
+                                     message.sender === 'user'
+                                     ? "bg-primary text-primary-foreground rounded-br-none"
+                                     : "bg-muted rounded-bl-none"
+                                )}>
                                     <p className="text-sm">{message.content}</p>
                                     <p className="text-xs text-right mt-1 opacity-70">{message.timestamp}</p>
                                 </div>
-                                {message.sender === 'user' && (
-                                    <Avatar className="h-8 w-8">
-                                        <AvatarImage src={user.avatar} data-ai-hint="user avatar" />
-                                        <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                                    </Avatar>
-                                )}
                             </div>
                         ))}
                     </div>
-                </ScrollArea>
+                </div>
                 
-                <Separator />
-                
-                <div className="p-4">
+                <div className="p-4 border-t bg-muted/20">
                    <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon">
+                        <Button variant="ghost" size="icon" className="text-muted-foreground">
                             <Paperclip className="h-5 w-5" />
                             <span className="sr-only">Joindre un fichier</span>
                         </Button>
                         <Input 
                             placeholder="Écrivez votre message..." 
+                            className="bg-background"
                             value={newMessage}
                             onChange={(e) => setNewMessage(e.target.value)}
                         />
-                        <Button type="submit">
+                        <Button type="submit" size="icon">
                             <Send className="h-5 w-5" />
                             <span className="sr-only">Envoyer</span>
                         </Button>
