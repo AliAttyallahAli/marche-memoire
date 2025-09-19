@@ -20,6 +20,24 @@ const postFormSchema = z.object({
   content: z.string().min(1, "La publication ne peut pas être vide.").max(280, "La publication ne peut pas dépasser 280 caractères."),
 })
 
+function PostTimestamp({ timestamp }: { timestamp: string }) {
+    const [isMounted, setIsMounted] = React.useState(false);
+
+    React.useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    if (!isMounted) {
+        return null; 
+    }
+
+    return (
+        <p className="text-muted-foreground text-xs">
+            {new Date(timestamp).toLocaleString()}
+        </p>
+    );
+}
+
 export default function FeedPage() {
   const { toast } = useToast()
   const [posts, setPosts] = React.useState<Post[]>(initialPosts)
@@ -103,7 +121,7 @@ export default function FeedPage() {
                     </Avatar>
                     <div>
                         <p className="font-semibold">{post.authorName}</p>
-                        <p className="text-muted-foreground text-xs">{new Date(post.timestamp).toLocaleString()}</p>
+                        <PostTimestamp timestamp={post.timestamp} />
                     </div>
                 </div>
                 
