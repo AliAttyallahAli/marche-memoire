@@ -1,6 +1,7 @@
 
 "use client"
 
+import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -15,18 +16,20 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Logo } from "@/components/logo"
 import { useUser } from "@/context/user-context"
+import { Eye, EyeOff } from "lucide-react"
 
 export default function LoginPage() {
   const router = useRouter()
   const { user } = useUser()
+  const [showPassword, setShowPassword] = React.useState(false)
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
-    // In a real app, you would perform authentication here.
-    // Based on the authenticated user's role, you redirect.
+    // Dans une application réelle, vous effectueriez l'authentification ici.
+    // En fonction du rôle de l'utilisateur authentifié, vous redirigez.
     if (user.role === 'admin') {
       router.push('/admin')
-    } else if (user.role === 'vendor') { // Assuming a 'vendor' role exists
+    } else if (user.role === 'vendor') { // En supposant qu'un rôle 'vendor' existe
       router.push('/vendor')
     } else {
       router.push('/dashboard')
@@ -68,7 +71,25 @@ export default function LoginPage() {
                           Mot de passe oublié ?
                       </Link>
                       </div>
-                      <Input id="password" type="password" required defaultValue="password" />
+                      <div className="relative">
+                        <Input 
+                          id="password" 
+                          type={showPassword ? "text" : "password"} 
+                          required 
+                          defaultValue="password" 
+                          className="pr-10"
+                        />
+                        <Button 
+                          type="button" 
+                          variant="ghost" 
+                          size="icon" 
+                          className="absolute inset-y-0 right-0 h-full w-10 text-muted-foreground"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? <EyeOff /> : <Eye />}
+                          <span className="sr-only">{showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}</span>
+                        </Button>
+                      </div>
                   </div>
                   <Button type="submit" className="w-full">
                     Se connecter
