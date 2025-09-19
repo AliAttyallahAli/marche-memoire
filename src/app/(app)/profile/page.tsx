@@ -19,11 +19,19 @@ import { Input } from "@/components/ui/input"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -33,6 +41,12 @@ import { ArrowRight } from "lucide-react"
 const profileFormSchema = z.object({
   fullName: z.string().min(2, "Le nom complet doit comporter au moins 2 caractères."),
   email: z.string().email("Veuillez saisir une adresse e-mail valide."),
+  civility: z.string().optional(),
+  maritalStatus: z.string().optional(),
+  country: z.string().optional(),
+  region: z.string().optional(),
+  city: z.string().optional(),
+  cv: z.any().optional(),
 })
 
 export default function ProfilePage() {
@@ -44,10 +58,16 @@ export default function ProfilePage() {
     defaultValues: {
       fullName: user.name,
       email: user.email,
+      civility: "",
+      maritalStatus: "",
+      country: "",
+      region: "",
+      city: "",
     },
   })
 
   function onProfileSubmit(values: z.infer<typeof profileFormSchema>) {
+    console.log(values)
     toast({
       title: "Profil Mis à Jour",
       description: "Vos informations de profil ont été enregistrées.",
@@ -136,6 +156,108 @@ export default function ProfilePage() {
                     </FormItem>
                   )}
                 />
+                 <FormField
+                  control={profileForm.control}
+                  name="civility"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Civilité</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionnez votre civilité" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="monsieur">Monsieur</SelectItem>
+                          <SelectItem value="madame">Madame</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={profileForm.control}
+                  name="maritalStatus"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>État Civil</FormLabel>
+                       <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionnez votre état civil" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="celibataire">Célibataire</SelectItem>
+                          <SelectItem value="marie">Marié(e)</SelectItem>
+                           <SelectItem value="divorce">Divorcé(e)</SelectItem>
+                           <SelectItem value="veuf">Veuf(ve)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={profileForm.control}
+                  name="country"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Pays</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Votre pays" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="grid grid-cols-2 gap-4">
+                     <FormField
+                      control={profileForm.control}
+                      name="region"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Région</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Votre région" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                     <FormField
+                      control={profileForm.control}
+                      name="city"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Ville</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Votre ville" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                </div>
+                 <FormField
+                  control={profileForm.control}
+                  name="cv"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>CV</FormLabel>
+                      <FormControl>
+                        <Input type="file" {...profileForm.register("cv")} />
+                      </FormControl>
+                      <FormDescription>
+                        Téléchargez votre CV au format PDF.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
               </CardContent>
               <CardFooter className="border-t px-6 py-4">
                 <Button type="submit">Enregistrer les Modifications</Button>
