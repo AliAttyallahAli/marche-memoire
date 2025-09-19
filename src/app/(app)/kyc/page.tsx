@@ -1,6 +1,7 @@
 
 "use client"
 
+import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -46,6 +47,7 @@ const kycFormSchema = z.object({
 export default function KYCPage() {
   const { toast } = useToast()
   const { user, setUser } = useUser()
+  const [showForm, setShowForm] = React.useState(false)
 
   const form = useForm<z.infer<typeof kycFormSchema>>({
     resolver: zodResolver(kycFormSchema),
@@ -61,6 +63,7 @@ export default function KYCPage() {
       title: "Documents Soumis",
       description: "Vos documents sont en cours de vérification. Vous serez notifié une fois le processus terminé.",
     })
+    setShowForm(false)
   }
 
   const kycStatusInfo = {
@@ -92,6 +95,7 @@ export default function KYCPage() {
 
 
   const currentStatusInfo = kycStatusInfo[user.kycStatus];
+  const needsSubmission = user.kycStatus === 'Not Submitted' || user.kycStatus === 'Rejected'
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -107,7 +111,16 @@ export default function KYCPage() {
             </div>
         </CardHeader>
 
-        {(user.kycStatus === 'Not Submitted' || user.kycStatus === 'Rejected') && (
+        {needsSubmission && !showForm && (
+            <CardFooter>
+                 <Button className="w-full" onClick={() => setShowForm(true)}>
+                    <UploadCloud className="mr-2 h-4 w-4" />
+                    Soumettre une vérification
+                </Button>
+            </CardFooter>
+        )}
+
+        {needsSubmission && showForm && (
             <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
                 <CardContent className="space-y-6">
@@ -185,10 +198,13 @@ export default function KYCPage() {
                     )}
                     />
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="flex-col gap-4">
                     <Button type="submit" className="w-full">
                         <UploadCloud className="mr-2 h-4 w-4" />
                         Soumettre pour Vérification
+                    </Button>
+                    <Button variant="ghost" className="w-full" onClick={() => setShowForm(false)}>
+                        Annuler
                     </Button>
                 </CardFooter>
             </form>
