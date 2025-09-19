@@ -44,16 +44,16 @@ export function Header() {
   }
 
   const navLinks = [
-    { href: "/dashboard", label: "Dashboard", icon: Home },
-    { href: "/mining", label: "Mining", icon: Pickaxe },
-    { href: "/wallet", label: "My Wallet", icon: Wallet },
+    { href: "/dashboard", label: "Tableau de Bord", icon: Home },
+    { href: "/mining", label: "Minage", icon: Pickaxe },
+    { href: "/wallet", label: "Mon Portefeuille", icon: Wallet },
     { href: "/transactions", label: "Transactions", icon: BarChart3 },
     { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
     { href: "/vendor", label: "Tableau de bord Vendeur", icon: Store },
   ]
 
   if (user.role === 'admin') {
-    navLinks.push({ href: "/admin", label: "Admin Panel", icon: UserCog })
+    navLinks.push({ href: "/admin", label: "Panneau Admin", icon: UserCog })
   }
 
   return (
@@ -69,7 +69,7 @@ export function Header() {
       <div className="flex items-center gap-4">
         <Button variant="outline" size="icon" className="h-8 w-8 rounded-full">
             <Bell className="h-4 w-4" />
-            <span className="sr-only">Toggle notifications</span>
+            <span className="sr-only">Voir les notifications</span>
         </Button>
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -78,18 +78,18 @@ export function Header() {
                     <AvatarImage src="https://placehold.co/100x100.png" alt="@username" data-ai-hint="user avatar" />
                     <AvatarFallback>AJ</AvatarFallback>
                 </Avatar>
-                <span className="sr-only">Toggle user menu</span>
+                <span className="sr-only">Menu utilisateur</span>
             </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>Mon Compte</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-                <Link href="/profile"><User className="mr-2 h-4 w-4" />Profile</Link>
+                <Link href="/profile"><User className="mr-2 h-4 w-4" />Profil</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-                <Link href="/login"><LogOut className="mr-2 h-4 w-4" />Logout</Link>
+                <Link href="/login"><LogOut className="mr-2 h-4 w-4" />Déconnexion</Link>
             </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
@@ -102,12 +102,12 @@ export function Header() {
                 className="shrink-0"
             >
                 <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle navigation menu</span>
+                <span className="sr-only">Ouvrir le menu de navigation</span>
             </Button>
             </SheetTrigger>
             <SheetContent side="right">
               <SheetHeader>
-                  <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                  <SheetTitle className="sr-only">Menu de Navigation</SheetTitle>
               </SheetHeader>
               <nav className="grid gap-6 text-lg font-medium mt-4">
                   <Link

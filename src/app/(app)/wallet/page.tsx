@@ -28,35 +28,35 @@ export default function WalletPage() {
     <div className="grid gap-8">
       <Card>
         <CardHeader>
-          <CardTitle>My Wallet</CardTitle>
+          <CardTitle>Mon Portefeuille</CardTitle>
           <CardDescription>
-            Your personal token wallet for all transactions.
+            Votre portefeuille de tokens personnel pour toutes les transactions.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6">
           <div className="flex items-center justify-between p-6 bg-secondary/50 rounded-lg">
             <div>
-              <p className="text-sm text-muted-foreground">Total Balance</p>
+              <p className="text-sm text-muted-foreground">Solde Total</p>
               <p className="text-4xl font-bold">
-                {user.tokenBalance.toLocaleString('en-US', { style: 'currency', currency: 'USD' }).replace('$', 'T ')}
+                {user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T ')}
               </p>
             </div>
             <div className="flex gap-2">
               <Button>
                 <ArrowUpRight className="mr-2 h-4 w-4" />
-                Send
+                Envoyer
               </Button>
               <Button variant="outline">
                 <ArrowDownLeft className="mr-2 h-4 w-4" />
-                Receive
+                Recevoir
               </Button>
             </div>
           </div>
           <div>
-            <h3 className="text-lg font-medium mb-2">Wallet Details</h3>
+            <h3 className="text-lg font-medium mb-2">Détails du Portefeuille</h3>
             <div className="flex items-center justify-between rounded-md border p-4">
               <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">Unique Wallet Key</p>
+                <p className="text-sm text-muted-foreground">Clé de portefeuille unique</p>
                 <p className="font-mono text-sm break-all">{user.walletKey}</p>
               </div>
               <Button variant="ghost" size="icon">
@@ -69,20 +69,20 @@ export default function WalletPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Wallet History</CardTitle>
+          <CardTitle>Historique du Portefeuille</CardTitle>
           <CardDescription>
-            A complete record of your wallet's transactions.
+            Un relevé complet des transactions de votre portefeuille.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Transaction ID</TableHead>
+                <TableHead>ID de Transaction</TableHead>
                 <TableHead>Type</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Statut</TableHead>
                 <TableHead>Date</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead className="text-right">Montant</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -104,7 +104,7 @@ export default function WalletPage() {
                   <TableCell>{transaction.date}</TableCell>
                   <TableCell className={`text-right font-medium ${transaction.amount > 0 ? 'text-green-600' : 'text-destructive'}`}>
                     {transaction.amount > 0 ? '+' : ''}
-                    {transaction.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' }).replace('$', 'T ')}
+                    {transaction.amount.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T ')}
                   </TableCell>
                 </TableRow>
               ))}

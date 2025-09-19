@@ -19,19 +19,19 @@ export default function RegisterPage() {
         </div>
         <Card>
         <CardHeader>
-            <CardTitle className="text-xl">Sign Up</CardTitle>
+            <CardTitle className="text-xl">S'inscrire</CardTitle>
             <CardDescription>
-            Enter your information to create an account
+            Entrez vos informations pour créer un compte
             </CardDescription>
         </CardHeader>
         <CardContent>
             <div className="grid gap-4">
                 <div className="grid gap-2">
-                    <Label htmlFor="full-name">Full name</Label>
+                    <Label htmlFor="full-name">Nom complet</Label>
                     <Input id="full-name" placeholder="Alex Johnson" required />
                 </div>
                 <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">E-mail</Label>
                     <Input
                     id="email"
                     type="email"
@@ -40,21 +40,21 @@ export default function RegisterPage() {
                     />
                 </div>
                 <div className="grid gap-2">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password">Mot de passe</Label>
                     <Input id="password" type="password" />
                 </div>
                  <div className="grid gap-2">
-                    <Label htmlFor="referral-code">Referral Code (Optional)</Label>
+                    <Label htmlFor="referral-code">Code de parrainage (Optionnel)</Label>
                     <Input id="referral-code" placeholder="REF12345" />
                 </div>
                 <Button type="submit" className="w-full" asChild>
-                    <Link href="/dashboard">Create an account</Link>
+                    <Link href="/dashboard">Créer un compte</Link>
                 </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-            Already have an account?{" "}
+            Vous avez déjà un compte ?{" "}
             <Link href="/login" className="underline">
-                Sign in
+                Se connecter
             </Link>
             </div>
         </CardContent>

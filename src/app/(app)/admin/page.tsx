@@ -45,62 +45,62 @@ export default function AdminPage() {
     return (
         <div className="flex flex-col gap-8">
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
+                <h1 className="text-3xl font-bold tracking-tight">Tableau de Bord Admin</h1>
                 <p className="text-muted-foreground">
-                    An overview of the entire platform.
+                    Un aperçu de l'ensemble de la plateforme.
                 </p>
             </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                        <CardTitle className="text-sm font-medium">Utilisateurs Totaux</CardTitle>
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{allUsers.length}</div>
                         <p className="text-xs text-muted-foreground">
-                            Number of registered users
+                            Nombre d'utilisateurs enregistrés
                         </p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Tokens Issued</CardTitle>
+                        <CardTitle className="text-sm font-medium">Total des Tokens Émis</CardTitle>
                         <CircleDollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{totalTokens.toLocaleString('en-US', { style: 'currency', currency: 'USD' }).replace('$', 'T ')}</div>
+                        <div className="text-2xl font-bold">{totalTokens.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T').replace(',', '.')}</div>
                         <p className="text-xs text-muted-foreground">
-                            Total tokens across all users
+                            Total des tokens pour tous les utilisateurs
                         </p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Marketplace Volume</CardTitle>
+                        <CardTitle className="text-sm font-medium">Volume de la Marketplace</CardTitle>
                         <ShoppingBag className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{marketplaceVolume.toLocaleString('en-US', { style: 'currency', currency: 'USD' }).replace('$', 'T ')}</div>
+                        <div className="text-2xl font-bold">{marketplaceVolume.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T').replace(',', '.')}</div>
                          <p className="text-xs text-muted-foreground">
-                            Total value of products sold
+                            Valeur totale des produits vendus
                         </p>
                     </CardContent>
                 </Card>
             </div>
             <Card>
                 <CardHeader>
-                    <CardTitle>User Management</CardTitle>
-                    <CardDescription>View and manage all users on the platform.</CardDescription>
+                    <CardTitle>Gestion des Utilisateurs</CardTitle>
+                    <CardDescription>Affichez et gérez tous les utilisateurs de la plateforme.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>User</TableHead>
-                                <TableHead>Role</TableHead>
-                                <TableHead>KYC Status</TableHead>
-                                <TableHead className="text-right">Token Balance</TableHead>
+                                <TableHead>Utilisateur</TableHead>
+                                <TableHead>Rôle</TableHead>
+                                <TableHead>Statut KYC</TableHead>
+                                <TableHead className="text-right">Solde de Tokens</TableHead>
                                 <TableHead><span className="sr-only">Actions</span></TableHead>
                             </TableRow>
                         </TableHeader>
@@ -126,7 +126,7 @@ export default function AdminPage() {
                                         <Badge variant={kycStatusVariant[user.kycStatus]}>{user.kycStatus}</Badge>
                                     </TableCell>
                                     <TableCell className="text-right font-medium">
-                                        {user.tokenBalance.toLocaleString('en-US', { style: 'currency', currency: 'USD' }).replace('$', 'T ')}
+                                        {user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T').replace(',', '.')}
                                     </TableCell>
                                     <TableCell>
                                         <DropdownMenu>
@@ -137,8 +137,8 @@ export default function AdminPage() {
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuItem>View Details</DropdownMenuItem>
-                                                <DropdownMenuItem>Suspend</DropdownMenuItem>
+                                                <DropdownMenuItem>Voir les détails</DropdownMenuItem>
+                                                <DropdownMenuItem>Suspendre</DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </TableCell>

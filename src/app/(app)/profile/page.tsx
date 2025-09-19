@@ -31,8 +31,8 @@ import { useUser } from "@/context/user-context"
 import { ArrowRight } from "lucide-react"
 
 const profileFormSchema = z.object({
-  fullName: z.string().min(2, "Full name must be at least 2 characters."),
-  email: z.string().email("Please enter a valid email address."),
+  fullName: z.string().min(2, "Le nom complet doit comporter au moins 2 caractères."),
+  email: z.string().email("Veuillez saisir une adresse e-mail valide."),
 })
 
 export default function ProfilePage() {
@@ -49,8 +49,8 @@ export default function ProfilePage() {
 
   function onProfileSubmit(values: z.infer<typeof profileFormSchema>) {
     toast({
-      title: "Profile Updated",
-      description: "Your profile information has been saved.",
+      title: "Profil Mis à Jour",
+      description: "Vos informations de profil ont été enregistrées.",
     })
   }
   
@@ -75,12 +75,12 @@ export default function ProfilePage() {
           </CardHeader>
           <CardContent className="text-sm space-y-4">
              <div className="flex justify-between items-center">
-                <span>KYC Status</span>
+                <span>Statut KYC</span>
                 <Badge variant={kycStatusVariant[user.kycStatus]}>{user.kycStatus}</Badge>
             </div>
             <div className="flex justify-between items-center">
-                <span>Token Balance</span>
-                <span className="font-semibold">{user.tokenBalance.toLocaleString('en-US', { style: 'currency', currency: 'USD' }).replace('$', 'T ')}</span>
+                <span>Solde de Tokens</span>
+                <span className="font-semibold">{user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T ')}</span>
             </div>
           </CardContent>
         </Card>
@@ -106,8 +106,8 @@ export default function ProfilePage() {
           <Form {...profileForm}>
             <form onSubmit={profileForm.handleSubmit(onProfileSubmit)}>
               <CardHeader>
-                <CardTitle>Profile Information</CardTitle>
-                <CardDescription>Update your personal details here.</CardDescription>
+                <CardTitle>Informations du Profil</CardTitle>
+                <CardDescription>Mettez à jour vos données personnelles ici.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -115,9 +115,9 @@ export default function ProfilePage() {
                   name="fullName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Name</FormLabel>
+                      <FormLabel>Nom Complet</FormLabel>
                       <FormControl>
-                        <Input placeholder="Your full name" {...field} />
+                        <Input placeholder="Votre nom complet" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -128,9 +128,9 @@ export default function ProfilePage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email Address</FormLabel>
+                      <FormLabel>Adresse E-mail</FormLabel>
                       <FormControl>
-                        <Input type="email" placeholder="Your email" {...field} />
+                        <Input type="email" placeholder="Votre e-mail" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -138,7 +138,7 @@ export default function ProfilePage() {
                 />
               </CardContent>
               <CardFooter className="border-t px-6 py-4">
-                <Button type="submit">Save Changes</Button>
+                <Button type="submit">Enregistrer les Modifications</Button>
               </CardFooter>
             </form>
           </Form>

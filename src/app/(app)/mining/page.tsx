@@ -30,8 +30,8 @@ export default function MiningPage() {
       localStorage.setItem("nextMineTime", nextMineTime.toString())
 
       toast({
-        title: "Success!",
-        description: "You've successfully mined 10 tokens.",
+        title: "Succès !",
+        description: "Vous avez miné 10 tokens avec succès.",
       })
     }
   }
@@ -74,9 +74,9 @@ export default function MiningPage() {
     <div className="flex justify-center items-center h-full">
       <Card className="w-full max-w-md text-center">
         <CardHeader>
-          <CardTitle className="text-3xl font-bold">Daily Token Mining</CardTitle>
+          <CardTitle className="text-3xl font-bold">Minage de Tokens Quotidien</CardTitle>
           <CardDescription>
-            Click the button to mine your daily tokens. A new session starts every 24 hours.
+            Cliquez sur le bouton pour miner vos tokens quotidiens. Une nouvelle session commence toutes les 24 heures.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-6">
@@ -87,11 +87,11 @@ export default function MiningPage() {
             disabled={!canMine}
           >
             <Pickaxe className="mr-2 h-6 w-6" />
-            {canMine ? "Start Mining Session" : "Mining in Progress"}
+            {canMine ? "Démarrer la session de minage" : "Minage en cours"}
           </Button>
           {!canMine && (
             <div className="text-center">
-              <p className="text-muted-foreground">Next session available in:</p>
+              <p className="text-muted-foreground">Prochaine session disponible dans :</p>
               <p className="text-4xl font-mono font-bold tracking-wider">
                 {formatTime(timeLeft)}
               </p>

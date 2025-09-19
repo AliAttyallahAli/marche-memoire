@@ -39,40 +39,40 @@ export default function Dashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Token Balance
+                Solde de Tokens
               </CardTitle>
               <CircleDollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{user.tokenBalance.toLocaleString('en-US', { style: 'currency', currency: 'USD' }).replace('$', 'T ')}</div>
+              <div className="text-2xl font-bold">{user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T ')}</div>
               <p className="text-xs text-muted-foreground">
-                +20.1% from last month
+                +20.1% depuis le mois dernier
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Total Transactions
+                Transactions Totales
               </CardTitle>
               <ShoppingBag className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{allTransactions.length}</div>
               <p className="text-xs text-muted-foreground">
-                +180.1% from last month
+                +180.1% depuis le mois dernier
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">KYC Status</CardTitle>
+              <CardTitle className="text-sm font-medium">Statut KYC</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{user.kycStatus}</div>
               <p className="text-xs text-muted-foreground">
-                Your identity verification status.
+                Votre statut de vérification d'identité.
               </p>
             </CardContent>
           </Card>
@@ -81,14 +81,14 @@ export default function Dashboard() {
             <Card>
               <CardHeader className="flex flex-row items-center">
                 <div className="grid gap-2">
-                    <CardTitle>Recent Transactions</CardTitle>
+                    <CardTitle>Transactions Récentes</CardTitle>
                     <CardDescription>
-                    A quick look at your latest account activity.
+                    Un aperçu rapide de votre dernière activité.
                     </CardDescription>
                 </div>
                 <Button asChild size="sm" className="ml-auto gap-1">
                     <Link href="/transactions">
-                    View All
+                    Voir Tout
                     <ArrowUpRight className="h-4 w-4" />
                     </Link>
                 </Button>
@@ -98,7 +98,7 @@ export default function Dashboard() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Description</TableHead>
-                      <TableHead className="text-right">Amount</TableHead>
+                      <TableHead className="text-right">Montant</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -112,7 +112,7 @@ export default function Dashboard() {
                         </TableCell>
                         <TableCell className={`text-right font-medium ${transaction.amount > 0 ? 'text-green-600' : 'text-destructive'}`}>
                            {transaction.amount > 0 ? '+' : ''}
-                           {transaction.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' }).replace('$', 'T ')}
+                           {transaction.amount.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T ')}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -123,14 +123,14 @@ export default function Dashboard() {
             <Card>
                 <CardHeader className="flex flex-row items-center">
                     <div className="grid gap-2">
-                        <CardTitle>Top Products</CardTitle>
+                        <CardTitle>Produits Populaires</CardTitle>
                         <CardDescription>
-                        Most popular items on the marketplace.
+                        Articles les plus populaires de la marketplace.
                         </CardDescription>
                     </div>
                      <Button asChild size="sm" className="ml-auto gap-1">
                         <Link href="/marketplace">
-                        Shop All
+                        Voir la boutique
                         <ArrowUpRight className="h-4 w-4" />
                         </Link>
                     </Button>
