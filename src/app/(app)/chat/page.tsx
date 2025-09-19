@@ -191,5 +191,3 @@ export default function ChatPage() {
     </Card>
   )
 }
-
-    
