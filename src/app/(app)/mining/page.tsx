@@ -11,19 +11,21 @@ import {
 } from "@/components/ui/card"
 import { useToast } from "@/hooks/use-toast"
 import { Pickaxe } from "lucide-react"
+import { useUser } from "@/context/user-context"
 
 export default function MiningPage() {
   const { toast } = useToast()
+  const { addTokens } = useUser()
   const [canMine, setCanMine] = React.useState(true)
   const [timeLeft, setTimeLeft] = React.useState(0)
 
   const handleMine = () => {
     if (canMine) {
+      addTokens(10)
       setCanMine(false)
       const twentyFourHours = 24 * 60 * 60
       setTimeLeft(twentyFourHours)
 
-      // Save the next mining time to localStorage
       const nextMineTime = new Date().getTime() + twentyFourHours * 1000
       localStorage.setItem("nextMineTime", nextMineTime.toString())
 

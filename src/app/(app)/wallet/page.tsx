@@ -1,10 +1,11 @@
-import { user, allTransactions } from "@/lib/data"
+"use client"
+
+import { allTransactions } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -18,8 +19,11 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Copy, ArrowDownLeft, ArrowUpRight } from "lucide-react"
+import { useUser } from "@/context/user-context"
 
 export default function WalletPage() {
+  const { user } = useUser();
+
   return (
     <div className="grid gap-8">
       <Card>
