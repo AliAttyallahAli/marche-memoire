@@ -1,10 +1,11 @@
+
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import Link from "next/link"
 
-import { user } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -26,8 +27,8 @@ import {
 import { useToast } from "@/hooks/use-toast"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Separator } from "@/components/ui/separator"
+import { useUser } from "@/context/user-context"
+import { ArrowRight } from "lucide-react"
 
 const profileFormSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters."),
@@ -36,6 +37,7 @@ const profileFormSchema = z.object({
 
 export default function ProfilePage() {
   const { toast } = useToast()
+  const { user } = useUser()
 
   const profileForm = useForm<z.infer<typeof profileFormSchema>>({
     resolver: zodResolver(profileFormSchema),
@@ -61,7 +63,7 @@ export default function ProfilePage() {
 
   return (
     <div className="grid gap-8 md:grid-cols-3">
-      <div className="md:col-span-1">
+      <div className="md:col-span-1 flex flex-col gap-8">
         <Card>
           <CardHeader className="items-center">
             <Avatar className="w-24 h-24 mb-2">
@@ -71,15 +73,35 @@ export default function ProfilePage() {
             <CardTitle>{user.name}</CardTitle>
             <CardDescription>{user.email}</CardDescription>
           </CardHeader>
-          <CardContent className="text-sm">
-             <div className="flex justify-between">
+          <CardContent className="text-sm space-y-4">
+             <div className="flex justify-between items-center">
                 <span>KYC Status</span>
                 <Badge variant={kycStatusVariant[user.kycStatus]}>{user.kycStatus}</Badge>
             </div>
+            <div className="flex justify-between items-center">
+                <span>Token Balance</span>
+                <span className="font-semibold">{user.tokenBalance.toLocaleString('en-US', { style: 'currency', currency: 'USD' }).replace('$', 'T ')}</span>
+            </div>
           </CardContent>
         </Card>
+         <Card>
+            <CardHeader>
+                <CardTitle>Devenir Vendeur</CardTitle>
+                <CardDescription>
+                Vous avez des produits ou services à proposer ? Lancez-vous sur la marketplace.
+                </CardDescription>
+            </CardHeader>
+            <CardFooter>
+                <Button asChild className="w-full">
+                    <Link href="/vendor">
+                        Accéder au tableau de bord vendeur
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                </Button>
+            </CardFooter>
+        </Card>
       </div>
-      <div className="md:col-span-2 grid gap-8">
+      <div className="md:col-span-2 grid gap-8 content-start">
         <Card>
           <Form {...profileForm}>
             <form onSubmit={profileForm.handleSubmit(onProfileSubmit)}>
@@ -120,24 +142,6 @@ export default function ProfilePage() {
               </CardFooter>
             </form>
           </Form>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Referral Program</CardTitle>
-            <CardDescription>
-              Invite friends and earn tokens when they sign up.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <Label htmlFor="referral-link">Your Referral Link</Label>
-              <Input
-                id="referral-link"
-                readOnly
-                defaultValue={`https://n-plus.app/register?ref=${user.walletKey.slice(0, 8)}`}
-              />
-            </div>
-          </CardContent>
         </Card>
       </div>
     </div>
