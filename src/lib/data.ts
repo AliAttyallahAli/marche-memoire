@@ -10,8 +10,8 @@ export type User = {
 };
 
 export const user: User = {
-  name: 'Alex Johnson',
-  email: 'alex.j@example.com',
+  name: 'Ali Atty',
+  email: 'aliattyallahali@gmail.com',
   avatar: 'https://placehold.co/100x100.png',
   tokenBalance: 1250.75,
   walletKey: '0x1A2b3C4d5E6f7A8b9C0d1E2f3A4b5C6d7E8f9A0b',
