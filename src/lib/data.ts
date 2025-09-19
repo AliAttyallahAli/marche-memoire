@@ -1,3 +1,4 @@
+
 export type User = {
   name: string;
   email: string;
@@ -61,4 +62,52 @@ export const products: Product[] = [
     { id: 'prod3', name: 'Exclusive Content Bundle', description: 'Get access to a bundle of exclusive articles, videos, and tutorials.', price: 45.00, image: 'https://placehold.co/600x400.png', seller: '@maria.g', aiHint: 'digital content' },
     { id: 'prod4', name: 'Community Governance E-book', description: 'A comprehensive guide to setting up and running a DAO.', price: 25.00, image: 'https://placehold.co/600x400.png', seller: '@patricia.b', aiHint: 'book cover' },
     { id: 'prod5', name: 'N+ Premium Membership', description: 'Unlock premium features, early access, and a special badge.', price: 15.00, image: 'https://placehold.co/600x400.png', seller: 'Official', aiHint: 'membership card' },
+];
+
+export type Post = {
+  id: string;
+  authorName: string;
+  authorHandle: string;
+  authorAvatar: string;
+  content: string;
+  timestamp: string;
+  likes: number;
+  comments: number;
+  shares: number;
+};
+
+export const posts: Post[] = [
+  {
+    id: 'post1',
+    authorName: 'Maria Garcia',
+    authorHandle: 'maria.g',
+    authorAvatar: 'https://placehold.co/100x100.png',
+    content: 'Just launched a new bundle of exclusive content on the marketplace! Check it out and let me know what you think. #community #tokens',
+    timestamp: '2024-07-18T10:00:00Z',
+    likes: 42,
+    comments: 8,
+    shares: 5,
+  },
+  {
+    id: 'post2',
+    authorName: 'James Smith',
+    authorHandle: 'james.s',
+    authorAvatar: 'https://placehold.co/100x100.png',
+    content: 'Excited to see the community growing so quickly! The new P2P transfer feature is a game-changer. What other features would you all like to see?',
+    timestamp: '2024-07-17T15:30:00Z',
+    likes: 128,
+    comments: 23,
+    shares: 12,
+  },
+  {
+    id: 'post3',
+    authorName: 'Patricia Brown',
+    authorHandle: 'patricia.b',
+    authorAvatar: 'https://placehold.co/100x100.png',
+    content: 'Daily mining session done! ✨ Slowly but surely stacking up those BZD tokens. Consistency is key!',
+    timestamp: '2024-07-16T08:00:00Z',
+    likes: 77,
+    comments: 15,
+    shares: 3,
+  },
 ];
