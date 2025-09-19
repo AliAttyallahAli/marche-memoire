@@ -55,11 +55,15 @@ export default function GsmPage() {
       phoneNumber: "",
     },
   })
+  
+  const selectedCountryName = form.watch("country");
+  const selectedCountry = africanMobileOperators.find(c => c.country === selectedCountryName);
+
 
   const handleCountryChange = (countryName: string) => {
-    const selectedCountry = africanMobileOperators.find(c => c.country === countryName)
-    setAvailableOperators(selectedCountry ? selectedCountry.operators : [])
-    form.setValue("operator", "") // Reset operator when country changes
+    const countryData = africanMobileOperators.find(c => c.country === countryName)
+    setAvailableOperators(countryData ? countryData.operators : [])
+    form.setValue("operator", "") 
     form.setValue("country", countryName)
   }
 
@@ -94,13 +98,23 @@ export default function GsmPage() {
                           <Select onValueChange={handleCountryChange}>
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Sélectionnez votre pays" />
+                                <SelectValue placeholder="Sélectionnez votre pays">
+                                   {selectedCountry && (
+                                    <div className="flex items-center gap-2">
+                                      <span>{selectedCountry.flag}</span>
+                                      <span>{selectedCountry.country}</span>
+                                    </div>
+                                  )}
+                                </SelectValue>
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
                               {africanMobileOperators.map((country) => (
                                 <SelectItem key={country.country} value={country.country}>
-                                  {country.country}
+                                  <div className="flex items-center gap-2">
+                                    <span>{country.flag}</span>
+                                    <span>{country.country}</span>
+                                  </div>
                                 </SelectItem>
                               ))}
                             </SelectContent>

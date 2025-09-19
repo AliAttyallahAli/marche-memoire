@@ -147,23 +147,24 @@ export const messages: Message[] = [
 
 export type CountryOperators = {
   country: string;
+  flag: string;
   operators: string[];
 };
 
 export const africanMobileOperators: CountryOperators[] = [
-  { country: "Bénin", operators: ["MTN", "Moov"] },
-  { country: "Burkina Faso", operators: ["Orange", "Moov", "Telecel"] },
-  { country: "Cameroun", operators: ["MTN", "Orange", "Nexttel"] },
-  { country: "Côte d'Ivoire", operators: ["Orange", "MTN", "Moov"] },
-  { country: "Gabon", operators: ["Airtel", "Moov"] },
-  { country: "Guinée", operators: ["Orange", "MTN", "Cellcom"] },
-  { country: "Mali", operators: ["Orange", "Moov", "Telecel"] },
-  { country: "Niger", operators: ["Airtel", "Moov", "Orange", "Telecel"] },
-  { country: "Nigeria", operators: ["MTN", "Airtel", "Glo", "9mobile"] },
-  { country: "République Centrafricaine", operators: ["Orange", "Moov"] },
-  { country: "République Démocratique du Congo", operators: ["Vodacom", "Airtel", "Orange", "Africell"] },
-  { country: "République du Congo", operators: ["Airtel", "MTN"] },
-  { country: "Sénégal", operators: ["Orange", "Free", "Expresso"] },
-  { country: "Tchad", operators: ["Airtel", "Moov"] },
-  { country: "Togo", operators: ["Moov", "Togo Cellulaire"] },
+  { country: "Bénin", flag: "🇧🇯", operators: ["MTN", "Moov"] },
+  { country: "Burkina Faso", flag: "🇧🇫", operators: ["Orange", "Moov", "Telecel"] },
+  { country: "Cameroun", flag: "🇨🇲", operators: ["MTN", "Orange", "Nexttel"] },
+  { country: "Côte d'Ivoire", flag: "🇨🇮", operators: ["Orange", "MTN", "Moov"] },
+  { country: "Gabon", flag: "🇬🇦", operators: ["Airtel", "Moov"] },
+  { country: "Guinée", flag: "🇬🇳", operators: ["Orange", "MTN", "Cellcom"] },
+  { country: "Mali", flag: "🇲🇱", operators: ["Orange", "Moov", "Telecel"] },
+  { country: "Niger", flag: "🇳🇪", operators: ["Airtel", "Moov", "Orange", "Telecel"] },
+  { country: "Nigeria", flag: "🇳🇬", operators: ["MTN", "Airtel", "Glo", "9mobile"] },
+  { country: "République Centrafricaine", flag: "🇨🇫", operators: ["Orange", "Moov"] },
+  { country: "République Démocratique du Congo", flag: "🇨🇩", operators: ["Vodacom", "Airtel", "Orange", "Africell"] },
+  { country: "République du Congo", flag: "🇨🇬", operators: ["Airtel", "MTN"] },
+  { country: "Sénégal", flag: "🇸🇳", operators: ["Orange", "Free", "Expresso"] },
+  { country: "Tchad", flag: "🇹🇩", operators: ["Airtel", "Moov"] },
+  { country: "Togo", flag: "🇹🇬", operators: ["Moov", "Togo Cellulaire"] },
 ];
