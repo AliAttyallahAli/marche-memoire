@@ -80,7 +80,7 @@ export default function ProfilePage() {
             </div>
             <div className="flex justify-between items-center">
                 <span>Solde de Tokens</span>
-                <span className="font-semibold">{user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T ')}</span>
+                <span className="font-semibold">{user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'BZD ')}</span>
             </div>
           </CardContent>
         </Card>

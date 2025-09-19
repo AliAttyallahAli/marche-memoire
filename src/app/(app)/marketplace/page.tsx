@@ -133,7 +133,7 @@ export default function MarketplacePage() {
                       name="price"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Prix (en Tokens)</FormLabel>
+                          <FormLabel>Prix (en BZD)</FormLabel>
                           <FormControl>
                             <Input type="number" placeholder="100" {...field} />
                           </FormControl>
@@ -185,7 +185,7 @@ export default function MarketplacePage() {
                <p className="text-xs text-muted-foreground">Vendu par : {product.seller}</p>
             </CardContent>
             <CardFooter className="p-4 pt-0 flex items-center justify-between">
-              <p className="text-lg font-semibold">T {product.price.toFixed(2)}</p>
+              <p className="text-lg font-semibold">BZD {product.price.toFixed(2)}</p>
               <Button onClick={handleBuy}>Acheter</Button>
             </CardFooter>
           </Card>

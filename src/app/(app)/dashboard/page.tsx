@@ -44,7 +44,7 @@ export default function Dashboard() {
               <CircleDollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T ')}</div>
+              <div className="text-2xl font-bold">{user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'BZD ')}</div>
               <p className="text-xs text-muted-foreground">
                 +20.1% depuis le mois dernier
               </p>
@@ -112,7 +112,7 @@ export default function Dashboard() {
                         </TableCell>
                         <TableCell className={`text-right font-medium ${transaction.amount > 0 ? 'text-green-600' : 'text-destructive'}`}>
                            {transaction.amount > 0 ? '+' : ''}
-                           {transaction.amount.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T ')}
+                           {transaction.amount.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'BZD ')}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -146,7 +146,7 @@ export default function Dashboard() {
                                     <p className="text-sm font-medium leading-none">{product.name}</p>
                                     <p className="text-sm text-muted-foreground">{product.description.substring(0, 30)}...</p>
                                 </div>
-                                <div className="ml-auto font-medium">T {product.price.toFixed(2)}</div>
+                                <div className="ml-auto font-medium">BZD {product.price.toFixed(2)}</div>
                             </div>
                         ))}
                      </div>

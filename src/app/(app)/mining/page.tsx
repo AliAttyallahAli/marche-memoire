@@ -31,7 +31,7 @@ export default function MiningPage() {
 
       toast({
         title: "Succès !",
-        description: "Vous avez miné 10 tokens avec succès.",
+        description: "Vous avez miné 10 BZD avec succès.",
       })
     }
   }

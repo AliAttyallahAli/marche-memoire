@@ -134,7 +134,7 @@ export default function VendorDashboardPage() {
                       <TableCell>
                         <Badge variant="outline">Actif</Badge>
                       </TableCell>
-                      <TableCell className="hidden md:table-cell">T {product.price.toFixed(2)}</TableCell>
+                      <TableCell className="hidden md:table-cell">BZD {product.price.toFixed(2)}</TableCell>
                       <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>

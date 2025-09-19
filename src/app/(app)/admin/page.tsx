@@ -69,7 +69,7 @@ export default function AdminPage() {
                         <CircleDollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{totalTokens.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T').replace(',', '.')}</div>
+                        <div className="text-2xl font-bold">{totalTokens.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'BZD').replace(',', '.')}</div>
                         <p className="text-xs text-muted-foreground">
                             Total des tokens pour tous les utilisateurs
                         </p>
@@ -81,7 +81,7 @@ export default function AdminPage() {
                         <ShoppingBag className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{marketplaceVolume.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T').replace(',', '.')}</div>
+                        <div className="text-2xl font-bold">{marketplaceVolume.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'BZD').replace(',', '.')}</div>
                          <p className="text-xs text-muted-foreground">
                             Valeur totale des produits vendus
                         </p>
@@ -126,7 +126,7 @@ export default function AdminPage() {
                                         <Badge variant={kycStatusVariant[user.kycStatus]}>{user.kycStatus}</Badge>
                                     </TableCell>
                                     <TableCell className="text-right font-medium">
-                                        {user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T').replace(',', '.')}
+                                        {user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'BZD').replace(',', '.')}
                                     </TableCell>
                                     <TableCell>
                                         <DropdownMenu>

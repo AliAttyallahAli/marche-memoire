@@ -100,7 +100,7 @@ function TransactionTable({ transactions }: { transactions: typeof allTransactio
                 <TableCell>{transaction.date}</TableCell>
                 <TableCell className={`text-right font-medium ${transaction.amount > 0 ? 'text-green-600' : 'text-destructive'}`}>
                   {transaction.amount > 0 ? '+' : ''}
-                  {transaction.amount.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T ')}
+                  {transaction.amount.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'BZD ')}
                 </TableCell>
               </TableRow>
             ))}

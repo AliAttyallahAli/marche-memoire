@@ -38,7 +38,7 @@ export default function WalletPage() {
             <div>
               <p className="text-sm text-muted-foreground">Solde Total</p>
               <p className="text-4xl font-bold">
-                {user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T ')}
+                {user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'BZD ')}
               </p>
             </div>
             <div className="flex gap-2">
@@ -104,7 +104,7 @@ export default function WalletPage() {
                   <TableCell>{transaction.date}</TableCell>
                   <TableCell className={`text-right font-medium ${transaction.amount > 0 ? 'text-green-600' : 'text-destructive'}`}>
                     {transaction.amount > 0 ? '+' : ''}
-                    {transaction.amount.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'T ')}
+                    {transaction.amount.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'BZD ')}
                   </TableCell>
                 </TableRow>
               ))}
