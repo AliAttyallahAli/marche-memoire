@@ -8,6 +8,7 @@ import {
   Users,
   BarChart3,
   UserCog,
+  Pickaxe,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -56,6 +57,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 <Link href="/dashboard">
                   <Home />
                   <span>Dashboard</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={isActive("/mining")} tooltip="Mining">
+                <Link href="/mining">
+                  <Pickaxe />
+                  <span>Mining</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

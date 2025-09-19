@@ -1,0 +1,102 @@
+"use client"
+
+import * as React from "react"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { useToast } from "@/hooks/use-toast"
+import { Pickaxe } from "lucide-react"
+
+export default function MiningPage() {
+  const { toast } = useToast()
+  const [canMine, setCanMine] = React.useState(true)
+  const [timeLeft, setTimeLeft] = React.useState(0)
+
+  const handleMine = () => {
+    if (canMine) {
+      setCanMine(false)
+      const twentyFourHours = 24 * 60 * 60
+      setTimeLeft(twentyFourHours)
+
+      // Save the next mining time to localStorage
+      const nextMineTime = new Date().getTime() + twentyFourHours * 1000
+      localStorage.setItem("nextMineTime", nextMineTime.toString())
+
+      toast({
+        title: "Success!",
+        description: "You've successfully mined 10 tokens.",
+      })
+    }
+  }
+
+  React.useEffect(() => {
+    const nextMineTime = localStorage.getItem("nextMineTime")
+    if (nextMineTime) {
+      const now = new Date().getTime()
+      const remainingTime = Math.round((parseInt(nextMineTime) - now) / 1000)
+      if (remainingTime > 0) {
+        setCanMine(false)
+        setTimeLeft(remainingTime)
+      }
+    }
+  }, [])
+
+  React.useEffect(() => {
+    if (timeLeft > 0) {
+      const timer = setTimeout(() => {
+        setTimeLeft(timeLeft - 1)
+      }, 1000)
+      return () => clearTimeout(timer)
+    } else {
+      setCanMine(true)
+    }
+  }, [timeLeft])
+
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600)
+      .toString()
+      .padStart(2, "0")
+    const m = Math.floor((seconds % 3600) / 60)
+      .toString()
+      .padStart(2, "0")
+    const s = (seconds % 60).toString().padStart(2, "0")
+    return `${h}:${m}:${s}`
+  }
+
+  return (
+    <div className="flex justify-center items-center h-full">
+      <Card className="w-full max-w-md text-center">
+        <CardHeader>
+          <CardTitle className="text-3xl font-bold">Daily Token Mining</CardTitle>
+          <CardDescription>
+            Click the button to mine your daily tokens. A new session starts every 24 hours.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center gap-6">
+          <Button
+            size="lg"
+            className="w-full h-16 text-lg font-semibold"
+            onClick={handleMine}
+            disabled={!canMine}
+          >
+            <Pickaxe className="mr-2 h-6 w-6" />
+            {canMine ? "Start Mining Session" : "Mining in Progress"}
+          </Button>
+          {!canMine && (
+            <div className="text-center">
+              <p className="text-muted-foreground">Next session available in:</p>
+              <p className="text-4xl font-mono font-bold tracking-wider">
+                {formatTime(timeLeft)}
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
