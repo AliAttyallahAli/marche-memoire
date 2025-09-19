@@ -98,8 +98,8 @@ export default function AdminPage() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Utilisateur</TableHead>
-                                <TableHead>Rôle</TableHead>
-                                <TableHead>Statut KYC</TableHead>
+                                <TableHead className="hidden sm:table-cell">Rôle</TableHead>
+                                <TableHead className="hidden sm:table-cell">Statut KYC</TableHead>
                                 <TableHead className="text-right">Solde de Tokens</TableHead>
                                 <TableHead><span className="sr-only">Actions</span></TableHead>
                             </TableRow>
@@ -119,10 +119,10 @@ export default function AdminPage() {
                                             </div>
                                         </div>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell className="hidden sm:table-cell">
                                         <Badge variant={user.role === 'admin' ? 'default' : 'secondary'} className="capitalize">{user.role}</Badge>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell className="hidden sm:table-cell">
                                         <Badge variant={kycStatusVariant[user.kycStatus]}>{user.kycStatus}</Badge>
                                     </TableCell>
                                     <TableCell className="text-right font-medium">

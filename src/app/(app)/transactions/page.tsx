@@ -30,20 +30,20 @@ export default function TransactionsPage() {
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="all">
-          <div className="flex items-center justify-between mb-4">
-            <TabsList>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+            <TabsList className="grid w-full sm:w-auto grid-cols-3 sm:inline-flex">
               <TabsTrigger value="all">Tout</TabsTrigger>
               <TabsTrigger value="purchase">Achats</TabsTrigger>
               <TabsTrigger value="bonus">Bonus</TabsTrigger>
               <TabsTrigger value="deposit">Dépôts</TabsTrigger>
               <TabsTrigger value="withdrawal">Retraits</TabsTrigger>
             </TabsList>
-            <div className="relative ml-auto flex-1 md:grow-0">
+            <div className="relative self-stretch sm:ml-auto flex-1 md:grow-0">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="search"
                   placeholder="Rechercher des transactions..."
-                  className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                  className="w-full rounded-lg bg-background pl-8"
                 />
               </div>
           </div>
@@ -75,9 +75,9 @@ function TransactionTable({ transactions }: { transactions: typeof allTransactio
           <TableHeader>
             <TableRow>
               <TableHead>Description</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Statut</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead className="hidden sm:table-cell">Type</TableHead>
+              <TableHead className="hidden sm:table-cell">Statut</TableHead>
+              <TableHead className="hidden sm:table-cell">Date</TableHead>
               <TableHead className="text-right">Montant</TableHead>
             </TableRow>
           </TableHeader>
@@ -85,19 +85,19 @@ function TransactionTable({ transactions }: { transactions: typeof allTransactio
             {transactions.map((transaction) => (
               <TableRow key={transaction.id}>
                 <TableCell className="font-medium">{transaction.description}</TableCell>
-                <TableCell>
+                <TableCell className="hidden sm:table-cell">
                   <Badge variant={transaction.type === 'Purchase' || transaction.type === 'Withdrawal' ? 'destructive' : 'secondary'} className="capitalize">
                     {transaction.type.replace('_', ' ')}
                   </Badge>
                 </TableCell>
-                <TableCell>
+                <TableCell className="hidden sm:table-cell">
                   <Badge
                     variant={transaction.status === 'Completed' ? 'default' : (transaction.status === 'Pending' ? 'outline' : 'destructive')}
                   >
                     {transaction.status}
                   </Badge>
                 </TableCell>
-                <TableCell>{transaction.date}</TableCell>
+                <TableCell className="hidden sm:table-cell">{transaction.date}</TableCell>
                 <TableCell className={`text-right font-medium ${transaction.amount > 0 ? 'text-green-600' : 'text-destructive'}`}>
                   {transaction.amount > 0 ? '+' : ''}
                   {transaction.amount.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'BZD ')}

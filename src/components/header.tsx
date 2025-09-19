@@ -61,10 +61,10 @@ export function Header() {
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background px-4 md:px-6">
       <Link
         href="/dashboard"
-        className="flex items-center gap-2 text-lg font-semibold md:text-base"
+        className="flex items-center gap-2 text-lg font-semibold"
       >
         <Logo />
-        <span className="sr-only">N+</span>
+        <span className="hidden sm:inline-block">N+</span>
       </Link>
       
       <div className="flex items-center gap-4">
