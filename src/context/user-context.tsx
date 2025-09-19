@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from 'react';
@@ -13,21 +14,22 @@ type UserContextType = {
 const UserContext = React.createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = React.useState<User>(() => {
-    if (typeof window !== 'undefined') {
-      const savedUser = localStorage.getItem('user');
-      if (savedUser) {
-        return JSON.parse(savedUser);
-      }
-    }
-    return initialUser;
-  });
+  const [user, setUser] = React.useState<User>(initialUser);
+  const [isInitialized, setIsInitialized] = React.useState(false);
 
   React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-        localStorage.setItem('user', JSON.stringify(user));
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
     }
-  }, [user]);
+    setIsInitialized(true);
+  }, []);
+
+  React.useEffect(() => {
+    if (isInitialized) {
+      localStorage.setItem('user', JSON.stringify(user));
+    }
+  }, [user, isInitialized]);
 
   const addTokens = (amount: number) => {
     setUser((prevUser) => ({
