@@ -112,6 +112,7 @@ export default function ProfilePage() {
             </div>
           </CardContent>
         </Card>
+        {user.role !== 'vendor' && user.role !== 'admin' && (
          <Card>
             <CardHeader>
                 <CardTitle>Devenir Vendeur</CardTitle>
@@ -128,6 +129,7 @@ export default function ProfilePage() {
                 </Button>
             </CardFooter>
         </Card>
+        )}
       </div>
       <div className="md:col-span-2 grid gap-8 content-start">
         <Card>

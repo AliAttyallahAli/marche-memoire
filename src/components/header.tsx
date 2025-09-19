@@ -44,18 +44,18 @@ export function Header() {
     return pathname.startsWith(path)
   }
 
-  const navLinks = [
-    { href: "/dashboard", label: "Tableau de Bord", icon: Home },
-    { href: "/mining", label: "Minage", icon: Pickaxe },
-    { href: "/wallet", label: "Mon Portefeuille", icon: Wallet },
-    { href: "/transactions", label: "P2P", icon: Send },
-    { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
-    { href: "/vendor", label: "Tableau de bord Vendeur", icon: Store },
+  const allNavLinks = [
+    { href: "/dashboard", label: "Tableau de Bord", icon: Home, roles: ['user', 'vendor', 'admin'] },
+    { href: "/mining", label: "Minage", icon: Pickaxe, roles: ['user', 'vendor', 'admin'] },
+    { href: "/wallet", label: "Mon Portefeuille", icon: Wallet, roles: ['user', 'vendor', 'admin'] },
+    { href: "/transactions", label: "P2P", icon: Send, roles: ['user', 'vendor', 'admin'] },
+    { href: "/marketplace", label: "Marketplace", icon: ShoppingBag, roles: ['user', 'vendor', 'admin'] },
+    { href: "/vendor", label: "Tableau de bord Vendeur", icon: Store, roles: ['vendor', 'admin'] },
+    { href: "/admin", label: "Panneau Admin", icon: UserCog, roles: ['admin'] },
   ]
 
-  if (user.role === 'admin') {
-    navLinks.push({ href: "/admin", label: "Panneau Admin", icon: UserCog })
-  }
+  const navLinks = allNavLinks.filter(link => link.roles.includes(user.role));
+
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background px-4 sm:px-6">
@@ -71,7 +71,7 @@ export function Header() {
 
       <div className="flex items-center gap-2">
         <nav className="hidden md:flex md:items-center md:gap-5 lg:gap-6 text-sm font-medium">
-             {navLinks.slice(0, 5).map((link) => (
+             {navLinks.map((link) => (
               <Link
               key={link.href}
               href={link.href}
