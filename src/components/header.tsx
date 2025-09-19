@@ -14,7 +14,8 @@ import {
   Menu,
   Store,
   Rss,
-  MessageSquare
+  MessageSquare,
+  ShieldCheck
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -50,10 +51,11 @@ export function Header() {
     { href: "/dashboard", label: "Tableau de Bord", icon: Home, roles: ['user', 'vendor', 'admin'] },
     { href: "/feed", label: "Feed", icon: Rss, roles: ['user', 'vendor', 'admin'] },
     { href: "/chat", label: "Chat", icon: MessageSquare, roles: ['user', 'vendor', 'admin'] },
-    { href: "/mining", label: "Minage", icon: Pickaxe, roles: ['user', 'vendor'] },
-    { href: "/wallet", label: "Mon Portefeuille", icon: Wallet, roles: ['user', 'vendor'] },
-    { href: "/transactions", label: "P2P", icon: Send, roles: ['user', 'vendor'] },
-    { href: "/marketplace", label: "Marketplace", icon: ShoppingBag, roles: ['user', 'vendor'] },
+    { href: "/mining", label: "Minage", icon: Pickaxe, roles: ['user', 'vendor', 'admin'] },
+    { href: "/wallet", label: "Mon Portefeuille", icon: Wallet, roles: ['user', 'vendor', 'admin'] },
+    { href: "/transactions", label: "P2P", icon: Send, roles: ['user', 'vendor', 'admin'] },
+    { href: "/marketplace", label: "Marketplace", icon: ShoppingBag, roles: ['user', 'vendor', 'admin'] },
+    { href: "/kyc", label: "KYC", icon: ShieldCheck, roles: ['user', 'vendor', 'admin'] },
     { href: "/vendor", label: "Tableau de bord Vendeur", icon: Store, roles: ['vendor', 'admin'] },
     { href: "/admin", label: "Panneau Admin", icon: UserCog, roles: ['admin'] },
   ]
