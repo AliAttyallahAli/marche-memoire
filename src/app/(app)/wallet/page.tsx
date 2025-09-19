@@ -114,7 +114,7 @@ export default function WalletPage() {
                 <CardHeader>
                 <CardTitle>Mon Portefeuille</CardTitle>
                 <CardDescription>
-                    Votre portefeuille de tokens personnel pour toutes les transactions.
+                    Votre portefeuille de tokens personnel pour toutes les transactions et le minage.
                 </CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-6">
@@ -166,6 +166,27 @@ export default function WalletPage() {
                         </DialogContent>
                     </Dialog>
                     </div>
+                </div>
+                 <div className="text-center p-4 bg-secondary/50 rounded-lg flex flex-col items-center gap-4">
+                     <CardTitle className="text-xl font-bold">Minage Quotidien</CardTitle>
+                    <CircularProgress value={canMine ? 100 : progress} className="w-32 h-32">
+                        {!canMine && (
+                            <div className="text-center">
+                            <p className="text-muted-foreground text-xs">Prochaine session</p>
+                            <p className="text-2xl font-mono font-bold tracking-wider">
+                                {formatTime(timeLeft)}
+                            </p>
+                            </div>
+                        )}
+                    </CircularProgress>
+                    <Button
+                        className="w-full max-w-sm"
+                        onClick={handleMine}
+                        disabled={!canMine}
+                    >
+                        <Pickaxe className="mr-2 h-5 w-5" />
+                        {canMine ? "Démarrer la session de minage" : "Minage en cours"}
+                    </Button>
                 </div>
                 </CardContent>
             </Card>
@@ -219,36 +240,7 @@ export default function WalletPage() {
         </div>
 
         <div className="lg:col-span-1">
-             <Card className="text-center">
-                <CardHeader>
-                <CardTitle className="text-2xl font-bold">Minage de Tokens Quotidien</CardTitle>
-                <CardDescription>
-                    Cliquez sur le bouton pour miner vos tokens quotidiens. Une nouvelle session commence toutes les 24 heures.
-                </CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-col items-center gap-6 pt-6">
-                <CircularProgress value={canMine ? 100 : progress} className="w-40 h-40">
-                    {!canMine && (
-                        <div className="text-center">
-                        <p className="text-muted-foreground text-sm">Prochaine session</p>
-                        <p className="text-3xl font-mono font-bold tracking-wider">
-                            {formatTime(timeLeft)}
-                        </p>
-                        </div>
-                    )}
-                </CircularProgress>
-
-                <Button
-                    className="w-full"
-                    onClick={handleMine}
-                    disabled={!canMine}
-                >
-                    <Pickaxe className="mr-2 h-5 w-5" />
-                    {canMine ? "Démarrer la session de minage" : "Minage en cours"}
-                </Button>
-
-                </CardContent>
-            </Card>
+             {/* This column can be used for other content in the future */}
         </div>
     </div>
   )
