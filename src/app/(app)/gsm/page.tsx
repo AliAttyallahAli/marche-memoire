@@ -1,6 +1,7 @@
 
 "use client"
 
+import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -33,8 +34,10 @@ import {
 } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
 import { Smartphone } from "lucide-react"
+import { africanMobileOperators } from "@/lib/data"
 
 const gsmExchangeSchema = z.object({
+  country: z.string({ required_error: "Veuillez sélectionner un pays." }),
   operator: z.string({ required_error: "Veuillez sélectionner un opérateur." }),
   phoneNumber: z.string().min(8, "Le numéro de téléphone est invalide."),
   amount: z.coerce.number().positive("Le montant doit être supérieur à zéro."),
@@ -42,14 +45,23 @@ const gsmExchangeSchema = z.object({
 
 export default function GsmPage() {
   const { toast } = useToast()
+  const [availableOperators, setAvailableOperators] = React.useState<string[]>([])
 
   const form = useForm<z.infer<typeof gsmExchangeSchema>>({
     resolver: zodResolver(gsmExchangeSchema),
     defaultValues: {
+      country: undefined,
       operator: undefined,
       phoneNumber: "",
     },
   })
+
+  const handleCountryChange = (countryName: string) => {
+    const selectedCountry = africanMobileOperators.find(c => c.country === countryName)
+    setAvailableOperators(selectedCountry ? selectedCountry.operators : [])
+    form.setValue("operator", "") // Reset operator when country changes
+    form.setValue("country", countryName)
+  }
 
   function onSubmit(values: z.infer<typeof gsmExchangeSchema>) {
     console.log(values)
@@ -58,6 +70,7 @@ export default function GsmPage() {
       description: `Vous avez rechargé ${values.amount} BZD de crédit pour le numéro ${values.phoneNumber}.`,
     })
     form.reset()
+    setAvailableOperators([])
   }
 
   return (
@@ -73,22 +86,51 @@ export default function GsmPage() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <FormField
+                      control={form.control}
+                      name="country"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Pays</FormLabel>
+                          <Select onValueChange={handleCountryChange}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Sélectionnez votre pays" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {africanMobileOperators.map((country) => (
+                                <SelectItem key={country.country} value={country.country}>
+                                  {country.country}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
                     control={form.control}
                     name="operator"
                     render={({ field }) => (
                         <FormItem>
                         <FormLabel>Opérateur Mobile</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                            disabled={availableOperators.length === 0}
+                        >
                             <FormControl>
                             <SelectTrigger>
                                 <SelectValue placeholder="Sélectionnez votre opérateur" />
                             </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                                <SelectItem value="orange">Orange</SelectItem>
-                                <SelectItem value="mtn">MTN</SelectItem>
-                                <SelectItem value="moov">Moov</SelectItem>
-                                <SelectItem value="autre">Autre</SelectItem>
+                                {availableOperators.map((operator) => (
+                                    <SelectItem key={operator} value={operator.toLowerCase()}>
+                                        {operator}
+                                    </SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                         <FormMessage />

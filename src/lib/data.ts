@@ -144,3 +144,26 @@ export const messages: Message[] = [
   { id: 'msg6', conversationId: 'convo2', sender: 'contact', content: 'Salut Alex, je suis en réunion pour le moment. Demain matin ça te va ?', timestamp: '15:32' },
   { id: 'msg7', conversationId: 'convo2', sender: 'user', content: 'Oui, je serai disponible demain.', timestamp: '15:35' },
 ];
+
+export type CountryOperators = {
+  country: string;
+  operators: string[];
+};
+
+export const africanMobileOperators: CountryOperators[] = [
+  { country: "Bénin", operators: ["MTN", "Moov"] },
+  { country: "Burkina Faso", operators: ["Orange", "Moov", "Telecel"] },
+  { country: "Cameroun", operators: ["MTN", "Orange", "Nexttel"] },
+  { country: "Côte d'Ivoire", operators: ["Orange", "MTN", "Moov"] },
+  { country: "Gabon", operators: ["Airtel", "Moov"] },
+  { country: "Guinée", operators: ["Orange", "MTN", "Cellcom"] },
+  { country: "Mali", operators: ["Orange", "Moov", "Telecel"] },
+  { country: "Niger", operators: ["Airtel", "Moov", "Orange", "Telecel"] },
+  { country: "Nigeria", operators: ["MTN", "Airtel", "Glo", "9mobile"] },
+  { country: "République Centrafricaine", operators: ["Orange", "Moov"] },
+  { country: "République Démocratique du Congo", operators: ["Vodacom", "Airtel", "Orange", "Africell"] },
+  { country: "République du Congo", operators: ["Airtel", "MTN"] },
+  { country: "Sénégal", operators: ["Orange", "Free", "Expresso"] },
+  { country: "Tchad", operators: ["Airtel", "Moov"] },
+  { country: "Togo", operators: ["Moov", "Togo Cellulaire"] },
+];
