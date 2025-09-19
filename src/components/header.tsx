@@ -1,3 +1,4 @@
+
 "use client"
 
 import {
@@ -11,6 +12,7 @@ import {
   User,
   LogOut,
   Menu,
+  Store
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -47,6 +49,7 @@ export function Header() {
     { href: "/wallet", label: "My Wallet", icon: Wallet },
     { href: "/transactions", label: "Transactions", icon: BarChart3 },
     { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
+    { href: "/vendor", label: "Tableau de bord Vendeur", icon: Store },
   ]
 
   if (user.role === 'admin') {
@@ -119,10 +122,11 @@ export function Header() {
                       key={link.href}
                       href={link.href}
                       className={cn(
-                          "hover:text-foreground",
-                          isActive(link.href) ? "text-foreground" : "text-muted-foreground"
+                          "flex items-center gap-4 px-2.5",
+                          isActive(link.href) ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                       )}
                       >
+                       <link.icon className="h-5 w-5" />
                       {link.label}
                       </Link>
                   ))}
