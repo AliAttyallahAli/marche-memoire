@@ -15,7 +15,8 @@ import {
   Store,
   Rss,
   MessageSquare,
-  ShieldCheck
+  ShieldCheck,
+  Smartphone
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -55,6 +56,7 @@ export function Header() {
     { href: "/wallet", label: "Mon Portefeuille", icon: Wallet, roles: ['user', 'vendor', 'admin'] },
     { href: "/transactions", label: "P2P", icon: Send, roles: ['user', 'vendor', 'admin'] },
     { href: "/marketplace", label: "Marketplace", icon: ShoppingBag, roles: ['user', 'vendor', 'admin'] },
+    { href: "/gsm", label: "GSM", icon: Smartphone, roles: ['user', 'vendor', 'admin'] },
     { href: "/kyc", label: "KYC", icon: ShieldCheck, roles: ['user', 'vendor', 'admin'] },
     { href: "/vendor", label: "Tableau de bord Vendeur", icon: Store, roles: ['vendor', 'admin'] },
     { href: "/admin", label: "Panneau Admin", icon: UserCog, roles: ['admin'] },
