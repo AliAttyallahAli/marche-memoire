@@ -32,7 +32,7 @@ export const user: User = {
   name: 'Ali Atty',
   email: 'aliattyallahali@gmail.com',
   avatar: 'https://placehold.co/100x100.png',
-  tokenBalance: 1250.75,
+  tokenBalance: 0,
   walletKey: '0x1A2b3C4d5E6f7A8b9C0d1E2f3A4b5C6d7E8f9A0b',
   kycStatus: 'Not Submitted',
   role: 'admin',
@@ -41,11 +41,11 @@ export const user: User = {
 };
 
 export const allUsers: User[] = [
-    user,
-    { name: 'Maria Garcia', email: 'maria.g@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 850.00, walletKey: '0x...1234', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[0]] },
-    { name: 'James Smith', email: 'james.s@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 2300.50, walletKey: '0x...5678', kycStatus: 'Pending', role: 'vendor', status: 'offline', stories: [stories[1]] },
-    { name: 'Patricia Brown', email: 'patricia.b@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 450.25, walletKey: '0x...9101', kycStatus: 'Rejected', role: 'user', status: 'offline', stories: [stories[2]] },
-    { name: 'Robert Miller', email: 'robert.m@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 5000.00, walletKey: '0x...1121', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[3]] },
+    { ...user, tokenBalance: 0 },
+    { name: 'Maria Garcia', email: 'maria.g@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...1234', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[0]] },
+    { name: 'James Smith', email: 'james.s@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...5678', kycStatus: 'Pending', role: 'vendor', status: 'offline', stories: [stories[1]] },
+    { name: 'Patricia Brown', email: 'patricia.b@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...9101', kycStatus: 'Rejected', role: 'user', status: 'offline', stories: [stories[2]] },
+    { name: 'Robert Miller', email: 'robert.m@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...1121', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[3]] },
 ]
 
 export type Transaction = {
@@ -200,5 +200,3 @@ export const africanMobileOperators: CountryOperators[] = [
     { country: "Tchad", flag: "🇹🇩", operators: [{ name: "Airtel", logo: "https://picsum.photos/seed/airtel/48/48" }, { name: "Moov", logo: "https://picsum.photos/seed/moov/48/48" }] },
     { country: "Togo", flag: "🇹🇬", operators: [{ name: "Moov", logo: "https://picsum.photos/seed/moov/48/48" }, { name: "Togo Cellulaire", logo: "https://picsum.photos/seed/togocell/48/48" }] },
 ];
-
-    
