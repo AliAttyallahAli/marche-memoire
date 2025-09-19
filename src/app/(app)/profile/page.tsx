@@ -36,7 +36,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { useUser } from "@/context/user-context"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Copy } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
 
 const profileFormSchema = z.object({
@@ -88,6 +88,16 @@ export default function ProfilePage() {
     Rejected: 'destructive',
     'Not Submitted': 'outline',
   } as const
+  
+  const referralLink = `https://app.nplus/register?ref=${user.walletKey.substring(2, 10)}`
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(referralLink)
+    toast({
+      title: "Copié !",
+      description: "Le lien de parrainage a été copié dans le presse-papiers.",
+    })
+  }
 
   return (
     <div className="grid gap-8 md:grid-cols-3">
@@ -112,6 +122,29 @@ export default function ProfilePage() {
             </div>
           </CardContent>
         </Card>
+        
+        <Card>
+            <CardHeader>
+                <CardTitle>Lien de Parrainage</CardTitle>
+                <CardDescription>
+                Partagez ce lien pour inviter de nouveaux membres et gagner des récompenses.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="flex items-center space-x-2">
+                    <Input
+                        value={referralLink}
+                        readOnly
+                        className="flex-1 font-mono text-xs"
+                    />
+                    <Button type="button" size="icon" onClick={handleCopy}>
+                        <Copy className="h-4 w-4" />
+                        <span className="sr-only">Copier le lien</span>
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
+
         {user.role !== 'vendor' && user.role !== 'admin' && (
          <Card>
             <CardHeader>
