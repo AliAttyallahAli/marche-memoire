@@ -58,16 +58,32 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background px-4 md:px-6">
-      <Link
-        href="/dashboard"
-        className="flex items-center gap-2 text-lg font-semibold"
-      >
-        <Logo />
-        <span className="hidden sm:inline-block">N+</span>
-      </Link>
-      
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background px-4 sm:px-6">
       <div className="flex items-center gap-4">
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 text-lg font-semibold"
+        >
+          <Logo />
+          <span className="hidden sm:inline-block">N+</span>
+        </Link>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <nav className="hidden md:flex md:items-center md:gap-5 lg:gap-6 text-sm font-medium">
+             {navLinks.slice(0, 5).map((link) => (
+              <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                  "transition-colors hover:text-foreground",
+                  isActive(link.href) ? "text-foreground" : "text-muted-foreground"
+              )}
+              >
+              {link.label}
+              </Link>
+          ))}
+        </nav>
         <ThemeToggle />
         <Button variant="outline" size="icon" className="h-8 w-8 rounded-full">
             <Bell className="h-4 w-4" />
@@ -101,7 +117,7 @@ export function Header() {
             <Button
                 variant="outline"
                 size="icon"
-                className="shrink-0"
+                className="shrink-0 md:hidden"
             >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Ouvrir le menu de navigation</span>
