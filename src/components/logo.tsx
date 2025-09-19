@@ -19,7 +19,7 @@ export function Logo(props: SVGProps<SVGSVGElement>) {
         <text
           x="48"
           y="27"
-          fill="hsl(var(--sidebar-foreground))"
+          fill="hsl(var(--foreground))"
           fontFamily="Inter, sans-serif"
           fontSize="24"
           fontWeight="600"
