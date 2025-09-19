@@ -1,4 +1,9 @@
+
+"use client"
+
+import * as React from "react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -12,6 +17,9 @@ import { Label } from "@/components/ui/label"
 import { Logo } from "@/components/logo"
 
 export default function RegisterPage() {
+  const searchParams = useSearchParams()
+  const refCode = searchParams.get("ref")
+
   return (
      <div className="w-full max-w-md mx-auto">
         <div className="flex justify-center mb-8">
@@ -45,7 +53,11 @@ export default function RegisterPage() {
                 </div>
                  <div className="grid gap-2">
                     <Label htmlFor="referral-code">Code de parrainage (Optionnel)</Label>
-                    <Input id="referral-code" placeholder="REF12345" />
+                    <Input 
+                      id="referral-code" 
+                      placeholder="REF12345" 
+                      defaultValue={refCode || ''}
+                    />
                 </div>
                 <Button type="submit" className="w-full" asChild>
                     <Link href="/dashboard">Créer un compte</Link>
