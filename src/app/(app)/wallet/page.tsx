@@ -58,15 +58,15 @@ export default function WalletPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6">
-          <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg">
+          <div className="flex flex-col sm:flex-row items-center justify-between p-4 bg-secondary/50 rounded-lg gap-4">
             <div>
               <p className="text-sm text-muted-foreground">Solde Total</p>
               <p className="text-2xl font-bold">
                 {user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'BZD ')}
               </p>
             </div>
-            <div className="flex gap-2">
-              <Button asChild>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <Button asChild className="flex-1 sm:flex-none">
                 <Link href="/transactions">
                   <ArrowUpRight className="mr-2 h-4 w-4" />
                   Envoyer
@@ -74,7 +74,7 @@ export default function WalletPage() {
               </Button>
                <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="outline">
+                  <Button variant="outline" className="flex-1 sm:flex-none">
                     <ArrowDownLeft className="mr-2 h-4 w-4" />
                     Recevoir
                   </Button>
@@ -121,17 +121,19 @@ export default function WalletPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>ID de Transaction</TableHead>
+                <TableHead>Détails</TableHead>
                 <TableHead className="hidden sm:table-cell">Type</TableHead>
                 <TableHead className="hidden sm:table-cell">Statut</TableHead>
-                <TableHead className="hidden sm:table-cell">Date</TableHead>
                 <TableHead className="text-right">Montant</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {allTransactions.map((transaction) => (
                 <TableRow key={transaction.id}>
-                  <TableCell className="font-mono text-xs max-w-[80px] truncate">{transaction.id}</TableCell>
+                  <TableCell>
+                      <div className="font-medium max-w-[120px] sm:max-w-none truncate">{transaction.description}</div>
+                      <div className="text-sm text-muted-foreground">{transaction.date}</div>
+                  </TableCell>
                   <TableCell className="hidden sm:table-cell">
                     <Badge variant={transaction.type === 'Purchase' || transaction.type === 'Withdrawal' ? 'destructive' : 'secondary'} className="capitalize">
                       {transaction.type.replace('_', ' ')}
@@ -144,7 +146,6 @@ export default function WalletPage() {
                       {transaction.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="hidden sm:table-cell">{transaction.date}</TableCell>
                   <TableCell className={`text-right font-medium ${transaction.amount > 0 ? 'text-green-600' : 'text-destructive'}`}>
                     {transaction.amount > 0 ? '+' : ''}
                     {transaction.amount.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'BZD ')}
