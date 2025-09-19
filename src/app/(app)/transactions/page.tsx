@@ -1,3 +1,4 @@
+
 import { allTransactions } from "@/lib/data"
 import {
   Card,
@@ -31,7 +32,7 @@ export default function TransactionsPage() {
       <CardContent>
         <Tabs defaultValue="all">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
-            <TabsList className="grid w-full sm:w-auto grid-cols-3 sm:inline-flex">
+            <TabsList className="grid w-full sm:w-auto grid-cols-3 sm:grid-cols-5">
               <TabsTrigger value="all">Tout</TabsTrigger>
               <TabsTrigger value="purchase">Achats</TabsTrigger>
               <TabsTrigger value="bonus">Bonus</TabsTrigger>
