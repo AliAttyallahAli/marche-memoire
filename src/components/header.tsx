@@ -26,7 +26,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Logo } from "./logo"
 
@@ -103,27 +103,30 @@ export function Header() {
             </Button>
             </SheetTrigger>
             <SheetContent side="right">
-            <nav className="grid gap-6 text-lg font-medium">
-                <Link
-                href="#"
-                className="flex items-center gap-2 text-lg font-semibold"
-                >
-                <Logo />
-                <span className="sr-only">N+</span>
-                </Link>
-                {navLinks.map((link) => (
-                    <Link
-                    key={link.href}
-                    href={link.href}
-                    className={cn(
-                        "hover:text-foreground",
-                        isActive(link.href) ? "text-foreground" : "text-muted-foreground"
-                    )}
-                    >
-                    {link.label}
-                    </Link>
-                ))}
-            </nav>
+              <SheetHeader>
+                  <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+              </SheetHeader>
+              <nav className="grid gap-6 text-lg font-medium mt-4">
+                  <Link
+                  href="#"
+                  className="flex items-center gap-2 text-lg font-semibold"
+                  >
+                  <Logo />
+                  <span className="sr-only">N+</span>
+                  </Link>
+                  {navLinks.map((link) => (
+                      <Link
+                      key={link.href}
+                      href={link.href}
+                      className={cn(
+                          "hover:text-foreground",
+                          isActive(link.href) ? "text-foreground" : "text-muted-foreground"
+                      )}
+                      >
+                      {link.label}
+                      </Link>
+                  ))}
+              </nav>
             </SheetContent>
         </Sheet>
       </div>
