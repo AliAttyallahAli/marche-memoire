@@ -200,3 +200,42 @@ export const africanMobileOperators: CountryOperators[] = [
     { country: "Tchad", flag: "🇹🇩", operators: [{ name: "Airtel", logo: "https://picsum.photos/seed/airtel/48/48" }, { name: "Moov", logo: "https://picsum.photos/seed/moov/48/48" }] },
     { country: "Togo", flag: "🇹🇬", operators: [{ name: "Moov", logo: "https://picsum.photos/seed/moov/48/48" }, { name: "Togo Cellulaire", logo: "https://picsum.photos/seed/togocell/48/48" }] },
 ];
+
+export type Notification = {
+  id: string;
+  title: string;
+  description: string;
+  timestamp: string;
+  read: boolean;
+};
+
+export const notifications: Notification[] = [
+  {
+    id: 'notif1',
+    title: 'Nouveau J\'aime',
+    description: 'James Smith a aimé votre publication.',
+    timestamp: 'Il y a 5 minutes',
+    read: false,
+  },
+  {
+    id: 'notif2',
+    title: 'Transfert Réussi',
+    description: 'Vous avez envoyé 75.50 BZD à @alex.j.',
+    timestamp: 'Il y a 1 heure',
+    read: false,
+  },
+  {
+    id: 'notif3',
+    title: 'Vérification KYC',
+    description: 'Vos documents KYC ont été soumis avec succès.',
+    timestamp: 'Il y a 3 heures',
+    read: true,
+  },
+  {
+    id: 'notif4',
+    title: 'Nouveau Message',
+    description: 'Maria Garcia vous a envoyé un message.',
+    timestamp: 'Hier',
+    read: true,
+  },
+];

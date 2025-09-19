@@ -15,7 +15,8 @@ import {
   Rss,
   MessageSquare,
   ShieldCheck,
-  Smartphone
+  Smartphone,
+  Circle
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -35,10 +36,14 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Logo } from "./logo"
 import { ThemeToggle } from "./theme-toggle"
+import { notifications as initialNotifications } from "@/lib/data"
+import { Badge } from "./ui/badge"
 
 export function Header() {
   const pathname = usePathname()
   const { user } = useUser()
+  const notifications = initialNotifications
+  const unreadCount = notifications.filter(n => !n.read).length
 
   const isActive = (path: string) => {
     if (path === "/dashboard") {
@@ -93,10 +98,43 @@ export function Header() {
           ))}
         </nav>
         <ThemeToggle />
-        <Button variant="outline" size="icon" className="h-8 w-8 rounded-full">
-            <Bell className="h-4 w-4" />
-            <span className="sr-only">Voir les notifications</span>
-        </Button>
+         <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="icon" className="h-8 w-8 rounded-full relative">
+              <Bell className="h-4 w-4" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs">
+                  {unreadCount}
+                </span>
+              )}
+              <span className="sr-only">Voir les notifications</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-80">
+            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {notifications.length > 0 ? (
+              notifications.map((notif) => (
+                <DropdownMenuItem key={notif.id} className="flex items-start gap-3 p-2">
+                  {!notif.read && <Circle className="h-2 w-2 mt-1.5 fill-primary text-primary" />}
+                  <div className={cn("grid gap-1", notif.read && "pl-5")}>
+                    <p className="font-semibold">{notif.title}</p>
+                    <p className="text-sm text-muted-foreground">{notif.description}</p>
+                    <p className="text-xs text-muted-foreground">{notif.timestamp}</p>
+                  </div>
+                </DropdownMenuItem>
+              ))
+            ) : (
+              <div className="p-4 text-center text-sm text-muted-foreground">
+                Aucune nouvelle notification
+              </div>
+            )}
+             <DropdownMenuSeparator />
+             <DropdownMenuItem className="justify-center text-sm text-muted-foreground hover:text-foreground">
+               Voir toutes les notifications
+             </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
