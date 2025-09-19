@@ -58,7 +58,9 @@ export function Header() {
     { href: "/admin", label: "Panneau Admin", icon: UserCog, roles: ['admin'] },
   ]
 
-  const navLinks = allNavLinks.filter(link => link.roles.includes(user.role));
+  const navLinks = user.role === 'admin' 
+    ? allNavLinks 
+    : allNavLinks.filter(link => link.roles.includes(user.role));
 
 
   return (
