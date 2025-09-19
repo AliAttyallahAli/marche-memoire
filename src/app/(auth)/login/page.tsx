@@ -29,9 +29,9 @@ export default function LoginPage() {
     // En fonction du rôle de l'utilisateur authentifié, vous redirigez.
     if (user.role === 'admin') {
       router.push('/admin')
-    } else if (user.role === 'vendor') { // En supposant qu'un rôle 'vendor' existe
+    } else if (user.role === 'vendor') { 
       router.push('/vendor')
-    } else {
+    } else { // Les utilisateurs par défaut ou sans rôle spécifique sont considérés comme des clients
       router.push('/dashboard')
     }
   }
@@ -76,7 +76,7 @@ export default function LoginPage() {
                           id="password" 
                           type={showPassword ? "text" : "password"} 
                           required 
-                          defaultValue="password" 
+                          defaultValue="080931317" 
                           className="pr-10"
                         />
                         <Button 
