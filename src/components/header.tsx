@@ -6,7 +6,7 @@ import {
   Home,
   ShoppingBag,
   Wallet,
-  BarChart3,
+  Send,
   UserCog,
   Pickaxe,
   User,
@@ -48,7 +48,7 @@ export function Header() {
     { href: "/dashboard", label: "Tableau de Bord", icon: Home },
     { href: "/mining", label: "Minage", icon: Pickaxe },
     { href: "/wallet", label: "Mon Portefeuille", icon: Wallet },
-    { href: "/transactions", label: "Transactions", icon: BarChart3 },
+    { href: "/transactions", label: "P2P", icon: Send },
     { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
     { href: "/vendor", label: "Tableau de bord Vendeur", icon: Store },
   ]
@@ -77,7 +77,7 @@ export function Header() {
             <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
                 <Avatar className="h-8 w-8">
-                    <AvatarImage src="https://placehold.co/100x100.png" alt="@username" data-ai-hint="user avatar" />
+                    <AvatarImage src="https://picsum.photos/seed/avatar/100/100" alt="@username" data-ai-hint="user avatar" />
                     <AvatarFallback>AJ</AvatarFallback>
                 </Avatar>
                 <span className="sr-only">Menu utilisateur</span>
