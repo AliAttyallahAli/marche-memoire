@@ -39,15 +39,15 @@ export const user: User = {
   role: 'admin',
   status: 'online',
   stories: [],
-  cardNumber: '4022123456789012',
+  cardNumber: '402212345678901',
 };
 
 export const allUsers: User[] = [
     { ...user, tokenBalance: 0 },
-    { name: 'Maria Garcia', email: 'maria.g@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...1234', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[0]], cardNumber: '4022234567890123' },
-    { name: 'James Smith', email: 'james.s@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...5678', kycStatus: 'Pending', role: 'vendor', status: 'offline', stories: [stories[1]], cardNumber: '4022345678901234' },
-    { name: 'Patricia Brown', email: 'patricia.b@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...9101', kycStatus: 'Rejected', role: 'user', status: 'offline', stories: [stories[2]], cardNumber: '4022456789012345' },
-    { name: 'Robert Miller', email: 'robert.m@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...1121', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[3]], cardNumber: '4022567890123456' },
+    { name: 'Maria Garcia', email: 'maria.g@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...1234', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[0]], cardNumber: '402223456789012' },
+    { name: 'James Smith', email: 'james.s@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...5678', kycStatus: 'Pending', role: 'vendor', status: 'offline', stories: [stories[1]], cardNumber: '402234567890123' },
+    { name: 'Patricia Brown', email: 'patricia.b@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...9101', kycStatus: 'Rejected', role: 'user', status: 'offline', stories: [stories[2]], cardNumber: '402245678901234' },
+    { name: 'Robert Miller', email: 'robert.m@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...1121', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[3]], cardNumber: '402256789012345' },
 ]
 
 export type Transaction = {
