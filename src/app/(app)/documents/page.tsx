@@ -114,10 +114,7 @@ export default function DocumentsPage() {
                         <div className="w-12 h-8 bg-gradient-to-b from-yellow-300 to-yellow-500 rounded-md flex items-center justify-center shadow-inner">
                             <div className="w-10 h-6 bg-yellow-200 rounded-sm"></div>
                         </div>
-                        <p className="font-mono tracking-widest text-lg md:text-xl mt-4">
-                           {user ? formatCardNumber(user.cardNumber) : '...'}
-                        </p>
-                        <p className="font-medium uppercase mt-2">{user?.name}</p>
+                        <p className="font-medium uppercase mt-4">{user?.name}</p>
                         <p className="font-mono text-xs mt-1 opacity-70">{user?.walletKey}</p>
                     </div>
                     <div className="p-2 bg-white rounded-lg">
@@ -133,15 +130,17 @@ export default function DocumentsPage() {
 
             {/* Card Back */}
             <div className={cn(
-                "w-full h-full p-6 flex flex-col justify-between text-white absolute [backface-visibility:hidden] [transform:rotateY(180deg)]",
-                "bg-gradient-to-br from-gray-800 via-gray-900 to-black shadow-2xl rounded-2xl"
+                "w-full h-full p-6 flex flex-col justify-start text-black absolute [backface-visibility:hidden] [transform:rotateY(180deg)]",
+                "bg-gradient-to-br from-gray-300 to-gray-400 shadow-2xl rounded-2xl"
                 )}
             >
                  <div className="w-full h-12 mt-6 bg-black"></div>
-                 <div className="flex items-center gap-4">
-                    <div className="flex-1 h-8 bg-gray-300 rounded-sm"></div>
-                    <div className="bg-white p-1 rounded-sm">
-                        <p className="font-mono text-sm font-semibold tracking-widest text-black">{cvv}</p>
+                 <div className="mt-4 p-2 bg-white rounded-sm w-full">
+                    <div className="flex justify-between items-center">
+                      <p className="font-mono tracking-widest text-lg">
+                          {user ? formatCardNumber(user.cardNumber) : '...'}
+                      </p>
+                      <p className="font-mono text-lg font-semibold tracking-widest">{cvv}</p>
                     </div>
                  </div>
             </div>
