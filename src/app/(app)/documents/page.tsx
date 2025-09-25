@@ -131,16 +131,25 @@ export default function DocumentsPage() {
             {/* Card Back */}
             <div className={cn(
                 "w-full h-full flex flex-col justify-start text-black absolute [backface-visibility:hidden] [transform:rotateY(180deg)]",
-                "bg-gradient-to-br from-gray-300 to-gray-400 shadow-2xl rounded-2xl"
+                "bg-gradient-to-br from-gray-300 to-gray-400 shadow-2xl rounded-2xl p-6"
                 )}
             >
-                 <div className="w-full h-12 mt-6 bg-black"></div>
-                 <div className="mt-4 mx-6 p-2 bg-white rounded-sm flex items-center justify-end">
+                 <div className="w-full h-12 bg-black mt-4"></div>
+                 <div className="mt-4 p-2 bg-white rounded-sm flex items-center justify-between">
+                    <p className="font-mono text-[10px] italic tracking-widest text-gray-500">SIGNATURE</p>
                     <p className="font-mono text-lg italic tracking-widest">{cvv}</p>
                  </div>
-                 <div className="mt-1 mx-6 p-2 bg-white rounded-sm">
+                 <div className="mt-1 p-2 bg-white rounded-sm">
                     <p className="font-mono tracking-widest text-lg text-right">
                         {user ? formatCardNumber(user.cardNumber) : '...'}
+                    </p>
+                 </div>
+                 <div className="mt-4 text-[8px] text-gray-600 px-2 space-y-1">
+                    <p>
+                        Cette carte est la propriété de ZOUDOU Financial. L'utilisation de cette carte est soumise aux termes et conditions du contrat d'utilisation du compte. Pour signaler une carte perdue ou volée, veuillez nous contacter immédiatement via l'application.
+                    </p>
+                    <p>
+                        En cas de découverte, veuillez la retourner à ZOUDOU HQ, 123 Blockchain Avenue, Cotonou, Bénin.
                     </p>
                  </div>
             </div>
