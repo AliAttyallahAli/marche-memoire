@@ -45,7 +45,7 @@ import {
 } from "@/components/ui/dialog"
 
 const p2pTransferSchema = z.object({
-  recipient: z.string().min(10, "L'adresse du destinataire est requise."),
+  recipient: z.string().min(10, "L'identifiant du destinataire est requis."),
   amount: z.coerce.number().positive("Le montant doit être supérieur à zéro."),
 })
 
@@ -94,9 +94,9 @@ export default function P2PPage() {
                 name="recipient"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Clé de portefeuille du destinataire</FormLabel>
+                    <FormLabel>N° de carte ou clé de portefeuille du destinataire</FormLabel>
                     <FormControl>
-                      <Input placeholder="0x..." {...field} />
+                      <Input placeholder="4022..." {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

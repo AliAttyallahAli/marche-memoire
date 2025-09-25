@@ -24,8 +24,8 @@ export default function DocumentsPage() {
   }, [])
 
 
-  const formatWalletKey = (key: string) => {
-    return key.substring(2).replace(/(.{4})/g, '$1 ').trim();
+  const formatCardNumber = (cardNumber: string) => {
+    return cardNumber.replace(/(.{4})/g, '$1 ').trim();
   }
 
   const handleDownload = () => {
@@ -94,7 +94,7 @@ export default function DocumentsPage() {
                             <div className="w-10 h-6 bg-yellow-200 rounded-sm"></div>
                         </div>
                         <p className="font-mono tracking-widest text-lg md:text-xl mt-4">
-                            {formatWalletKey(user.walletKey)}
+                            {formatCardNumber(user.cardNumber)}
                         </p>
                         <p className="font-medium uppercase mt-2">{user.name}</p>
                     </div>
