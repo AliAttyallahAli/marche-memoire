@@ -130,18 +130,18 @@ export default function DocumentsPage() {
 
             {/* Card Back */}
             <div className={cn(
-                "w-full h-full p-6 flex flex-col justify-start text-black absolute [backface-visibility:hidden] [transform:rotateY(180deg)]",
+                "w-full h-full flex flex-col justify-start text-black absolute [backface-visibility:hidden] [transform:rotateY(180deg)]",
                 "bg-gradient-to-br from-gray-300 to-gray-400 shadow-2xl rounded-2xl"
                 )}
             >
                  <div className="w-full h-12 mt-6 bg-black"></div>
-                 <div className="mt-4 p-2 bg-white rounded-sm w-full">
-                    <div className="flex justify-between items-center">
-                      <p className="font-mono tracking-widest text-lg">
-                          {user ? formatCardNumber(user.cardNumber) : '...'}
-                      </p>
-                      <p className="font-mono text-lg font-semibold tracking-widest">{cvv}</p>
-                    </div>
+                 <div className="mt-4 mx-6 p-2 bg-white rounded-sm flex items-center justify-end">
+                    <p className="font-mono text-lg italic tracking-widest">{cvv}</p>
+                 </div>
+                 <div className="mt-1 mx-6 p-2 bg-white rounded-sm">
+                    <p className="font-mono tracking-widest text-lg text-right">
+                        {user ? formatCardNumber(user.cardNumber) : '...'}
+                    </p>
                  </div>
             </div>
         </div>
