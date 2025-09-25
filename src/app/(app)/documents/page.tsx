@@ -25,11 +25,6 @@ export default function DocumentsPage() {
     setCvv(Math.floor(100 + Math.random() * 900).toString())
   }, [])
 
-  const formatCardNumber = (cardNumber: string) => {
-    if (!cardNumber) return ""
-    return cardNumber.replace(/(.{4})/g, '$1 ').trim();
-  }
-
   const handleDownload = () => {
     if (cardRef.current) {
         const cardToCapture = isFlipped ? cardRef.current.children[1] as HTMLElement : cardRef.current.children[0] as HTMLElement;
@@ -57,7 +52,7 @@ export default function DocumentsPage() {
     }
   }
 
-  if (!isMounted || !user) {
+  if (!isMounted) {
     return (
         <div className="flex flex-col items-center gap-8">
             <div className="text-center">
@@ -109,12 +104,12 @@ export default function DocumentsPage() {
                 </div>
 
                 <div className="z-10 flex items-center justify-between">
-                    <div className="flex-1">
+                    <div>
                         <div className="w-12 h-8 bg-gradient-to-b from-yellow-300 to-yellow-500 rounded-md flex items-center justify-center shadow-inner">
                             <div className="w-10 h-6 bg-yellow-200 rounded-sm"></div>
                         </div>
                         <p className="font-mono tracking-widest text-lg md:text-xl mt-4">
-                            {formatCardNumber(user.cardNumber)}
+                            {user.walletKey.substring(0, 19).replace('0x', '4022 ')}...
                         </p>
                         <p className="font-medium uppercase mt-2">{user.name}</p>
                     </div>
@@ -131,25 +126,17 @@ export default function DocumentsPage() {
 
             {/* Card Back */}
             <div className={cn(
-                "w-full h-full flex flex-col text-black absolute [backface-visibility:hidden] [transform:rotateY(180deg)]",
-                "bg-gradient-to-br from-gray-400 via-gray-300 to-gray-400 shadow-2xl rounded-2xl overflow-hidden"
+                "w-full h-full p-6 flex flex-col justify-between text-white absolute [backface-visibility:hidden] [transform:rotateY(180deg)]",
+                "bg-gradient-to-br from-gray-800 via-gray-900 to-black shadow-2xl rounded-2xl"
                 )}
             >
-                <div className="w-full h-12 mt-6 bg-black"></div>
-                <div className="px-6 py-4 flex-1 flex flex-col justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="flex-1 h-10 bg-white rounded-md flex items-center justify-end pr-12 bg-repeat bg-center" style={{backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='10' viewBox='0 0 60 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 10c-5.523 0-10-4.477-10-10h10v10zM10 0c5.523 0 10 4.477 10 10H10V0z' fill='%23EEEEEE' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E\")"}}>
-                            <p className="font-mono text-lg italic tracking-widest">{user.name}</p>
-                        </div>
-                        <div className="bg-white p-1 rounded-sm w-16 text-center">
-                            <p className="font-mono text-sm font-semibold tracking-widest">{cvv}</p>
-                        </div>
+                 <div className="w-full h-12 mt-6 bg-black"></div>
+                 <div className="flex items-center gap-4">
+                    <div className="flex-1 h-8 bg-gray-300 rounded-sm"></div>
+                    <div className="bg-white p-1 rounded-sm">
+                        <p className="font-mono text-sm font-semibold tracking-widest text-black">{cvv}</p>
                     </div>
-                    <div className="text-xs text-gray-600 mt-auto text-center">
-                        <p>Cette carte est la propriété de ZOUDOU Bank. Si trouvée, veuillez la retourner.</p>
-                        <p>Utilisation soumise aux termes et conditions.</p>
-                    </div>
-                </div>
+                 </div>
             </div>
         </div>
       </div>

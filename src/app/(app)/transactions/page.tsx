@@ -94,9 +94,9 @@ export default function P2PPage() {
                 name="recipient"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>N° de carte ou clé de portefeuille du destinataire</FormLabel>
+                    <FormLabel>Clé de portefeuille du destinataire</FormLabel>
                     <FormControl>
-                      <Input placeholder="4022..." {...field} />
+                      <Input placeholder="0x..." {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

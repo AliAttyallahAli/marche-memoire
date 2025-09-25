@@ -6,7 +6,6 @@ export type User = {
   avatar: string;
   tokenBalance: number;
   walletKey: string;
-  cardNumber: string;
   kycStatus: 'Verified' | 'Pending' | 'Rejected' | 'Not Submitted';
   role: 'user' | 'admin' | 'vendor';
   status: 'online' | 'offline';
@@ -35,7 +34,6 @@ export const user: User = {
   avatar: 'https://placehold.co/100x100.png',
   tokenBalance: 0,
   walletKey: '0x1A2b3C4d5E6f7A8b9C0d1E2f3A4b5C6d7E8f9A0b',
-  cardNumber: '4022123456789012',
   kycStatus: 'Not Submitted',
   role: 'admin',
   status: 'online',
@@ -44,10 +42,10 @@ export const user: User = {
 
 export const allUsers: User[] = [
     { ...user, tokenBalance: 0 },
-    { name: 'Maria Garcia', email: 'maria.g@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...1234', cardNumber: '4022432187652109', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[0]] },
-    { name: 'James Smith', email: 'james.s@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...5678', cardNumber: '4022555566667777', kycStatus: 'Pending', role: 'vendor', status: 'offline', stories: [stories[1]] },
-    { name: 'Patricia Brown', email: 'patricia.b@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...9101', cardNumber: '4022987654321098', kycStatus: 'Rejected', role: 'user', status: 'offline', stories: [stories[2]] },
-    { name: 'Robert Miller', email: 'robert.m@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...1121', cardNumber: '4022111122223333', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[3]] },
+    { name: 'Maria Garcia', email: 'maria.g@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...1234', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[0]] },
+    { name: 'James Smith', email: 'james.s@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...5678', kycStatus: 'Pending', role: 'vendor', status: 'offline', stories: [stories[1]] },
+    { name: 'Patricia Brown', email: 'patricia.b@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...9101', kycStatus: 'Rejected', role: 'user', status: 'offline', stories: [stories[2]] },
+    { name: 'Robert Miller', email: 'robert.m@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...1121', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[3]] },
 ]
 
 export type Transaction = {
@@ -182,25 +180,25 @@ export type Operator = {
 export type CountryOperators = {
   country: string;
   flag: string;
-  operators: Operator[];
+  operators: string[];
 };
 
 export const africanMobileOperators: CountryOperators[] = [
-    { country: "Bénin", flag: "🇧🇯", operators: [{ name: "MTN", logo: "https://picsum.photos/seed/mtn/48/48" }, { name: "Moov", logo: "https://picsum.photos/seed/moov/48/48" }] },
-    { country: "Burkina Faso", flag: "🇧🇫", operators: [{ name: "Orange", logo: "https://picsum.photos/seed/orange/48/48" }, { name: "Moov", logo: "https://picsum.photos/seed/moov/48/48" }, { name: "Telecel", logo: "https://picsum.photos/seed/telecel/48/48" }] },
-    { country: "Cameroun", flag: "🇨🇲", operators: [{ name: "MTN", logo: "https://picsum.photos/seed/mtn/48/48" }, { name: "Orange", logo: "https://picsum.photos/seed/orange/48/48" }, { name: "Nexttel", logo: "https://picsum.photos/seed/nexttel/48/48" }] },
-    { country: "Côte d'Ivoire", flag: "🇨🇮", operators: [{ name: "Orange", logo: "https://picsum.photos/seed/orange/48/48" }, { name: "MTN", logo: "https://picsum.photos/seed/mtn/48/48" }, { name: "Moov", logo: "https://picsum.photos/seed/moov/48/48" }] },
-    { country: "Gabon", flag: "🇬🇦", operators: [{ name: "Airtel", logo: "https://picsum.photos/seed/airtel/48/48" }, { name: "Moov", logo: "https://picsum.photos/seed/moov/48/48" }] },
-    { country: "Guinée", flag: "🇬🇳", operators: [{ name: "Orange", logo: "https://picsum.photos/seed/orange/48/48" }, { name: "MTN", logo: "https://picsum.photos/seed/mtn/48/48" }, { name: "Cellcom", logo: "https://picsum.photos/seed/cellcom/48/48" }] },
-    { country: "Mali", flag: "🇲🇱", operators: [{ name: "Orange", logo: "https://picsum.photos/seed/orange/48/48" }, { name: "Moov", logo: "https://picsum.photos/seed/moov/48/48" }, { name: "Telecel", logo: "https://picsum.photos/seed/telecel/48/48" }] },
-    { country: "Niger", flag: "🇳🇪", operators: [{ name: "Airtel", logo: "https://picsum.photos/seed/airtel/48/48" }, { name: "Moov", logo: "https://picsum.photos/seed/moov/48/48" }, { name: "Orange", logo: "https://picsum.photos/seed/orange/48/48" }, { name: "Telecel", logo: "https://picsum.photos/seed/telecel/48/48" }] },
-    { country: "Nigeria", flag: "🇳🇬", operators: [{ name: "MTN", logo: "https://picsum.photos/seed/mtn/48/48" }, { name: "Airtel", logo: "https://picsum.photos/seed/airtel/48/48" }, { name: "Glo", logo: "https://picsum.photos/seed/glo/48/48" }, { name: "9mobile", logo: "https://picsum.photos/seed/9mobile/48/48" }] },
-    { country: "République Centrafricaine", flag: "🇨🇫", operators: [{ name: "Orange", logo: "https://picsum.photos/seed/orange/48/48" }, { name: "Moov", logo: "https://picsum.photos/seed/moov/48/48" }] },
-    { country: "République Démocratique du Congo", flag: "🇨🇩", operators: [{ name: "Vodacom", logo: "https://picsum.photos/seed/vodacom/48/48" }, { name: "Airtel", logo: "https://picsum.photos/seed/airtel/48/48" }, { name: "Orange", logo: "https://picsum.photos/seed/orange/48/48" }, { name: "Africell", logo: "https://picsum.photos/seed/africell/48/48" }] },
-    { country: "République du Congo", flag: "🇨🇬", operators: [{ name: "Airtel", logo: "https://picsum.photos/seed/airtel/48/48" }, { name: "MTN", logo: "https://picsum.photos/seed/mtn/48/48" }] },
-    { country: "Sénégal", flag: "🇸🇳", operators: [{ name: "Orange", logo: "https://picsum.photos/seed/orange/48/48" }, { name: "Free", logo: "https://picsum.photos/seed/free/48/48" }, { name: "Expresso", logo: "https://picsum.photos/seed/expresso/48/48" }] },
-    { country: "Tchad", flag: "🇹🇩", operators: [{ name: "Airtel", logo: "https://picsum.photos/seed/airtel/48/48" }, { name: "Moov", logo: "https://picsum.photos/seed/moov/48/48" }] },
-    { country: "Togo", flag: "🇹🇬", operators: [{ name: "Moov", logo: "https://picsum.photos/seed/moov/48/48" }, { name: "Togo Cellulaire", logo: "https://picsum.photos/seed/togocell/48/48" }] },
+    { country: "Bénin", flag: "🇧🇯", operators: ["MTN", "Moov"] },
+    { country: "Burkina Faso", flag: "🇧🇫", operators: ["Orange", "Moov", "Telecel"] },
+    { country: "Cameroun", flag: "🇨🇲", operators: ["MTN", "Orange", "Nexttel"] },
+    { country: "Côte d'Ivoire", flag: "🇨🇮", operators: ["Orange", "MTN", "Moov"] },
+    { country: "Gabon", flag: "🇬🇦", operators: ["Airtel", "Moov"] },
+    { country: "Guinée", flag: "🇬🇳", operators: ["Orange", "MTN", "Cellcom"] },
+    { country: "Mali", flag: "🇲🇱", operators: ["Orange", "Moov", "Telecel"] },
+    { country: "Niger", flag: "🇳🇪", operators: ["Airtel", "Moov", "Orange", "Telecel"] },
+    { country: "Nigeria", flag: "🇳🇬", operators: ["MTN", "Airtel", "Glo", "9mobile"] },
+    { country: "République Centrafricaine", flag: "🇨🇫", operators: ["Orange", "Moov"] },
+    { country: "République Démocratique du Congo", flag: "🇨🇩", operators: ["Vodacom", "Airtel", "Orange", "Africell"] },
+    { country: "République du Congo", flag: "🇨🇬", operators: ["Airtel", "MTN"] },
+    { country: "Sénégal", flag: "🇸🇳", operators: ["Orange", "Free", "Expresso"] },
+    { country: "Tchad", flag: "🇹🇩", operators: ["Airtel", "Moov"] },
+    { country: "Togo", flag: "🇹🇬", operators: ["Moov", "Togo Cellulaire"] },
 ];
 
 export type Notification = {
