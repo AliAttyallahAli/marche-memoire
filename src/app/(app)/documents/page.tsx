@@ -10,6 +10,7 @@ import { Logo } from "@/components/logo"
 import { cn } from "@/lib/utils"
 import html2canvas from "html2canvas"
 import { useToast } from "@/hooks/use-toast"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function DocumentsPage() {
   const { user } = useUser()
@@ -17,14 +18,17 @@ export default function DocumentsPage() {
   const cardRef = React.useRef<HTMLDivElement>(null)
   const [isFlipped, setIsFlipped] = React.useState(false)
   const [cvv, setCvv] = React.useState("")
+  const [isMounted, setIsMounted] = React.useState(false)
 
   React.useEffect(() => {
-    // Generate a random 3-digit CVV on client-side to avoid hydration mismatch
+    // Component is mounted, safe to use client-side APIs
+    setIsMounted(true)
     setCvv(Math.floor(100 + Math.random() * 900).toString())
   }, [])
 
 
   const formatCardNumber = (cardNumber: string) => {
+    if (!cardNumber) return ""
     return cardNumber.replace(/(.{4})/g, '$1 ').trim();
   }
 
@@ -53,6 +57,24 @@ export default function DocumentsPage() {
             });
         });
     }
+  }
+
+  if (!isMounted || !user) {
+    return (
+        <div className="flex flex-col items-center gap-8">
+            <div className="text-center">
+                <h1 className="text-3xl font-bold tracking-tight">Votre Carte Virtuelle</h1>
+                <p className="text-muted-foreground">
+                    Utilisez cette carte pour vos transactions sur le réseau ZOUDOU.
+                </p>
+            </div>
+            <Skeleton className="w-full max-w-lg aspect-[85.6/53.98] rounded-2xl" />
+             <div className="flex gap-4">
+                <Skeleton className="h-10 w-40" />
+                <Skeleton className="h-10 w-44" />
+            </div>
+        </div>
+    )
   }
 
   return (
