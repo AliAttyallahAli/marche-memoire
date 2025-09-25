@@ -24,6 +24,12 @@ export default function DocumentsPage() {
     setIsMounted(true)
     setCvv(Math.floor(100 + Math.random() * 900).toString())
   }, [])
+  
+  const formatCardNumber = (cardNumber: string) => {
+    if (!cardNumber) return "";
+    return cardNumber.replace(/(.{4})/g, '$1 ').trim();
+  }
+
 
   const handleDownload = () => {
     if (cardRef.current) {
@@ -52,7 +58,7 @@ export default function DocumentsPage() {
     }
   }
 
-  if (!isMounted) {
+  if (!isMounted || !user) {
     return (
         <div className="flex flex-col items-center gap-8">
             <div className="text-center">
@@ -109,7 +115,7 @@ export default function DocumentsPage() {
                             <div className="w-10 h-6 bg-yellow-200 rounded-sm"></div>
                         </div>
                         <p className="font-mono tracking-widest text-lg md:text-xl mt-4">
-                            {user.walletKey.substring(0, 19).replace('0x', '4022 ')}...
+                           {formatCardNumber(user.cardNumber)}
                         </p>
                         <p className="font-medium uppercase mt-2">{user.name}</p>
                     </div>
