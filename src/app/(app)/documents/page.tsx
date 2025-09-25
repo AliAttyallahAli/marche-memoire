@@ -21,11 +21,9 @@ export default function DocumentsPage() {
   const [isMounted, setIsMounted] = React.useState(false)
 
   React.useEffect(() => {
-    // Component is mounted, safe to use client-side APIs
     setIsMounted(true)
     setCvv(Math.floor(100 + Math.random() * 900).toString())
   }, [])
-
 
   const formatCardNumber = (cardNumber: string) => {
     if (!cardNumber) return ""
