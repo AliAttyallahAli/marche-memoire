@@ -115,9 +115,10 @@ export default function DocumentsPage() {
                             <div className="w-10 h-6 bg-yellow-200 rounded-sm"></div>
                         </div>
                         <p className="font-mono tracking-widest text-lg md:text-xl mt-4">
-                           {formatCardNumber(user.cardNumber)}
+                           {user ? formatCardNumber(user.cardNumber) : '...'}
                         </p>
-                        <p className="font-medium uppercase mt-2">{user.name}</p>
+                        <p className="font-medium uppercase mt-2">{user?.name}</p>
+                        <p className="font-mono text-xs mt-1 opacity-70">{user?.walletKey}</p>
                     </div>
                     <div className="p-2 bg-white rounded-lg">
                         <QRCode value={user.walletKey} size={80} bgColor="#ffffff" fgColor="#000000" />
