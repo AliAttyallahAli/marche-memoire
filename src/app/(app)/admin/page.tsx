@@ -98,7 +98,7 @@ export default function AdminPage() {
                         <CardDescription>Affichez et gérez tous les utilisateurs de la plateforme.</CardDescription>
                     </div>
                     <Button asChild size="sm" className="ml-auto gap-1">
-                        <Link href="#">
+                        <Link href="/kyc">
                             Gérer les Vérifications
                             <ArrowUpRight className="h-4 w-4" />
                         </Link>
