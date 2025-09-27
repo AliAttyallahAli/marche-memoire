@@ -71,6 +71,7 @@ import { useToast } from "@/hooks/use-toast"
 const addUserFormSchema = z.object({
   fullName: z.string().min(2, "Le nom complet est requis."),
   email: z.string().email("L'adresse e-mail est invalide."),
+  password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères."),
   role: z.enum(["user", "vendor", "admin"]),
   initialBalance: z.coerce.number().min(0, "Le solde doit être positif."),
 })
@@ -88,6 +89,7 @@ export default function AdminPage() {
         defaultValues: {
           fullName: "",
           email: "",
+          password: "",
           role: "user",
           initialBalance: 0,
         },
@@ -222,6 +224,19 @@ export default function AdminPage() {
                                             />
                                             <FormField
                                                 control={form.control}
+                                                name="password"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Mot de passe</FormLabel>
+                                                        <FormControl>
+                                                            <Input type="password" placeholder="********" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
                                                 name="role"
                                                 render={({ field }) => (
                                                     <FormItem>
@@ -330,3 +345,5 @@ export default function AdminPage() {
         </div>
     )
 }
+
+    
