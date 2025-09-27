@@ -18,9 +18,11 @@ export default function DocumentsPage() {
   const cardRef = React.useRef<HTMLDivElement>(null)
   const [isFlipped, setIsFlipped] = React.useState(false)
   const [cvv, setCvv] = React.useState("")
+  const [isMounted, setIsMounted] = React.useState(false)
   const [qrCodeUrl, setQrCodeUrl] = React.useState("")
 
   React.useEffect(() => {
+    setIsMounted(true)
     if (typeof window !== 'undefined') {
       setCvv(Math.floor(100 + Math.random() * 900).toString())
       if (user?.walletKey) {
@@ -63,7 +65,7 @@ export default function DocumentsPage() {
     }
   }
 
-  if (!user) {
+  if (!isMounted || !user) {
     return (
         <div className="flex flex-col items-center gap-8">
             <div className="text-center">

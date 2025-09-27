@@ -355,5 +355,3 @@ export default function FeedPage() {
     </div>
   )
 }
-
-    
