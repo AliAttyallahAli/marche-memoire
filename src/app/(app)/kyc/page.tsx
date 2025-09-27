@@ -36,6 +36,7 @@ import {
 import { useToast } from "@/hooks/use-toast"
 import { useUser } from "@/context/user-context"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 
 const kycFormSchema = z.object({
   documentType: z.string({ required_error: "Veuillez sélectionner un type de document." }),
@@ -46,7 +47,7 @@ const kycFormSchema = z.object({
 
 export default function KYCPage() {
   const { toast } = useToast()
-  const { user, setUser } = useUser()
+  const { user, setUser, isMounted } = useUser()
   const [showForm, setShowForm] = React.useState(false)
 
   const form = useForm<z.infer<typeof kycFormSchema>>({
@@ -58,7 +59,10 @@ export default function KYCPage() {
 
   function onSubmit(values: z.infer<typeof kycFormSchema>) {
     console.log(values)
-    setUser(prevUser => ({...prevUser, kycStatus: 'Pending' }))
+    setUser(prevUser => {
+        if (!prevUser) return null;
+        return {...prevUser, kycStatus: 'Pending' }
+    })
     toast({
       title: "Documents Soumis",
       description: "Vos documents sont en cours de vérification. Vous serez notifié une fois le processus terminé.",
@@ -93,6 +97,23 @@ export default function KYCPage() {
     },
   } as const
 
+  if (!isMounted || !user) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <Card>
+          <CardHeader className="text-center items-center">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <Skeleton className="h-7 w-48 mt-4" />
+              <Skeleton className="h-4 w-full max-w-sm mt-2" />
+              <Skeleton className="h-6 w-32 mt-2" />
+          </CardHeader>
+          <CardFooter>
+            <Skeleton className="h-10 w-full" />
+          </CardFooter>
+        </Card>
+      </div>
+    )
+  }
 
   const currentStatusInfo = kycStatusInfo[user.kycStatus];
   const needsSubmission = user.kycStatus === 'Not Submitted' || user.kycStatus === 'Rejected'
