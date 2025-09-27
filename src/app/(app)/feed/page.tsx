@@ -369,9 +369,9 @@ export default function FeedPage() {
                     </Dialog>
                 </div>
                 
-                {post.commentsData.length > 0 && <Separator />}
+                {post.commentsData?.length > 0 && <Separator />}
 
-                {post.commentsData.map((comment) => (
+                {post.commentsData?.map((comment) => (
                     <div key={comment.id} className="flex items-start gap-3">
                         <Avatar className="h-8 w-8">
                             <AvatarImage src={comment.authorAvatar} />
@@ -428,3 +428,6 @@ export default function FeedPage() {
     </div>
   )
 }
+
+
+    
