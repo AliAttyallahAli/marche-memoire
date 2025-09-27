@@ -159,7 +159,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
           ? {
               ...post,
               comments: post.comments + 1,
-              commentsData: [newComment, ...post.commentsData],
+              commentsData: [newComment, ...(post.commentsData || [])],
             }
           : post
       )
