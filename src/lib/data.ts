@@ -33,21 +33,21 @@ export const user: User = {
   name: 'Ali Atty',
   email: 'aliattyallahali@gmail.com',
   avatar: 'https://placehold.co/100x100.png',
-  tokenBalance: 0,
+  tokenBalance: 1250.75,
   walletKey: '0x1A2b3C4d5E6f7A8b9C0d1E2f3A4b5C6d7E8f9A0b',
-  kycStatus: 'Not Submitted',
+  kycStatus: 'Verified',
   role: 'admin',
   status: 'online',
   stories: [],
-  cardNumber: '402212345678901',
+  cardNumber: '4022123456789012',
 };
 
 export const allUsers: User[] = [
-    { ...user, tokenBalance: 0 },
-    { name: 'Maria Garcia', email: 'maria.g@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...1234', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[0]], cardNumber: '402223456789012' },
-    { name: 'James Smith', email: 'james.s@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...5678', kycStatus: 'Pending', role: 'vendor', status: 'offline', stories: [stories[1]], cardNumber: '402234567890123' },
-    { name: 'Patricia Brown', email: 'patricia.b@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...9101', kycStatus: 'Rejected', role: 'user', status: 'offline', stories: [stories[2]], cardNumber: '402245678901234' },
-    { name: 'Robert Miller', email: 'robert.m@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 0, walletKey: '0x...1121', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[3]], cardNumber: '402256789012345' },
+    { ...user },
+    { name: 'Maria Garcia', email: 'maria.g@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 850.00, walletKey: '0x...1234', kycStatus: 'Verified', role: 'user', status: 'online', stories: [stories[0]], cardNumber: '4022234567890123' },
+    { name: 'James Smith', email: 'james.s@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 2300.50, walletKey: '0x...5678', kycStatus: 'Pending', role: 'vendor', status: 'offline', stories: [stories[1]], cardNumber: '4022345678901234' },
+    { name: 'Patricia Brown', email: 'patricia.b@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 450.25, walletKey: '0x...9101', kycStatus: 'Rejected', role: 'user', status: 'offline', stories: [stories[2]], cardNumber: '4022456789012345' },
+    { name: 'Robert Miller', email: 'robert.m@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 5000.00, walletKey: '0x...1121', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[3]], cardNumber: '4022567890123456' },
 ]
 
 export type Transaction = {
@@ -93,6 +93,7 @@ export type Post = {
   authorHandle: string;
   authorAvatar: string;
   authorStatus: 'online' | 'offline';
+  authorRole: 'user' | 'admin' | 'vendor';
   content: string;
   timestamp: string;
   likes: number;
@@ -107,6 +108,7 @@ export const posts: Post[] = [
     authorHandle: 'maria.g',
     authorAvatar: 'https://placehold.co/100x100.png',
     authorStatus: 'online',
+    authorRole: 'user',
     content: 'Just launched a new bundle of exclusive content on the marketplace! Check it out and let me know what you think. #community #tokens',
     timestamp: '2024-07-18T10:00:00Z',
     likes: 42,
@@ -119,6 +121,7 @@ export const posts: Post[] = [
     authorHandle: 'james.s',
     authorAvatar: 'https://placehold.co/100x100.png',
     authorStatus: 'offline',
+    authorRole: 'vendor',
     content: 'Excited to see the community growing so quickly! The new P2P transfer feature is a game-changer. What other features would you all like to see?',
     timestamp: '2024-07-17T15:30:00Z',
     likes: 128,
@@ -127,10 +130,11 @@ export const posts: Post[] = [
   },
   {
     id: 'post3',
-    authorName: 'Patricia Brown',
-    authorHandle: 'patricia.b',
+    authorName: 'Ali Atty',
+    authorHandle: 'ali.a',
     authorAvatar: 'https://placehold.co/100x100.png',
-    authorStatus: 'offline',
+    authorStatus: 'online',
+    authorRole: 'admin',
     content: 'Daily mining session done! ✨ Slowly but surely stacking up those BZD tokens. Consistency is key!',
     timestamp: '2024-07-16T08:00:00Z',
     likes: 77,
@@ -148,6 +152,7 @@ export type Conversation = {
   unreadCount: number;
   status: 'online' | 'offline';
   hasStory: boolean;
+  role: 'user' | 'admin' | 'vendor';
 };
 
 export type Message = {
@@ -159,9 +164,9 @@ export type Message = {
 };
 
 export const conversations: Conversation[] = [
-  { id: 'convo1', name: 'Maria Garcia', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Super ! Merci pour l\'info.', lastMessageTimestamp: '10:42', unreadCount: 0, status: 'online', hasStory: true },
-  { id: 'convo2', name: 'James Smith', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Oui, je serai disponible demain.', lastMessageTimestamp: 'Hier', unreadCount: 2, status: 'offline', hasStory: true },
-  { id: 'convo3', name: 'Support ZOUDOU', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Votre ticket a été mis à jour.', lastMessageTimestamp: 'Hier', unreadCount: 0, status: 'online', hasStory: false },
+  { id: 'convo1', name: 'Maria Garcia', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Super ! Merci pour l\'info.', lastMessageTimestamp: '10:42', unreadCount: 0, status: 'online', hasStory: true, role: 'user' },
+  { id: 'convo2', name: 'James Smith', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Oui, je serai disponible demain.', lastMessageTimestamp: 'Hier', unreadCount: 2, status: 'offline', hasStory: true, role: 'vendor' },
+  { id: 'convo3', name: 'Support ZOUDOU', avatar: 'https://placehold.co/100x100.png', lastMessage: 'Votre ticket a été mis à jour.', lastMessageTimestamp: 'Hier', unreadCount: 0, status: 'online', hasStory: false, role: 'admin' },
 ];
 
 export const messages: Message[] = [

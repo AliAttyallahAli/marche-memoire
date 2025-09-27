@@ -16,6 +16,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { conversations as initialConversations, messages as initialMessages, user } from "@/lib/data"
 import type { Conversation, Message } from "@/lib/data"
 import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
 
 export default function ChatPage() {
   const [conversations, setConversations] = React.useState<Conversation[]>(initialConversations)
@@ -56,6 +57,12 @@ export default function ChatPage() {
   const currentMessages = selectedConversation 
     ? messages.filter(m => m.conversationId === selectedConversation.id)
     : []
+
+  const roleVariant = {
+    admin: 'default',
+    vendor: 'secondary',
+    user: 'outline'
+  } as const
 
   return (
     <Card className="h-[calc(100vh-8rem)] w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 overflow-hidden">
@@ -137,9 +144,9 @@ export default function ChatPage() {
                             <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-card" />
                         )}
                     </div>
-                    <div>
+                    <div className="flex items-center gap-2">
                         <p className="font-semibold">{selectedConversation.name}</p>
-                        <p className="text-xs text-muted-foreground">{selectedConversation.status === 'online' ? 'En ligne' : 'Hors ligne'}</p>
+                        <Badge variant={roleVariant[selectedConversation.role]} className="capitalize text-xs">{selectedConversation.role}</Badge>
                     </div>
                 </div>
                 

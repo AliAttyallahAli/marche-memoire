@@ -88,6 +88,12 @@ export default function ProfilePage() {
     Rejected: 'destructive',
     'Not Submitted': 'outline',
   } as const
+
+  const roleVariant = {
+    admin: 'default',
+    vendor: 'secondary',
+    user: 'outline'
+  } as const
   
   const referralLink = `https://app.zoudou/register?ref=${user.walletKey.substring(2, 10)}`
 
@@ -110,6 +116,9 @@ export default function ProfilePage() {
             </Avatar>
             <CardTitle>{user.name}</CardTitle>
             <CardDescription>{user.email}</CardDescription>
+            <div className="pt-2">
+                <Badge variant={roleVariant[user.role]} className="capitalize">{user.role}</Badge>
+            </div>
           </CardHeader>
           <CardContent className="text-sm space-y-4">
              <div className="flex justify-between items-center">

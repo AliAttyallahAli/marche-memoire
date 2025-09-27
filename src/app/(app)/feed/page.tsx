@@ -17,6 +17,7 @@ import { posts as initialPosts, user, allUsers, stories } from "@/lib/data"
 import type { Post } from "@/lib/data"
 import { MessageSquare, ThumbsUp, Share2, PlusCircle } from "lucide-react"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { Badge } from "@/components/ui/badge"
 
 const postFormSchema = z.object({
   content: z.string().min(1, "La publication ne peut pas être vide.").max(280, "La publication ne peut pas dépasser 280 caractères."),
@@ -58,6 +59,7 @@ export default function FeedPage() {
       authorHandle: user.email.split('@')[0],
       authorAvatar: user.avatar,
       authorStatus: user.status,
+      authorRole: user.role,
       content: values.content,
       timestamp: new Date().toISOString(),
       likes: 0,
@@ -74,6 +76,11 @@ export default function FeedPage() {
   
   const usersWithStories = [user, ...allUsers.filter(u => u.stories.length > 0)];
 
+  const roleVariant = {
+    admin: 'default',
+    vendor: 'secondary',
+    user: 'outline'
+  } as const
 
   return (
     <div className="max-w-xl mx-auto">
@@ -165,8 +172,11 @@ export default function FeedPage() {
                              <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-card" />
                         )}
                     </div>
-                    <div>
-                        <p className="font-semibold">{post.authorName}</p>
+                    <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                           <p className="font-semibold">{post.authorName}</p>
+                           <Badge variant={roleVariant[post.authorRole]} className="capitalize text-xs">{post.authorRole}</Badge>
+                        </div>
                         <PostTimestamp timestamp={post.timestamp} />
                     </div>
                 </div>
