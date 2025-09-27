@@ -19,6 +19,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { stories } from "@/lib/data"
 import Image from "next/image"
+import { Skeleton } from "@/components/ui/skeleton"
 
 const postFormSchema = z.object({
   content: z.string().min(1, "La publication ne peut pas être vide.").max(280, "La publication ne peut pas dépasser 280 caractères."),
@@ -60,6 +61,7 @@ export default function FeedPage() {
   })
 
   function onSubmit(values: z.infer<typeof postFormSchema>) {
+    if (!user) return;
     const newPost: Post = {
       id: `post${posts.length + 1}`,
       authorName: user.name,
@@ -87,12 +89,52 @@ export default function FeedPage() {
     user: 'outline'
   } as const
 
+  if (!user) {
+    return (
+      <div className="max-w-xl mx-auto">
+        <div className="flex flex-col gap-6">
+          <Card>
+            <CardContent className="p-4">
+              <Skeleton className="h-8 w-24 mb-4" />
+              <div className="flex space-x-4">
+                <Skeleton className="h-16 w-16 rounded-full" />
+                <Skeleton className="h-16 w-16 rounded-full" />
+                <Skeleton className="h-16 w-16 rounded-full" />
+                <Skeleton className="h-16 w-16 rounded-full" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-start gap-4">
+                <Skeleton className="h-12 w-12 rounded-full" />
+                <div className="w-full space-y-2">
+                  <Skeleton className="h-8 w-full" />
+                  <Skeleton className="h-8 w-3/4" />
+                </div>
+              </div>
+              <Separator className="my-4" />
+              <div className="flex justify-between items-center">
+                <div className="flex gap-1">
+                  <Skeleton className="h-9 w-9" />
+                  <Skeleton className="h-9 w-9" />
+                  <Skeleton className="h-9 w-9" />
+                </div>
+                <Skeleton className="h-10 w-24" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-xl mx-auto">
       <div className="flex flex-col gap-6">
         <Card>
             <CardContent className="p-4">
-                <h2 className="text-lg font-semibold mb-4">Stories</h2>
+                <h2 className="text-lg font.semibold mb-4">Stories</h2>
                  <ScrollArea className="w-full whitespace-nowrap rounded-md">
                     <div className="flex w-max space-x-4 pb-4">
                         <div className="flex flex-col items-center space-y-2 w-20 text-center">
@@ -103,7 +145,7 @@ export default function FeedPage() {
                                     </div>
                                 </Avatar>
                             </button>
-                            <p className="text-xs font-medium truncate">Ajouter</p>
+                            <p className="text-xs font.medium truncate">Ajouter</p>
                         </div>
                         {stories.map((story) => (
                             <div key={story.id} className="flex flex-col items-center space-y-2 w-20 text-center">
@@ -113,7 +155,7 @@ export default function FeedPage() {
                                         <AvatarFallback>{story.authorName.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                                     </Avatar>
                                 </button>
-                                <p className="text-xs font-medium truncate">{story.authorName.split(' ')[0]}</p>
+                                <p className="text-xs font.medium truncate">{story.authorName.split(' ')[0]}</p>
                             </div>
                         ))}
                     </div>
@@ -186,7 +228,7 @@ export default function FeedPage() {
                     </div>
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
-                           <p className="font-semibold">{post.authorName}</p>
+                           <p className="font.semibold">{post.authorName}</p>
                            {post.sentiment && <span className="text-sm">{post.sentiment}</span>}
                            <Badge variant={roleVariant[post.authorRole]} className="capitalize text-xs">{post.authorRole}</Badge>
                         </div>
@@ -235,6 +277,5 @@ export default function FeedPage() {
       </div>
     </div>
   )
-}
 
     
