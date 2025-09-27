@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import QRCode from "qrcode.react"
 
-import { allTransactions, user } from "@/lib/data"
+import { allTransactions } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -43,6 +43,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { useUser } from "@/context/user-context"
+import { Separator } from "@/components/ui/separator"
 
 const p2pTransferSchema = z.object({
   recipient: z.string().min(10, "L'identifiant du destinataire est requis."),
@@ -51,6 +53,7 @@ const p2pTransferSchema = z.object({
 
 export default function P2PPage() {
   const { toast } = useToast()
+  const { user } = useUser()
   const p2pTransactions = allTransactions.filter(t => t.type === 'Purchase' || t.type === 'Withdrawal')
 
 
@@ -89,32 +92,39 @@ export default function P2PPage() {
               <CardDescription>Envoyez des tokens à un autre utilisateur.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="recipient"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>N° de carte ou clé de portefeuille du destinataire</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ex: 4022... ou 0x..." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="amount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Montant (BZD)</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="100" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="p-4 rounded-lg bg-muted/50 flex justify-between items-center mb-4">
+                  <span className="text-sm text-muted-foreground">Votre Solde</span>
+                  <span className="font-bold text-lg">{user.tokenBalance.toLocaleString('fr-FR', { style: 'currency', currency: 'USD' }).replace('USD', 'BZD ')}</span>
+              </div>
+              <Separator />
+              <div className="pt-4 space-y-4">
+                <FormField
+                  control={form.control}
+                  name="recipient"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>N° de carte ou clé de portefeuille du destinataire</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Ex: 4022... ou 0x..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="amount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Montant (BZD)</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="100" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </CardContent>
             <CardFooter className="flex gap-2">
               <Button type="submit" className="flex-1">
