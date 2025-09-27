@@ -2,8 +2,8 @@
 "use client"
 
 import * as React from 'react';
-import type { User, Product, Transaction, Post } from '@/lib/data';
-import { user as initialUser, allUsers as initialUsers, products as initialProducts, allTransactions as initialTransactions, posts as initialPosts } from '@/lib/data';
+import type { User, Product, Transaction, Post, Notification } from '@/lib/data';
+import { user as initialUser, allUsers as initialUsers, products as initialProducts, allTransactions as initialTransactions, posts as initialPosts, notifications as initialNotifications } from '@/lib/data';
 
 type AppContextType = {
   user: User | null;
@@ -17,6 +17,9 @@ type AppContextType = {
   addTransaction: (transaction: Transaction) => void;
   posts: Post[];
   addPost: (post: Post) => void;
+  notifications: Notification[];
+  addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void;
+  markNotificationsAsRead: () => void;
 };
 
 const AppContext = React.createContext<AppContextType | undefined>(undefined);
@@ -44,6 +47,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [products, setProducts] = React.useState<Product[]>([]);
   const [transactions, setTransactions] = React.useState<Transaction[]>([]);
   const [posts, setPosts] = React.useState<Post[]>([]);
+  const [notifications, setNotifications] = React.useState<Notification[]>([]);
   
   const [isInitialized, setIsInitialized] = React.useState(false);
 
@@ -53,6 +57,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setProducts(getInitialState('products', initialProducts));
     setTransactions(getInitialState('transactions', initialTransactions));
     setPosts(getInitialState('posts', initialPosts));
+    setNotifications(getInitialState('notifications', initialNotifications));
     setIsInitialized(true);
   }, []);
 
@@ -75,6 +80,10 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   React.useEffect(() => {
     if (isInitialized) localStorage.setItem('posts', JSON.stringify(posts));
   }, [posts, isInitialized]);
+  
+  React.useEffect(() => {
+    if (isInitialized) localStorage.setItem('notifications', JSON.stringify(notifications));
+  }, [notifications, isInitialized]);
 
 
   const addTokens = (amount: number) => {
@@ -89,23 +98,51 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
   const addUser = (newUser: User) => {
     setAllUsers(prevUsers => [newUser, ...prevUsers]);
+    addNotification({
+        title: "Nouvel Utilisateur Ajouté",
+        description: `${newUser.name} a été ajouté à la plateforme.`
+    });
   }
 
   const addProduct = (newProduct: Product) => {
     setProducts(prevProducts => [newProduct, ...prevProducts]);
+    addNotification({
+        title: "Nouveau Produit Listé",
+        description: `${newProduct.name} est maintenant disponible sur la marketplace.`
+    });
   }
   
   const addTransaction = (newTransaction: Transaction) => {
     setTransactions(prevTransactions => [newTransaction, ...prevTransactions]);
+    if(newTransaction.type === 'Withdrawal') {
+        addNotification({
+            title: "Transfert Envoyé",
+            description: `Vous avez envoyé ${Math.abs(newTransaction.amount)} BZD.`
+        });
+    }
   }
   
   const addPost = (newPost: Post) => {
     setPosts(prevPosts => [newPost, ...prevPosts]);
   }
 
+  const addNotification = (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
+    const newNotification: Notification = {
+      ...notification,
+      id: `notif${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      read: false,
+    };
+    setNotifications(prev => [newNotification, ...prev]);
+  };
+
+  const markNotificationsAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
 
   return (
-    <AppContext.Provider value={{ user, setUser, addTokens, allUsers, addUser, products, addProduct, transactions, addTransaction, posts, addPost }}>
+    <AppContext.Provider value={{ user, setUser, addTokens, allUsers, addUser, products, addProduct, transactions, addTransaction, posts, addPost, notifications, addNotification, markNotificationsAsRead }}>
       {children}
     </AppContext.Provider>
   );
@@ -116,5 +153,11 @@ export const useUser = () => {
   if (context === undefined) {
     throw new Error('useUser must be used within a AppProvider');
   }
-  return context;
+  // This is a hack to deal with hydration issues
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  return { ...context, isMounted };
 };

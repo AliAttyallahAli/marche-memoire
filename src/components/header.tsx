@@ -21,6 +21,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { useUser } from "@/context/user-context"
@@ -37,13 +38,50 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Logo } from "./logo"
 import { ThemeToggle } from "./theme-toggle"
-import { notifications as initialNotifications } from "@/lib/data"
 import { Badge } from "./ui/badge"
+
+function TimeAgo({ timestamp }: { timestamp: string }) {
+    const [timeAgo, setTimeAgo] = React.useState('');
+
+    React.useEffect(() => {
+        const calculateTimeAgo = () => {
+            const now = new Date();
+            const past = new Date(timestamp);
+            const seconds = Math.floor((now.getTime() - past.getTime()) / 1000);
+
+            let interval = seconds / 31536000;
+            if (interval > 1) {
+                return "Il y a " + Math.floor(interval) + " ans";
+            }
+            interval = seconds / 2592000;
+            if (interval > 1) {
+                return "Il y a " + Math.floor(interval) + " mois";
+            }
+            interval = seconds / 86400;
+            if (interval > 1) {
+                return "Il y a " + Math.floor(interval) + " jours";
+            }
+            interval = seconds / 3600;
+            if (interval > 1) {
+                return "Il y a " + Math.floor(interval) + " heures";
+            }
+            interval = seconds / 60;
+            if (interval > 1) {
+                return "Il y a " + Math.floor(interval) + " minutes";
+            }
+            return "À l'instant";
+        };
+        setTimeAgo(calculateTimeAgo());
+    }, [timestamp]);
+
+    return <>{timeAgo}</>;
+}
+
 
 export function Header() {
   const pathname = usePathname()
-  const { user } = useUser()
-  const notifications = initialNotifications
+  const { user, notifications, markNotificationsAsRead } = useUser()
+  
   const unreadCount = notifications.filter(n => !n.read).length
 
   const isActive = (path: string) => {
@@ -98,7 +136,7 @@ export function Header() {
           ))}
         </nav>
         <ThemeToggle />
-         <DropdownMenu>
+         <DropdownMenu onOpenChange={(open) => { if (open) markNotificationsAsRead() }}>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon" className="h-8 w-8 rounded-full relative">
               <Bell className="h-4 w-4" />
@@ -114,13 +152,15 @@ export function Header() {
             <DropdownMenuLabel>Notifications</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {notifications.length > 0 ? (
-              notifications.map((notif) => (
+              notifications.slice(0, 5).map((notif) => (
                 <DropdownMenuItem key={notif.id} className="flex items-start gap-3 p-2">
                   {!notif.read && <Circle className="h-2 w-2 mt-1.5 fill-primary text-primary" />}
                   <div className={cn("grid gap-1", notif.read && "pl-5")}>
                     <p className="font-semibold">{notif.title}</p>
                     <p className="text-sm text-muted-foreground">{notif.description}</p>
-                    <p className="text-xs text-muted-foreground">{notif.timestamp}</p>
+                    <p className="text-xs text-muted-foreground">
+                        <TimeAgo timestamp={notif.timestamp} />
+                    </p>
                   </div>
                 </DropdownMenuItem>
               ))
@@ -139,8 +179,8 @@ export function Header() {
             <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
                 <Avatar className="h-8 w-8">
-                    <AvatarImage src="https://picsum.photos/seed/avatar/100/100" alt="@username" data-ai-hint="user avatar" />
-                    <AvatarFallback>AJ</AvatarFallback>
+                    <AvatarImage src={user?.avatar} alt={user?.name} data-ai-hint="user avatar" />
+                    <AvatarFallback>{user?.name?.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                 </Avatar>
                 <span className="sr-only">Menu utilisateur</span>
             </Button>
