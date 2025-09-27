@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react"
@@ -28,6 +27,7 @@ import { cn } from "@/lib/utils"
 
 const postFormSchema = z.object({
   content: z.string().min(1, "La publication ne peut pas être vide.").max(280, "La publication ne peut pas dépasser 280 caractères."),
+  imageUrl: z.string().url("Veuillez entrer une URL valide.").optional().or(z.literal('')),
 })
 
 const commentFormSchema = z.object({
@@ -63,11 +63,13 @@ export default function FeedPage() {
   const { user, posts, addPost, updatePost, addComment } = useUser()
   const [likedPosts, setLikedPosts] = React.useState<Set<string>>(new Set())
   const [activeCommentPostId, setActiveCommentPostId] = React.useState<string | null>(null)
+  const [showImageInput, setShowImageInput] = React.useState(false)
 
   const postForm = useForm<z.infer<typeof postFormSchema>>({
     resolver: zodResolver(postFormSchema),
     defaultValues: {
       content: "",
+      imageUrl: "",
     },
   })
 
@@ -92,10 +94,12 @@ export default function FeedPage() {
       likes: 0,
       comments: 0,
       shares: 0,
+      imageUrl: values.imageUrl,
       commentsData: [],
     }
     addPost(newPost);
     postForm.reset()
+    setShowImageInput(false)
     toast({
       title: "Publié !",
       description: "Votre mise à jour a été ajoutée au fil d'actualités.",
@@ -260,16 +264,32 @@ export default function FeedPage() {
                         </FormItem>
                       )}
                     />
+                    {showImageInput && (
+                      <FormField
+                        control={postForm.control}
+                        name="imageUrl"
+                        render={({ field }) => (
+                          <FormItem className="mt-4">
+                            <FormControl>
+                              <Input placeholder="Collez l'URL de l'image ici..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
                   </div>
                 </div>
                  <Separator />
                 <div className="flex justify-between items-center">
                     <div className="flex gap-1">
-                        <Button variant="ghost" size="icon"><ImageIcon className="h-5 w-5 text-muted-foreground" /></Button>
-                        <Button variant="ghost" size="icon"><Video className="h-5 w-5 text-muted-foreground" /></Button>
-                        <Button variant="ghost" size="icon"><Smile className="h-5 w-5 text-muted-foreground" /></Button>
-                        <Button variant="ghost" size="icon"><ListChecks className="h-5 w-5 text-muted-foreground" /></Button>
-                        <Button variant="ghost" size="icon"><MapPin className="h-5 w-5 text-muted-foreground" /></Button>
+                        <Button variant="ghost" size="icon" onClick={() => setShowImageInput(!showImageInput)} type="button">
+                            <ImageIcon className={cn("h-5 w-5 text-muted-foreground", showImageInput && "text-primary")} />
+                        </Button>
+                        <Button variant="ghost" size="icon" type="button"><Video className="h-5 w-5 text-muted-foreground" /></Button>
+                        <Button variant="ghost" size="icon" type="button"><Smile className="h-5 w-5 text-muted-foreground" /></Button>
+                        <Button variant="ghost" size="icon" type="button"><ListChecks className="h-5 w-5 text-muted-foreground" /></Button>
+                        <Button variant="ghost" size="icon" type="button"><MapPin className="h-5 w-5 text-muted-foreground" /></Button>
                     </div>
                   <Button type="submit">Publier</Button>
                 </div>
@@ -369,7 +389,7 @@ export default function FeedPage() {
                     </Dialog>
                 </div>
                 
-                {post.commentsData?.length > 0 && <Separator />}
+                {post.commentsData && post.commentsData.length > 0 && <Separator />}
 
                 {post.commentsData?.map((comment) => (
                     <div key={comment.id} className="flex items-start gap-3">
@@ -428,6 +448,5 @@ export default function FeedPage() {
     </div>
   )
 }
-
 
     
