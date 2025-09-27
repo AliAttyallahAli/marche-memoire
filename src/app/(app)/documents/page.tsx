@@ -22,7 +22,9 @@ export default function DocumentsPage() {
 
   React.useEffect(() => {
     setIsMounted(true)
-    setCvv(Math.floor(100 + Math.random() * 900).toString())
+    if (typeof window !== 'undefined') {
+      setCvv(Math.floor(100 + Math.random() * 900).toString())
+    }
   }, [])
   
   const formatCardNumber = (cardNumber: string) => {
@@ -109,13 +111,15 @@ export default function DocumentsPage() {
                 </div>
                 </div>
 
-                <div className="z-10 flex items-center justify-between">
+                <div className="z-10 flex items-end justify-between">
                     <div>
                         <div className="w-12 h-8 bg-gradient-to-b from-yellow-300 to-yellow-500 rounded-md flex items-center justify-center shadow-inner">
                             <div className="w-10 h-6 bg-yellow-200 rounded-sm"></div>
                         </div>
-                        <p className="font-medium uppercase mt-4">{user?.name}</p>
+                        <p className="font-mono text-lg tracking-wider mt-4">{formatCardNumber(user?.cardNumber)}</p>
+                        <p className="font-medium uppercase mt-2">{user?.name}</p>
                         <p className="font-mono text-xs mt-1 opacity-70">{user?.walletKey}</p>
+
                     </div>
                     <div className="p-2 bg-white rounded-lg">
                         <QRCode value={user.walletKey} size={80} bgColor="#ffffff" fgColor="#000000" />
