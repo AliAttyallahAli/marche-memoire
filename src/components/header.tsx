@@ -42,7 +42,7 @@ import { Badge } from "./ui/badge"
 
 export function Header() {
   const pathname = usePathname()
-  const { user } from useUser()
+  const { user } = useUser()
   const notifications = initialNotifications
   const unreadCount = notifications.filter(n => !n.read).length
 
@@ -67,9 +67,7 @@ export function Header() {
     { href: "/admin", label: "Panneau Admin", icon: UserCog, roles: ['admin'] },
   ]
 
-  const navLinks = user.role === 'admin' 
-    ? allNavLinks 
-    : allNavLinks.filter(link => link.roles.includes(user.role));
+  const navLinks = user?.role ? allNavLinks.filter(link => link.roles.includes(user.role)) : [];
 
 
   return (
