@@ -15,7 +15,8 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 
-import { allUsers, allTransactions } from "@/lib/data"
+import { allUsers as initialUsers } from "@/lib/data"
+import type { User } from "@/lib/data"
 import {
   Card,
   CardContent,
@@ -77,8 +78,10 @@ const addUserFormSchema = z.object({
 export default function AdminPage() {
     const { toast } = useToast()
     const [open, setOpen] = React.useState(false)
+    const [allUsers, setAllUsers] = React.useState<User[]>(initialUsers)
+
     const totalTokens = allUsers.reduce((sum, user) => sum + user.tokenBalance, 0)
-    const marketplaceVolume = allTransactions.filter(t => t.type === 'Purchase').reduce((sum, t) => sum - t.amount, 0)
+    const marketplaceVolume = 12500 // Assuming a static value for simplicity for now
 
     const form = useForm<z.infer<typeof addUserFormSchema>>({
         resolver: zodResolver(addUserFormSchema),
@@ -91,7 +94,21 @@ export default function AdminPage() {
     })
 
     function onAddUserSubmit(values: z.infer<typeof addUserFormSchema>) {
-        console.log("Nouveau utilisateur ajouté:", values)
+        const newUser: User = {
+            name: values.fullName,
+            email: values.email,
+            role: values.role,
+            tokenBalance: values.initialBalance,
+            avatar: `https://i.pravatar.cc/150?u=${values.email}`,
+            walletKey: `0x...${Math.random().toString(16).substr(2, 4)}`,
+            kycStatus: 'Not Submitted',
+            status: 'offline',
+            stories: [],
+            cardNumber: `4022${Math.floor(100000000000 + Math.random() * 900000000000).toString().substring(0,12)}`,
+        };
+
+        setAllUsers(prevUsers => [newUser, ...prevUsers]);
+
         toast({
           title: "Utilisateur Ajouté",
           description: `${values.fullName} a été ajouté avec succès.`,
