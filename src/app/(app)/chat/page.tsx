@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react"
@@ -10,15 +9,16 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
   Card,
-  CardContent,
 } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { conversations as initialConversations, messages as initialMessages, user } from "@/lib/data"
+import { useUser } from "@/context/user-context"
+import { conversations as initialConversations, messages as initialMessages } from "@/lib/data"
 import type { Conversation, Message } from "@/lib/data"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 
 export default function ChatPage() {
+  const { user } = useUser()
   const [conversations, setConversations] = React.useState<Conversation[]>(initialConversations)
   const [messages, setMessages] = React.useState<Message[]>(initialMessages)
   const [selectedConversation, setSelectedConversation] = React.useState<Conversation | null>(null)
@@ -46,11 +46,9 @@ export default function ChatPage() {
   }
 
   React.useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTo({
-        top: scrollAreaRef.current.scrollHeight,
-        behavior: "smooth"
-      });
+    const viewport = scrollAreaRef.current?.querySelector('div[data-radix-scroll-area-viewport]');
+    if (viewport) {
+      viewport.scrollTop = viewport.scrollHeight;
     }
   }, [messages, selectedConversation]);
   
@@ -150,7 +148,7 @@ export default function ChatPage() {
                     </div>
                 </div>
                 
-                <div className="flex-1 p-4 overflow-y-auto" ref={scrollAreaRef}>
+                <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
                     <div className="flex flex-col gap-4">
                         {currentMessages.map((message) => (
                             <div
@@ -172,7 +170,7 @@ export default function ChatPage() {
                             </div>
                         ))}
                     </div>
-                </div>
+                </ScrollArea>
                 
                 <div className="p-4 border-t bg-muted/20">
                    <form onSubmit={handleSendMessage} className="flex items-center gap-2">
@@ -204,5 +202,3 @@ export default function ChatPage() {
     </Card>
   )
 }
-
-    

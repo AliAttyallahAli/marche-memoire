@@ -4,7 +4,6 @@
 import * as React from "react"
 import QRCode from "qrcode.react"
 
-import { allTransactions } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -40,7 +39,7 @@ import { CircularProgress } from "@/components/ui/circular-progress"
 const TWENTY_FOUR_HOURS_IN_SECONDS = 24 * 60 * 60
 
 export default function WalletPage() {
-  const { user, addTokens } = useUser();
+  const { user, addTokens, transactions } = useUser();
   const { toast } = useToast();
   const [canMine, setCanMine] = React.useState(true)
   const [timeLeft, setTimeLeft] = React.useState(0)
@@ -209,11 +208,11 @@ export default function WalletPage() {
                     </TableRow>
                     </TableHeader>
                     <TableBody>
-                    {allTransactions.map((transaction) => (
+                    {transactions.map((transaction) => (
                         <TableRow key={transaction.id}>
                         <TableCell>
                             <div className="font-medium max-w-[120px] sm:max-w-none truncate">{transaction.description}</div>
-                            <div className="text-sm text-muted-foreground">{transaction.date}</div>
+                            <div className="text-sm text-muted-foreground">{new Date(transaction.date).toLocaleDateString()}</div>
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
                             <Badge variant={transaction.type === 'Purchase' || transaction.type === 'Withdrawal' ? 'destructive' : 'secondary'} className="capitalize">

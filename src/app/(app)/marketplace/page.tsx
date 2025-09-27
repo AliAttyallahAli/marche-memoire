@@ -8,7 +8,8 @@ import { z } from "zod"
 import Image from "next/image"
 import { PlusCircle } from "lucide-react"
 
-import { products } from "@/lib/data"
+import { useUser } from "@/context/user-context"
+import type { Product } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -49,6 +50,7 @@ const addProductFormSchema = z.object({
 
 export default function MarketplacePage() {
   const { toast } = useToast()
+  const { user, products, addProduct, addTransaction } = useUser()
   const [open, setOpen] = React.useState(false)
 
   const form = useForm<z.infer<typeof addProductFormSchema>>({
@@ -60,15 +62,44 @@ export default function MarketplacePage() {
     },
   })
 
-  function handleBuy() {
+  function handleBuy(product: Product) {
+    if (user.tokenBalance < product.price) {
+        toast({
+            variant: "destructive",
+            title: "Solde insuffisant",
+            description: "Vous n'avez pas assez de BZD pour acheter ce produit.",
+        })
+        return;
+    }
+    
+    addTransaction({
+        id: `txn${Date.now()}`,
+        description: `Achat: ${product.name}`,
+        type: 'Purchase',
+        status: 'Completed',
+        date: new Date().toISOString(),
+        amount: -product.price,
+    })
+
     toast({
       title: "Achat Réussi !",
-      description: "L'article a été ajouté à votre compte.",
+      description: `${product.name} a été ajouté à votre compte.`,
     })
   }
 
   function onAddProductSubmit(values: z.infer<typeof addProductFormSchema>) {
-    console.log(values)
+    const newProduct: Product = {
+        id: `prod${products.length + 1}`,
+        name: values.name,
+        description: values.description,
+        price: values.price,
+        image: 'https://placehold.co/600x400.png',
+        seller: user.name,
+        aiHint: 'new product',
+    }
+    
+    addProduct(newProduct);
+    
     toast({
       title: "Produit Ajouté !",
       description: "Votre produit est maintenant listé sur la marketplace.",
@@ -187,7 +218,7 @@ export default function MarketplacePage() {
             </CardContent>
             <CardFooter className="p-4 pt-0 flex items-center justify-between">
               <p className="text-lg font-semibold">BZD {product.price.toFixed(2)}</p>
-              <Button onClick={handleBuy}>Acheter</Button>
+              <Button onClick={() => handleBuy(product)}>Acheter</Button>
             </CardFooter>
           </Card>
         ))}

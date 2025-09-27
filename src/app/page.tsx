@@ -1,13 +1,15 @@
 
+"use client"
 import Image from "next/image";
 import Link from "next/link";
-import { products } from "@/lib/data";
+import { useUser } from "@/context/user-context";
 import { Button } from "@/components/ui/button";
 import { PublicHeader } from "@/components/public-header";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 
 export default function HomePage() {
+  const { products } = useUser();
   const popularProducts = products.slice(0, 4);
 
   return (

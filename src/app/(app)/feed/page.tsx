@@ -1,5 +1,4 @@
 
-
 "use client"
 
 import * as React from "react"
@@ -13,11 +12,12 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { useToast } from "@/hooks/use-toast"
-import { posts as initialPosts, user, allUsers, stories } from "@/lib/data"
+import { useUser } from "@/context/user-context"
 import type { Post } from "@/lib/data"
 import { MessageSquare, ThumbsUp, Share2, PlusCircle } from "lucide-react"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
+import { stories } from "@/lib/data"
 
 const postFormSchema = z.object({
   content: z.string().min(1, "La publication ne peut pas être vide.").max(280, "La publication ne peut pas dépasser 280 caractères."),
@@ -34,16 +34,22 @@ function PostTimestamp({ timestamp }: { timestamp: string }) {
         return null; 
     }
 
-    return (
-        <p className="text-muted-foreground text-xs">
-            {new Date(timestamp).toLocaleString()}
-        </p>
-    );
+    const postDate = new Date(timestamp);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - postDate.getTime()) / 1000);
+
+    if (diffInSeconds < 60) return "à l'instant";
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    if (diffInMinutes < 60) return `Il y a ${diffInMinutes} min`;
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `Il y a ${diffInHours} h`;
+    
+    return postDate.toLocaleDateString();
 }
 
 export default function FeedPage() {
   const { toast } = useToast()
-  const [posts, setPosts] = React.useState<Post[]>(initialPosts)
+  const { user, posts, addPost } = useUser()
 
   const form = useForm<z.infer<typeof postFormSchema>>({
     resolver: zodResolver(postFormSchema),
@@ -66,15 +72,13 @@ export default function FeedPage() {
       comments: 0,
       shares: 0,
     }
-    setPosts([newPost, ...posts])
+    addPost(newPost);
     form.reset()
     toast({
       title: "Publié !",
       description: "Votre mise à jour a été ajoutée au fil d'actualités.",
     })
   }
-  
-  const usersWithStories = [user, ...allUsers.filter(u => u.stories.length > 0)];
 
   const roleVariant = {
     admin: 'default',
@@ -177,7 +181,9 @@ export default function FeedPage() {
                            <p className="font-semibold">{post.authorName}</p>
                            <Badge variant={roleVariant[post.authorRole]} className="capitalize text-xs">{post.authorRole}</Badge>
                         </div>
-                        <PostTimestamp timestamp={post.timestamp} />
+                        <p className="text-xs text-muted-foreground">
+                            <PostTimestamp timestamp={post.timestamp} />
+                        </p>
                     </div>
                 </div>
                 
@@ -215,5 +221,3 @@ export default function FeedPage() {
     </div>
   )
 }
-
-    

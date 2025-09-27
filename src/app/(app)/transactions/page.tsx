@@ -8,7 +8,6 @@ import { z } from "zod"
 import QRCode from "qrcode.react"
 import { useSearchParams } from "next/navigation"
 
-import { allTransactions } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -47,6 +46,7 @@ import {
 } from "@/components/ui/dialog"
 import { useUser } from "@/context/user-context"
 import { Separator } from "@/components/ui/separator"
+import type { Transaction } from "@/lib/data"
 
 const p2pTransferSchema = z.object({
   recipient: z.string().min(10, "L'identifiant du destinataire est requis."),
@@ -55,8 +55,8 @@ const p2pTransferSchema = z.object({
 
 function P2PTransferPage() {
   const { toast } = useToast()
-  const { user } = useUser()
-  const p2pTransactions = allTransactions.filter(t => t.type === 'Purchase' || t.type === 'Withdrawal')
+  const { user, setUser, transactions, addTransaction, allUsers } = useUser()
+  const p2pTransactions = transactions.filter(t => t.type === 'Purchase' || t.type === 'Withdrawal')
   const searchParams = useSearchParams()
 
 
@@ -76,7 +76,29 @@ function P2PTransferPage() {
   }, [searchParams, form])
 
   function onSubmit(values: z.infer<typeof p2pTransferSchema>) {
-    console.log(values)
+    const recipientUser = allUsers.find(u => u.walletKey === values.recipient || u.cardNumber === values.recipient)
+    
+    if (user.tokenBalance < values.amount) {
+        toast({
+            variant: "destructive",
+            title: "Solde insuffisant",
+            description: `Votre solde de ${user.tokenBalance.toFixed(2)} BZD est insuffisant pour ce transfert.`,
+        })
+        return;
+    }
+    
+    const newTransaction: Transaction = {
+        id: `txn${transactions.length + 1}`,
+        description: `Transfert à ${recipientUser ? recipientUser.name : values.recipient.substring(0,10) + '...'}`,
+        type: 'Withdrawal',
+        status: 'Completed',
+        date: new Date().toISOString(),
+        amount: -values.amount,
+    }
+
+    addTransaction(newTransaction)
+    setUser(prev => ({...prev, tokenBalance: prev.tokenBalance - values.amount}))
+    
     toast({
       title: "Transfert Réussi !",
       description: `Vous avez envoyé ${values.amount} BZD à ${values.recipient.substring(0, 8)}...`,
@@ -200,7 +222,7 @@ function P2PTransferPage() {
                   <TableCell>
                     <div className="font-medium">{transaction.description}</div>
                     <div className="text-sm text-muted-foreground hidden sm:block">
-                      {transaction.date}
+                      {new Date(transaction.date).toLocaleDateString()}
                     </div>
                   </TableCell>
                   <TableCell className={`text-right font-medium ${transaction.amount > 0 ? 'text-green-600' : 'text-destructive'}`}>

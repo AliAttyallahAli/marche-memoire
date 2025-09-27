@@ -7,7 +7,7 @@ import { z } from "zod"
 import Image from "next/image"
 import { MoreHorizontal, PlusCircle } from "lucide-react"
 
-import { products } from "@/lib/data"
+import { useUser } from "@/context/user-context"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -24,8 +24,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
   Table,
   TableBody,
@@ -51,6 +49,7 @@ import {
 } from "@/components/ui/form"
 import { useToast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
 
 const vendorProfileSchema = z.object({
   storeName: z.string().min(3, "Store name must be at least 3 characters."),
@@ -59,7 +58,8 @@ const vendorProfileSchema = z.object({
 
 export default function VendorDashboardPage() {
   const { toast } = useToast()
-  const vendorProducts = products.filter(p => p.seller === '@alex.j' || p.seller === 'Official')
+  const { user, products } = useUser()
+  const vendorProducts = products.filter(p => p.seller === user.name || p.seller === '@alex.j' || p.seller === 'Official')
 
   const form = useForm<z.infer<typeof vendorProfileSchema>>({
     resolver: zodResolver(vendorProfileSchema),

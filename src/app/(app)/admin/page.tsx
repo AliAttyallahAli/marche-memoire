@@ -15,8 +15,8 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 
-import { allUsers as initialUsers } from "@/lib/data"
 import type { User } from "@/lib/data"
+import { useUser } from "@/context/user-context"
 import {
   Card,
   CardContent,
@@ -78,8 +78,8 @@ const addUserFormSchema = z.object({
 
 export default function AdminPage() {
     const { toast } = useToast()
+    const { allUsers, addUser } = useUser()
     const [open, setOpen] = React.useState(false)
-    const [allUsers, setAllUsers] = React.useState<User[]>(initialUsers)
 
     const totalTokens = allUsers.reduce((sum, user) => sum + user.tokenBalance, 0)
     const marketplaceVolume = 12500 // Assuming a static value for simplicity for now
@@ -109,7 +109,7 @@ export default function AdminPage() {
             cardNumber: `4022${Math.floor(100000000000 + Math.random() * 900000000000).toString().substring(0,12)}`,
         };
 
-        setAllUsers(prevUsers => [newUser, ...prevUsers]);
+        addUser(newUser);
 
         toast({
           title: "Utilisateur Ajouté",
@@ -345,5 +345,3 @@ export default function AdminPage() {
         </div>
     )
 }
-
-    

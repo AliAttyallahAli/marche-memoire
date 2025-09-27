@@ -57,7 +57,7 @@ const profileFormSchema = z.object({
 
 export default function ProfilePage() {
   const { toast } = useToast()
-  const { user } = useUser()
+  const { user, setUser } = useUser()
   const [referralLink, setReferralLink] = React.useState("")
 
   React.useEffect(() => {
@@ -83,8 +83,19 @@ export default function ProfilePage() {
     },
   })
 
+  React.useEffect(() => {
+    profileForm.reset({
+        fullName: user.name,
+        email: user.email,
+    })
+  }, [user, profileForm])
+
   function onProfileSubmit(values: z.infer<typeof profileFormSchema>) {
-    console.log(values)
+    setUser(prevUser => ({
+        ...prevUser,
+        name: values.fullName,
+        email: values.email,
+    }))
     toast({
       title: "Profil Mis à Jour",
       description: "Vos informations de profil ont été enregistrées.",

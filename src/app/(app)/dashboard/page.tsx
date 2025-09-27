@@ -1,3 +1,5 @@
+
+"use client"
 import {
   Users,
   CircleDollarSign,
@@ -7,7 +9,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 
-import { user, allTransactions, products } from "@/lib/data"
+import { useUser } from "@/context/user-context"
 import {
   Card,
   CardContent,
@@ -23,13 +25,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 
 export default function Dashboard() {
-  const recentTransactions = allTransactions.slice(0, 5)
+  const { user, transactions, products } = useUser()
+  const recentTransactions = transactions.slice(0, 5)
   const topProducts = products.slice(0,3)
 
   return (
@@ -58,7 +59,7 @@ export default function Dashboard() {
               <ShoppingBag className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-xl font-bold">{allTransactions.length}</div>
+              <div className="text-xl font-bold">{transactions.length}</div>
               <p className="text-xs text-muted-foreground">
                 +180.1% depuis le mois dernier
               </p>
@@ -107,7 +108,7 @@ export default function Dashboard() {
                         <TableCell>
                           <div className="font-medium">{transaction.description}</div>
                           <div className="text-sm text-muted-foreground">
-                            {transaction.date}
+                            {new Date(transaction.date).toLocaleDateString()}
                           </div>
                         </TableCell>
                         <TableCell className={`text-right font-medium ${transaction.amount > 0 ? 'text-green-600' : 'text-destructive'}`}>
