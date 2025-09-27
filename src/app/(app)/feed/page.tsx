@@ -27,7 +27,7 @@ import { cn } from "@/lib/utils"
 
 const postFormSchema = z.object({
   content: z.string().min(1, "La publication ne peut pas être vide.").max(280, "La publication ne peut pas dépasser 280 caractères."),
-  imageUrl: z.string().url("Veuillez entrer une URL valide.").optional().or(z.literal('')),
+  image: z.any().optional(),
 })
 
 const commentFormSchema = z.object({
@@ -69,7 +69,7 @@ export default function FeedPage() {
     resolver: zodResolver(postFormSchema),
     defaultValues: {
       content: "",
-      imageUrl: "",
+      image: undefined,
     },
   })
 
@@ -82,28 +82,42 @@ export default function FeedPage() {
 
   function onPostSubmit(values: z.infer<typeof postFormSchema>) {
     if (!user) return;
-    const newPost: Post = {
-      id: `post${posts.length + 1}`,
-      authorName: user.name,
-      authorHandle: user.email.split('@')[0],
-      authorAvatar: user.avatar,
-      authorStatus: user.status,
-      authorRole: user.role,
-      content: values.content,
-      timestamp: new Date().toISOString(),
-      likes: 0,
-      comments: 0,
-      shares: 0,
-      imageUrl: values.imageUrl,
-      commentsData: [],
+
+    const handleImageAndPost = (imageUrl?: string) => {
+        const newPost: Post = {
+          id: `post${posts.length + 1}`,
+          authorName: user.name,
+          authorHandle: user.email.split('@')[0],
+          authorAvatar: user.avatar,
+          authorStatus: user.status,
+          authorRole: user.role,
+          content: values.content,
+          timestamp: new Date().toISOString(),
+          likes: 0,
+          comments: 0,
+          shares: 0,
+          imageUrl: imageUrl,
+          commentsData: [],
+        }
+        addPost(newPost);
+        postForm.reset()
+        setShowImageInput(false)
+        toast({
+          title: "Publié !",
+          description: "Votre mise à jour a été ajoutée au fil d'actualités.",
+        })
     }
-    addPost(newPost);
-    postForm.reset()
-    setShowImageInput(false)
-    toast({
-      title: "Publié !",
-      description: "Votre mise à jour a été ajoutée au fil d'actualités.",
-    })
+
+    if (values.image && values.image[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageUrl = e.target?.result as string;
+        handleImageAndPost(imageUrl);
+      };
+      reader.readAsDataURL(values.image[0]);
+    } else {
+        handleImageAndPost();
+    }
   }
   
   function onCommentSubmit(postId: string) {
@@ -267,11 +281,11 @@ export default function FeedPage() {
                     {showImageInput && (
                       <FormField
                         control={postForm.control}
-                        name="imageUrl"
+                        name="image"
                         render={({ field }) => (
                           <FormItem className="mt-4">
                             <FormControl>
-                              <Input placeholder="Collez l'URL de l'image ici..." {...field} />
+                              <Input type="file" accept="image/*" {...postForm.register("image")} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -448,5 +462,6 @@ export default function FeedPage() {
     </div>
   )
 }
+
 
     
