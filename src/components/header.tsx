@@ -42,7 +42,7 @@ import { Badge } from "./ui/badge"
 
 export function Header() {
   const pathname = usePathname()
-  const { user } = useUser()
+  const { user } from useUser()
   const notifications = initialNotifications
   const unreadCount = notifications.filter(n => !n.read).length
 
@@ -165,7 +165,7 @@ export function Header() {
             <Button
                 variant="outline"
                 size="icon"
-                className="shrink-0 md:hidden"
+                className="shrink-0"
             >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Ouvrir le menu de navigation</span>
