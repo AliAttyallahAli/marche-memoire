@@ -14,10 +14,11 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { useToast } from "@/hooks/use-toast"
 import { useUser } from "@/context/user-context"
 import type { Post } from "@/lib/data"
-import { MessageSquare, ThumbsUp, Share2, PlusCircle } from "lucide-react"
+import { MessageSquare, ThumbsUp, Share2, PlusCircle, Image as ImageIcon, Video, Smile, MapPin, ListChecks } from "lucide-react"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { stories } from "@/lib/data"
+import Image from "next/image"
 
 const postFormSchema = z.object({
   content: z.string().min(1, "La publication ne peut pas être vide.").max(280, "La publication ne peut pas dépasser 280 caractères."),
@@ -154,8 +155,15 @@ export default function FeedPage() {
                   </div>
                 </div>
                  <Separator />
-                <div className="flex justify-end">
-                  <Button type="submit" className="w-full">Publier</Button>
+                <div className="flex justify-between items-center">
+                    <div className="flex gap-1">
+                        <Button variant="ghost" size="icon"><ImageIcon className="h-5 w-5 text-muted-foreground" /></Button>
+                        <Button variant="ghost" size="icon"><Video className="h-5 w-5 text-muted-foreground" /></Button>
+                        <Button variant="ghost" size="icon"><Smile className="h-5 w-5 text-muted-foreground" /></Button>
+                        <Button variant="ghost" size="icon"><ListChecks className="h-5 w-5 text-muted-foreground" /></Button>
+                        <Button variant="ghost" size="icon"><MapPin className="h-5 w-5 text-muted-foreground" /></Button>
+                    </div>
+                  <Button type="submit">Publier</Button>
                 </div>
               </form>
             </Form>
@@ -179,6 +187,7 @@ export default function FeedPage() {
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
                            <p className="font-semibold">{post.authorName}</p>
+                           {post.sentiment && <span className="text-sm">{post.sentiment}</span>}
                            <Badge variant={roleVariant[post.authorRole]} className="capitalize text-xs">{post.authorRole}</Badge>
                         </div>
                         <p className="text-xs text-muted-foreground">
@@ -190,6 +199,12 @@ export default function FeedPage() {
                 <p className="text-base leading-relaxed whitespace-pre-wrap">
                   {post.content}
                 </p>
+
+                {post.imageUrl && (
+                    <div className="relative aspect-video rounded-lg overflow-hidden border">
+                        <Image src={post.imageUrl} alt="Contenu de la publication" fill className="object-cover" data-ai-hint="post image" />
+                    </div>
+                )}
 
                 <div className="flex justify-between text-muted-foreground text-sm">
                     <div>{post.likes} J'aime</div>
@@ -221,3 +236,5 @@ export default function FeedPage() {
     </div>
   )
 }
+
+    

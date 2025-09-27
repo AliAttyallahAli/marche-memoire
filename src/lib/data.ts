@@ -1,5 +1,4 @@
 
-
 export type User = {
   name: string;
   email: string;
@@ -99,6 +98,9 @@ export type Post = {
   likes: number;
   comments: number;
   shares: number;
+  imageUrl?: string;
+  videoUrl?: string;
+  sentiment?: string;
 };
 
 export const posts: Post[] = [
@@ -114,6 +116,8 @@ export const posts: Post[] = [
     likes: 42,
     comments: 8,
     shares: 5,
+    imageUrl: 'https://placehold.co/600x400.png',
+    sentiment: '🎉',
   },
   {
     id: 'post2',
@@ -127,6 +131,7 @@ export const posts: Post[] = [
     likes: 128,
     comments: 23,
     shares: 12,
+    sentiment: '🚀',
   },
   {
     id: 'post3',
@@ -221,28 +226,30 @@ export const notifications: Notification[] = [
     id: 'notif1',
     title: 'Nouveau J\'aime',
     description: 'James Smith a aimé votre publication.',
-    timestamp: 'Il y a 5 minutes',
+    timestamp: '2024-07-19T10:05:00Z',
     read: false,
   },
   {
     id: 'notif2',
     title: 'Transfert Réussi',
     description: 'Vous avez envoyé 75.50 BZD à @alex.j.',
-    timestamp: 'Il y a 1 heure',
+    timestamp: '2024-07-19T09:00:00Z',
     read: false,
   },
   {
     id: 'notif3',
     title: 'Vérification KYC',
     description: 'Vos documents KYC ont été soumis avec succès.',
-    timestamp: 'Il y a 3 heures',
+    timestamp: '2024-07-19T07:00:00Z',
     read: true,
   },
   {
     id: 'notif4',
     title: 'Nouveau Message',
     description: 'Maria Garcia vous a envoyé un message.',
-    timestamp: 'Hier',
+    timestamp: '2024-07-18T15:00:00Z',
     read: true,
   },
 ];
+
+    
