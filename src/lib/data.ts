@@ -164,6 +164,7 @@ export const posts: Post[] = [
     comments: 0,
     shares: 3,
     commentsData: [],
+    sentiment: '✨',
   },
 ];
 
@@ -273,4 +274,5 @@ export const notifications: Notification[] = [
 
 
 
+    
     

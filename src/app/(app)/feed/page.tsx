@@ -24,6 +24,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { FaWhatsapp, FaTwitter, FaFacebook } from "react-icons/fa"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
+import { getSentiment } from "@/ai/flows/sentiment-flow"
 
 const postFormSchema = z.object({
   content: z.string().min(1, "La publication ne peut pas être vide.").max(280, "La publication ne peut pas dépasser 280 caractères."),
@@ -80,8 +81,10 @@ export default function FeedPage() {
     },
   })
 
-  function onPostSubmit(values: z.infer<typeof postFormSchema>) {
+  async function onPostSubmit(values: z.infer<typeof postFormSchema>) {
     if (!user) return;
+  
+    const sentiment = await getSentiment(values.content);
 
     const handleImageAndPost = (imageUrl?: string) => {
         const newPost: Post = {
@@ -98,6 +101,7 @@ export default function FeedPage() {
           shares: 0,
           imageUrl: imageUrl,
           commentsData: [],
+          sentiment: sentiment,
         }
         addPost(newPost);
         postForm.reset()
@@ -164,6 +168,13 @@ export default function FeedPage() {
       title: "Copié !",
       description: "Le lien de la publication a été copié.",
     });
+  }
+
+  const handleFeatureClick = (featureName: string) => {
+    toast({
+      title: "Fonctionnalité à venir",
+      description: `La possibilité d'ajouter ${featureName} sera bientôt disponible.`,
+    })
   }
 
 
@@ -300,10 +311,10 @@ export default function FeedPage() {
                         <Button variant="ghost" size="icon" onClick={() => setShowImageInput(!showImageInput)} type="button">
                             <ImageIcon className={cn("h-5 w-5 text-muted-foreground", showImageInput && "text-primary")} />
                         </Button>
-                        <Button variant="ghost" size="icon" type="button"><Video className="h-5 w-5 text-muted-foreground" /></Button>
-                        <Button variant="ghost" size="icon" type="button"><Smile className="h-5 w-5 text-muted-foreground" /></Button>
-                        <Button variant="ghost" size="icon" type="button"><ListChecks className="h-5 w-5 text-muted-foreground" /></Button>
-                        <Button variant="ghost" size="icon" type="button"><MapPin className="h-5 w-5 text-muted-foreground" /></Button>
+                        <Button variant="ghost" size="icon" type="button" onClick={() => handleFeatureClick("des vidéos")}><Video className="h-5 w-5 text-muted-foreground" /></Button>
+                        <Button variant="ghost" size="icon" type="button" onClick={() => handleFeatureClick("un sentiment")}><Smile className="h-5 w-5 text-muted-foreground" /></Button>
+                        <Button variant="ghost" size="icon" type="button" onClick={() => handleFeatureClick("un sondage")}><ListChecks className="h-5 w-5 text-muted-foreground" /></Button>
+                        <Button variant="ghost" size="icon" type="button" onClick={() => handleFeatureClick("votre localisation")}><MapPin className="h-5 w-5 text-muted-foreground" /></Button>
                     </div>
                   <Button type="submit">Publier</Button>
                 </div>
@@ -464,4 +475,5 @@ export default function FeedPage() {
 }
 
 
+    
     
