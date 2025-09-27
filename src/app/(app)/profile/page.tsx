@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import Link from "next/link"
+import * as React from "react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -57,6 +58,14 @@ const profileFormSchema = z.object({
 export default function ProfilePage() {
   const { toast } = useToast()
   const { user } = useUser()
+  const [referralLink, setReferralLink] = React.useState("")
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined" && user) {
+      const link = `/register?ref=${user.walletKey.substring(2, 10)}`
+      setReferralLink(link)
+    }
+  }, [user])
 
   const profileForm = useForm<z.infer<typeof profileFormSchema>>({
     resolver: zodResolver(profileFormSchema),
@@ -94,15 +103,16 @@ export default function ProfilePage() {
     vendor: 'secondary',
     user: 'outline'
   } as const
-  
-  const referralLink = `https://app.zoudou/register?ref=${user.walletKey.substring(2, 10)}`
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(referralLink)
-    toast({
-      title: "Copié !",
-      description: "Le lien de parrainage a été copié dans le presse-papiers.",
-    })
+    if (referralLink) {
+        const fullUrl = window.location.origin + referralLink;
+        navigator.clipboard.writeText(fullUrl)
+        toast({
+        title: "Copié !",
+        description: "Le lien de parrainage a été copié dans le presse-papiers.",
+        })
+    }
   }
 
   return (
@@ -142,11 +152,11 @@ export default function ProfilePage() {
             <CardContent>
                 <div className="flex items-center space-x-2">
                     <Input
-                        value={referralLink}
+                        value={referralLink ? window.location.origin + referralLink : ""}
                         readOnly
                         className="flex-1 font-mono text-xs"
                     />
-                    <Button type="button" size="icon" onClick={handleCopy}>
+                    <Button type="button" size="icon" onClick={handleCopy} disabled={!referralLink}>
                         <Copy className="h-4 w-4" />
                         <span className="sr-only">Copier le lien</span>
                     </Button>
