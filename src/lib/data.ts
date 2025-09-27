@@ -1,4 +1,5 @@
 
+
 export type User = {
   name: string;
   email: string;
@@ -86,6 +87,15 @@ export const products: Product[] = [
     { id: 'prod5', name: 'ZOUDOU Premium Membership', description: 'Unlock premium features, early access, and a special badge.', price: 15.00, image: 'https://placehold.co/600x400.png', seller: 'Official', aiHint: 'membership card' },
 ];
 
+export type Comment = {
+  id: string;
+  postId: string;
+  authorName: string;
+  authorAvatar: string;
+  content: string;
+  timestamp: string;
+}
+
 export type Post = {
   id: string;
   authorName: string;
@@ -101,7 +111,13 @@ export type Post = {
   imageUrl?: string;
   videoUrl?: string;
   sentiment?: string;
+  commentsData: Comment[];
 };
+
+export const allComments: Comment[] = [
+    { id: 'comment1', postId: 'post1', authorName: 'James Smith', authorAvatar: 'https://placehold.co/100x100.png', content: 'Awesome, can\'t wait to check it out!', timestamp: '2024-07-18T10:05:00Z' },
+    { id: 'comment2', postId: 'post2', authorName: 'Maria Garcia', authorAvatar: 'https://placehold.co/100x100.png', content: 'I\'d love to see a feature for creating polls.', timestamp: '2024-07-17T15:35:00Z' },
+]
 
 export const posts: Post[] = [
   {
@@ -114,10 +130,11 @@ export const posts: Post[] = [
     content: 'Just launched a new bundle of exclusive content on the marketplace! Check it out and let me know what you think. #community #tokens',
     timestamp: '2024-07-18T10:00:00Z',
     likes: 42,
-    comments: 8,
+    comments: 1,
     shares: 5,
     imageUrl: 'https://placehold.co/600x400.png',
     sentiment: '🎉',
+    commentsData: [allComments[0]],
   },
   {
     id: 'post2',
@@ -129,9 +146,10 @@ export const posts: Post[] = [
     content: 'Excited to see the community growing so quickly! The new P2P transfer feature is a game-changer. What other features would you all like to see?',
     timestamp: '2024-07-17T15:30:00Z',
     likes: 128,
-    comments: 23,
+    comments: 1,
     shares: 12,
     sentiment: '🚀',
+    commentsData: [allComments[1]],
   },
   {
     id: 'post3',
@@ -143,8 +161,9 @@ export const posts: Post[] = [
     content: 'Daily mining session done! ✨ Slowly but surely stacking up those BZD tokens. Consistency is key!',
     timestamp: '2024-07-16T08:00:00Z',
     likes: 77,
-    comments: 15,
+    comments: 0,
     shares: 3,
+    commentsData: [],
   },
 ];
 
@@ -252,4 +271,3 @@ export const notifications: Notification[] = [
   },
 ];
 
-    

@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import * as React from "react"
@@ -14,7 +15,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { useToast } from "@/hooks/use-toast"
 import { useUser } from "@/context/user-context"
 import type { Post } from "@/lib/data"
-import { MessageSquare, ThumbsUp, Share2, PlusCircle, Image as ImageIcon, Video, Smile, MapPin, ListChecks, Copy, Heart } from "lucide-react"
+import { MessageSquare, ThumbsUp, Share2, PlusCircle, Image as ImageIcon, Video, Smile, MapPin, ListChecks, Copy, Heart, Send } from "lucide-react"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { stories } from "@/lib/data"
@@ -27,6 +28,10 @@ import { cn } from "@/lib/utils"
 
 const postFormSchema = z.object({
   content: z.string().min(1, "La publication ne peut pas être vide.").max(280, "La publication ne peut pas dépasser 280 caractères."),
+})
+
+const commentFormSchema = z.object({
+  comment: z.string().min(1, "Le commentaire ne peut être vide."),
 })
 
 function PostTimestamp({ timestamp }: { timestamp: string }) {
@@ -55,17 +60,25 @@ function PostTimestamp({ timestamp }: { timestamp: string }) {
 
 export default function FeedPage() {
   const { toast } = useToast()
-  const { user, posts, addPost, updatePost } = useUser()
+  const { user, posts, addPost, updatePost, addComment } = useUser()
   const [likedPosts, setLikedPosts] = React.useState<Set<string>>(new Set())
+  const [activeCommentPostId, setActiveCommentPostId] = React.useState<string | null>(null)
 
-  const form = useForm<z.infer<typeof postFormSchema>>({
+  const postForm = useForm<z.infer<typeof postFormSchema>>({
     resolver: zodResolver(postFormSchema),
     defaultValues: {
       content: "",
     },
   })
 
-  function onSubmit(values: z.infer<typeof postFormSchema>) {
+  const commentForm = useForm<z.infer<typeof commentFormSchema>>({
+    resolver: zodResolver(commentFormSchema),
+    defaultValues: {
+      comment: "",
+    },
+  })
+
+  function onPostSubmit(values: z.infer<typeof postFormSchema>) {
     if (!user) return;
     const newPost: Post = {
       id: `post${posts.length + 1}`,
@@ -79,13 +92,32 @@ export default function FeedPage() {
       likes: 0,
       comments: 0,
       shares: 0,
+      commentsData: [],
     }
     addPost(newPost);
-    form.reset()
+    postForm.reset()
     toast({
       title: "Publié !",
       description: "Votre mise à jour a été ajoutée au fil d'actualités.",
     })
+  }
+  
+  function onCommentSubmit(postId: string) {
+    return (values: z.infer<typeof commentFormSchema>) => {
+        if (!user) return;
+        addComment({
+            postId: postId,
+            authorName: user.name,
+            authorAvatar: user.avatar,
+            content: values.comment,
+        });
+        commentForm.reset();
+        setActiveCommentPostId(null);
+        toast({
+            title: "Commentaire ajouté",
+            description: "Votre commentaire a été publié.",
+        });
+    };
   }
 
   const handleLike = (postId: string) => {
@@ -105,16 +137,6 @@ export default function FeedPage() {
 
     setLikedPosts(newLikedPosts)
     updatePost(postId, { likes: newLikesCount })
-  }
-
-  const handleComment = (postId: string) => {
-    const post = posts.find(p => p.id === postId)
-    if (!post) return
-    updatePost(postId, { comments: post.comments + 1 })
-     toast({
-      title: "Commentaire ajouté",
-      description: "Votre commentaire a été ajouté (simulation).",
-    })
   }
   
   const handleCopyLink = (postId: string) => {
@@ -210,8 +232,8 @@ export default function FeedPage() {
 
         <Card>
           <CardContent className="p-4">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <Form {...postForm}>
+              <form onSubmit={postForm.handleSubmit(onPostSubmit)} className="space-y-4">
                 <div className="flex items-start gap-4">
                   <div className="relative">
                     <Avatar>
@@ -222,7 +244,7 @@ export default function FeedPage() {
                   </div>
                   <div className="w-full">
                     <FormField
-                      control={form.control}
+                      control={postForm.control}
                       name="content"
                       render={({ field }) => (
                         <FormItem>
@@ -309,7 +331,7 @@ export default function FeedPage() {
                         <Heart className={cn("h-5 w-5", isLiked && "fill-red-500 text-red-500")} />
                         <span>J'aime</span>
                     </Button>
-                    <Button variant="ghost" className="flex items-center justify-center gap-2" onClick={() => handleComment(post.id)}>
+                    <Button variant="ghost" className="flex items-center justify-center gap-2" onClick={() => setActiveCommentPostId(post.id)}>
                         <MessageSquare className="h-5 w-5" />
                         <span>Commenter</span>
                     </Button>
@@ -346,6 +368,57 @@ export default function FeedPage() {
                         </DialogContent>
                     </Dialog>
                 </div>
+                
+                {post.commentsData.length > 0 && <Separator />}
+
+                {post.commentsData.map((comment) => (
+                    <div key={comment.id} className="flex items-start gap-3">
+                        <Avatar className="h-8 w-8">
+                            <AvatarImage src={comment.authorAvatar} />
+                            <AvatarFallback>{comment.authorName.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        </Avatar>
+                        <div className="bg-muted p-3 rounded-lg flex-1">
+                            <div className="flex items-center justify-between">
+                                <p className="font-semibold text-sm">{comment.authorName}</p>
+                                <p className="text-xs text-muted-foreground"><PostTimestamp timestamp={comment.timestamp} /></p>
+                            </div>
+                            <p className="text-sm mt-1">{comment.content}</p>
+                        </div>
+                    </div>
+                ))}
+
+                {activeCommentPostId === post.id && (
+                    <Form {...commentForm}>
+                        <form onSubmit={commentForm.handleSubmit(onCommentSubmit(post.id))} className="flex items-start gap-3 pt-4">
+                            <Avatar className="h-9 w-9">
+                                <AvatarImage src={user.avatar} />
+                                <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                            </Avatar>
+                            <div className="w-full relative">
+                                <FormField
+                                    control={commentForm.control}
+                                    name="comment"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormControl>
+                                                <Textarea
+                                                    placeholder="Écrivez un commentaire..."
+                                                    className="pr-12"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button type="submit" size="icon" className="absolute top-2 right-2 h-7 w-7">
+                                    <Send className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        </form>
+                    </Form>
+                )}
+
 
               </CardContent>
             </Card>

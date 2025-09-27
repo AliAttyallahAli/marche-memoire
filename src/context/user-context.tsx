@@ -1,9 +1,10 @@
 
+
 "use client"
 
 import * as React from 'react';
-import type { User, Product, Transaction, Post, Notification } from '@/lib/data';
-import { user as initialUser, allUsers as initialUsers, products as initialProducts, allTransactions as initialTransactions, posts as initialPosts, notifications as initialNotifications } from '@/lib/data';
+import type { User, Product, Transaction, Post, Notification, Comment } from '@/lib/data';
+import { user as initialUser, allUsers as initialUsers, products as initialProducts, allTransactions as initialTransactions, posts as initialPosts, notifications as initialNotifications, allComments as initialComments } from '@/lib/data';
 
 type AppContextType = {
   user: User | null;
@@ -21,6 +22,8 @@ type AppContextType = {
   notifications: Notification[];
   addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void;
   markNotificationsAsRead: () => void;
+  comments: Comment[];
+  addComment: (comment: Omit<Comment, 'id' | 'timestamp'>) => void;
 };
 
 const AppContext = React.createContext<AppContextType | undefined>(undefined);
@@ -49,6 +52,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [transactions, setTransactions] = React.useState<Transaction[]>([]);
   const [posts, setPosts] = React.useState<Post[]>([]);
   const [notifications, setNotifications] = React.useState<Notification[]>([]);
+  const [comments, setComments] = React.useState<Comment[]>([]);
   
   const [isInitialized, setIsInitialized] = React.useState(false);
 
@@ -59,6 +63,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setTransactions(getInitialState('transactions', initialTransactions));
     setPosts(getInitialState('posts', initialPosts));
     setNotifications(getInitialState('notifications', initialNotifications));
+    setComments(getInitialState('comments', initialComments));
     setIsInitialized(true);
   }, []);
 
@@ -85,6 +90,10 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   React.useEffect(() => {
     if (isInitialized) localStorage.setItem('notifications', JSON.stringify(notifications));
   }, [notifications, isInitialized]);
+
+  React.useEffect(() => {
+    if (isInitialized) localStorage.setItem('comments', JSON.stringify(comments));
+  }, [comments, isInitialized]);
 
 
   const addTokens = (amount: number) => {
@@ -134,6 +143,28 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       )
     );
   };
+  
+  const addComment = (commentData: Omit<Comment, 'id' | 'timestamp'>) => {
+    const newComment: Comment = {
+      ...commentData,
+      id: `comment${Date.now()}`,
+      timestamp: new Date().toISOString(),
+    };
+    setComments(prev => [newComment, ...prev]);
+
+    // Update the post with the new comment
+    setPosts(prevPosts =>
+      prevPosts.map(post =>
+        post.id === newComment.postId
+          ? {
+              ...post,
+              comments: post.comments + 1,
+              commentsData: [newComment, ...post.commentsData],
+            }
+          : post
+      )
+    );
+  };
 
   const addNotification = (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
     const newNotification: Notification = {
@@ -151,7 +182,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
 
   return (
-    <AppContext.Provider value={{ user, setUser, addTokens, allUsers, addUser, products, addProduct, transactions, addTransaction, posts, addPost, updatePost, notifications, addNotification, markNotificationsAsRead }}>
+    <AppContext.Provider value={{ user, setUser, addTokens, allUsers, addUser, products, addProduct, transactions, addTransaction, posts, addPost, updatePost, notifications, addNotification, markNotificationsAsRead, comments, addComment }}>
       {children}
     </AppContext.Provider>
   );
@@ -171,4 +202,3 @@ export const useUser = () => {
   return { ...context, isMounted };
 };
 
-    
