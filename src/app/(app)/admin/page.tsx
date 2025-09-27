@@ -67,6 +67,7 @@ import {
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
+import { cn } from "@/lib/utils"
 
 const addUserFormSchema = z.object({
   fullName: z.string().min(2, "Le nom complet est requis."),
@@ -173,7 +174,7 @@ export default function AdminPage() {
                 </Card>
             </div>
             <Card>
-                <CardHeader className="flex flex-row items-center">
+                <CardHeader className="flex flex-row items-start sm:items-center">
                     <div className="grid gap-2">
                         <CardTitle>Gestion des Utilisateurs</CardTitle>
                         <CardDescription>Affichez et gérez tous les utilisateurs de la plateforme.</CardDescription>
@@ -181,9 +182,11 @@ export default function AdminPage() {
                     <div className="ml-auto flex items-center gap-2">
                         <Dialog open={open} onOpenChange={setOpen}>
                             <DialogTrigger asChild>
-                                <Button size="sm" className="gap-1">
-                                    Ajouter un Utilisateur
+                                <Button size="sm" className="h-8 gap-1">
                                     <PlusCircle className="h-4 w-4" />
+                                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                                        Ajouter
+                                    </span>
                                 </Button>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-[480px]">
@@ -279,9 +282,11 @@ export default function AdminPage() {
                             </DialogContent>
                         </Dialog>
 
-                        <Button asChild size="sm" className="gap-1">
+                        <Button asChild size="sm" className="h-8 gap-1">
                             <Link href="/kyc">
-                                Gérer les Vérifications
+                                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                                    Gérer
+                                </span>
                                 <ArrowUpRight className="h-4 w-4" />
                             </Link>
                         </Button>
@@ -345,3 +350,5 @@ export default function AdminPage() {
         </div>
     )
 }
+
+    
