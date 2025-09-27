@@ -5,6 +5,7 @@ import {
   ShoppingBag,
   MoreVertical,
   ArrowUpRight,
+  PlusCircle,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -97,12 +98,20 @@ export default function AdminPage() {
                         <CardTitle>Gestion des Utilisateurs</CardTitle>
                         <CardDescription>Affichez et gérez tous les utilisateurs de la plateforme.</CardDescription>
                     </div>
-                    <Button asChild size="sm" className="ml-auto gap-1">
-                        <Link href="/kyc">
-                            Gérer les Vérifications
-                            <ArrowUpRight className="h-4 w-4" />
-                        </Link>
-                    </Button>
+                    <div className="ml-auto flex items-center gap-2">
+                        <Button asChild size="sm" className="gap-1">
+                            <Link href="#">
+                                Ajouter un Utilisateur
+                                <PlusCircle className="h-4 w-4" />
+                            </Link>
+                        </Button>
+                        <Button asChild size="sm" className="gap-1">
+                            <Link href="/kyc">
+                                Gérer les Vérifications
+                                <ArrowUpRight className="h-4 w-4" />
+                            </Link>
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <Table>
