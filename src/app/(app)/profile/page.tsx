@@ -39,6 +39,7 @@ import { Badge } from "@/components/ui/badge"
 import { useUser } from "@/context/user-context"
 import { ArrowRight, Copy } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
+import { Skeleton } from "@/components/ui/skeleton"
 
 const profileFormSchema = z.object({
   fullName: z.string().min(2, "Le nom complet doit comporter au moins 2 caractères."),
@@ -70,8 +71,8 @@ export default function ProfilePage() {
   const profileForm = useForm<z.infer<typeof profileFormSchema>>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      fullName: user.name,
-      email: user.email,
+      fullName: user?.name || '',
+      email: user?.email || '',
       civility: "",
       maritalStatus: "",
       country: "",
@@ -84,18 +85,24 @@ export default function ProfilePage() {
   })
 
   React.useEffect(() => {
-    profileForm.reset({
-        fullName: user.name,
-        email: user.email,
-    })
+    if (user) {
+        profileForm.reset({
+            fullName: user.name,
+            email: user.email,
+        })
+    }
   }, [user, profileForm])
 
   function onProfileSubmit(values: z.infer<typeof profileFormSchema>) {
-    setUser(prevUser => ({
-        ...prevUser,
-        name: values.fullName,
-        email: values.email,
-    }))
+    if (!user) return;
+    setUser(prevUser => {
+        if (!prevUser) return null;
+        return {
+            ...prevUser,
+            name: values.fullName,
+            email: values.email,
+        }
+    })
     toast({
       title: "Profil Mis à Jour",
       description: "Vos informations de profil ont été enregistrées.",
@@ -124,6 +131,55 @@ export default function ProfilePage() {
         description: "Le lien de parrainage a été copié dans le presse-papiers.",
         })
     }
+  }
+
+  if (!user) {
+      return (
+           <div className="grid gap-8 md:grid-cols-3">
+                <div className="md:col-span-1 flex flex-col gap-8">
+                    <Card>
+                        <CardHeader className="items-center">
+                             <Skeleton className="w-24 h-24 rounded-full" />
+                             <Skeleton className="h-6 w-32 mt-2" />
+                             <Skeleton className="h-4 w-40 mt-1" />
+                             <Skeleton className="h-6 w-16 mt-2" />
+                        </CardHeader>
+                        <CardContent className="text-sm space-y-4">
+                            <div className="flex justify-between items-center">
+                                <Skeleton className="h-4 w-20" />
+                                <Skeleton className="h-6 w-24" />
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <Skeleton className="h-4 w-24" />
+                                <Skeleton className="h-5 w-28" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+                 <div className="md:col-span-2">
+                    <Card>
+                        <CardHeader>
+                            <Skeleton className="h-8 w-48" />
+                            <Skeleton className="h-4 w-full max-w-sm mt-1" />
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-24" />
+                                <Skeleton className="h-10 w-full" />
+                            </div>
+                             <div className="space-y-2">
+                                <Skeleton className="h-4 w-24" />
+                                <Skeleton className="h-10 w-full" />
+                            </div>
+                             <div className="space-y-2">
+                                <Skeleton className="h-4 w-24" />
+                                <Skeleton className="h-10 w-full" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+           </div>
+      )
   }
 
   return (

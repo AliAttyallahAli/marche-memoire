@@ -6,8 +6,8 @@ import type { User, Product, Transaction, Post } from '@/lib/data';
 import { user as initialUser, allUsers as initialUsers, products as initialProducts, allTransactions as initialTransactions, posts as initialPosts } from '@/lib/data';
 
 type AppContextType = {
-  user: User;
-  setUser: React.Dispatch<React.SetStateAction<User>>;
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
   addTokens: (amount: number) => void;
   allUsers: User[];
   addUser: (user: User) => void;
@@ -22,15 +22,16 @@ type AppContextType = {
 const AppContext = React.createContext<AppContextType | undefined>(undefined);
 
 const getInitialState = <T,>(key: string, fallback: T): T => {
-    if (typeof window !== 'undefined') {
-        const saved = localStorage.getItem(key);
-        if (saved) {
-            try {
-                return JSON.parse(saved);
-            } catch (e) {
-                console.error(`Error parsing localStorage key "${key}":`, e);
-                return fallback;
-            }
+    if (typeof window === 'undefined') {
+        return fallback;
+    }
+    const saved = localStorage.getItem(key);
+    if (saved) {
+        try {
+            return JSON.parse(saved);
+        } catch (e) {
+            console.error(`Error parsing localStorage key "${key}":`, e);
+            return fallback;
         }
     }
     return fallback;
@@ -38,20 +39,25 @@ const getInitialState = <T,>(key: string, fallback: T): T => {
 
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = React.useState<User>(() => getInitialState('user', initialUser));
-  const [allUsers, setAllUsers] = React.useState<User[]>(() => getInitialState('allUsers', initialUsers));
-  const [products, setProducts] = React.useState<Product[]>(() => getInitialState('products', initialProducts));
-  const [transactions, setTransactions] = React.useState<Transaction[]>(() => getInitialState('transactions', initialTransactions));
-  const [posts, setPosts] = React.useState<Post[]>(() => getInitialState('posts', initialPosts));
+  const [user, setUser] = React.useState<User | null>(null);
+  const [allUsers, setAllUsers] = React.useState<User[]>([]);
+  const [products, setProducts] = React.useState<Product[]>([]);
+  const [transactions, setTransactions] = React.useState<Transaction[]>([]);
+  const [posts, setPosts] = React.useState<Post[]>([]);
   
   const [isInitialized, setIsInitialized] = React.useState(false);
 
   React.useEffect(() => {
+    setUser(getInitialState('user', initialUser));
+    setAllUsers(getInitialState('allUsers', initialUsers));
+    setProducts(getInitialState('products', initialProducts));
+    setTransactions(getInitialState('transactions', initialTransactions));
+    setPosts(getInitialState('posts', initialPosts));
     setIsInitialized(true);
   }, []);
 
   React.useEffect(() => {
-    if (isInitialized) localStorage.setItem('user', JSON.stringify(user));
+    if (isInitialized && user) localStorage.setItem('user', JSON.stringify(user));
   }, [user, isInitialized]);
   
   React.useEffect(() => {
@@ -72,10 +78,13 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
 
   const addTokens = (amount: number) => {
-    setUser((prevUser) => ({
-      ...prevUser,
-      tokenBalance: prevUser.tokenBalance + amount,
-    }));
+    setUser((prevUser) => {
+      if (!prevUser) return null;
+      return {
+        ...prevUser,
+        tokenBalance: prevUser.tokenBalance + amount,
+      }
+    });
   };
 
   const addUser = (newUser: User) => {
