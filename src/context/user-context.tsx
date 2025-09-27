@@ -35,6 +35,10 @@ const getInitialState = <T,>(key: string, fallback: T): T => {
     const saved = localStorage.getItem(key);
     if (saved) {
         try {
+            // Special handling for the 'user' key to allow for null
+            if (key === 'user' && saved === 'null') {
+                return null as T;
+            }
             return JSON.parse(saved);
         } catch (e) {
             console.error(`Error parsing localStorage key "${key}":`, e);
@@ -46,17 +50,19 @@ const getInitialState = <T,>(key: string, fallback: T): T => {
 
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = React.useState<User | null>(null);
-  const [allUsers, setAllUsers] = React.useState<User[]>([]);
-  const [products, setProducts] = React.useState<Product[]>([]);
-  const [transactions, setTransactions] = React.useState<Transaction[]>([]);
-  const [posts, setPosts] = React.useState<Post[]>([]);
-  const [notifications, setNotifications] = React.useState<Notification[]>([]);
-  const [comments, setComments] = React.useState<Comment[]>([]);
+  const [user, setUser] = React.useState<User | null>(() => getInitialState('user', initialUser));
+  const [allUsers, setAllUsers] = React.useState<User[]>(() => getInitialState('allUsers', initialUsers));
+  const [products, setProducts] = React.useState<Product[]>(() => getInitialState('products', initialProducts));
+  const [transactions, setTransactions] = React.useState<Transaction[]>(() => getInitialState('transactions', initialTransactions));
+  const [posts, setPosts] = React.useState<Post[]>(() => getInitialState('posts', initialPosts));
+  const [notifications, setNotifications] = React.useState<Notification[]>(() => getInitialState('notifications', initialNotifications));
+  const [comments, setComments] = React.useState<Comment[]>(() => getInitialState('comments', initialComments));
   
   const [isInitialized, setIsInitialized] = React.useState(false);
 
   React.useEffect(() => {
+    // This effect ensures that the state is re-hydrated on the client side
+    // after the initial server render.
     setUser(getInitialState('user', initialUser));
     setAllUsers(getInitialState('allUsers', initialUsers));
     setProducts(getInitialState('products', initialProducts));
@@ -68,7 +74,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   React.useEffect(() => {
-    if (isInitialized && user) localStorage.setItem('user', JSON.stringify(user));
+    if (isInitialized) localStorage.setItem('user', user ? JSON.stringify(user) : 'null');
   }, [user, isInitialized]);
   
   React.useEffect(() => {
@@ -201,7 +207,3 @@ export const useUser = () => {
 
   return { ...context, isMounted };
 };
-
-
-
-    

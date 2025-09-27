@@ -17,22 +17,44 @@ import { Label } from "@/components/ui/label"
 import { Logo } from "@/components/logo"
 import { useUser } from "@/context/user-context"
 import { Eye, EyeOff } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { allUsers } from "@/lib/data"
 
 export default function LoginPage() {
   const router = useRouter()
-  const { user } = useUser()
+  const { setUser } = useUser()
+  const { toast } = useToast()
   const [showPassword, setShowPassword] = React.useState(false)
+  const [email, setEmail] = React.useState("aliattyallahali@gmail.com")
+  const [password, setPassword] = React.useState("080931317")
+
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
-    // Dans une application réelle, vous effectueriez l'authentification ici.
-    // En fonction du rôle de l'utilisateur authentifié, vous redirigez.
-    if (user.role === 'admin') {
-      router.push('/admin')
-    } else if (user.role === 'vendor') { 
-      router.push('/vendor')
-    } else { // Les utilisateurs par défaut ou sans rôle spécifique sont considérés comme des clients
-      router.push('/dashboard')
+    
+    // In a real app, you'd have better auth. For now, we find a user by email.
+    const foundUser = allUsers.find(u => u.email === email);
+
+    if (foundUser) {
+        setUser(foundUser);
+        toast({
+            title: "Connexion réussie",
+            description: `Bienvenue, ${foundUser.name} !`,
+        });
+
+        if (foundUser.role === 'admin') {
+            router.push('/admin')
+        } else if (foundUser.role === 'vendor') { 
+            router.push('/vendor')
+        } else {
+            router.push('/dashboard')
+        }
+    } else {
+        toast({
+            variant: "destructive",
+            title: "Échec de la connexion",
+            description: "Adresse e-mail ou mot de passe incorrect.",
+        });
     }
   }
 
@@ -57,7 +79,8 @@ export default function LoginPage() {
                       id="email"
                       type="email"
                       placeholder="m@example.com"
-                      defaultValue={user.email}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
                       />
                   </div>
@@ -76,7 +99,8 @@ export default function LoginPage() {
                           id="password" 
                           type={showPassword ? "text" : "password"} 
                           required 
-                          defaultValue="080931317" 
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
                           className="pr-10"
                         />
                         <Button 

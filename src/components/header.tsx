@@ -20,7 +20,7 @@ import {
   FileText
 } from "lucide-react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -42,37 +42,33 @@ import { Badge } from "./ui/badge"
 
 function TimeAgo({ timestamp }: { timestamp: string }) {
     const [timeAgo, setTimeAgo] = React.useState('');
+    const [isMounted, setIsMounted] = React.useState(false);
 
     React.useEffect(() => {
+        setIsMounted(true);
         const calculateTimeAgo = () => {
             const now = new Date();
             const past = new Date(timestamp);
             const seconds = Math.floor((now.getTime() - past.getTime()) / 1000);
 
-            let interval = seconds / 31536000;
-            if (interval > 1) {
-                return "Il y a " + Math.floor(interval) + " ans";
-            }
-            interval = seconds / 2592000;
-            if (interval > 1) {
-                return "Il y a " + Math.floor(interval) + " mois";
-            }
-            interval = seconds / 86400;
-            if (interval > 1) {
-                return "Il y a " + Math.floor(interval) + " jours";
-            }
-            interval = seconds / 3600;
-            if (interval > 1) {
-                return "Il y a " + Math.floor(interval) + " heures";
-            }
-            interval = seconds / 60;
-            if (interval > 1) {
-                return "Il y a " + Math.floor(interval) + " minutes";
-            }
-            return "À l'instant";
+            if (seconds < 60) return "À l'instant";
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `Il y a ${minutes} min`;
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `Il y a ${hours} h`;
+            const days = Math.floor(hours / 24);
+            return `Il y a ${days} j`;
         };
         setTimeAgo(calculateTimeAgo());
+
+        const interval = setInterval(() => {
+            setTimeAgo(calculateTimeAgo());
+        }, 60000); // Mettre à jour toutes les minutes
+
+        return () => clearInterval(interval);
     }, [timestamp]);
+    
+    if (!isMounted) return null;
 
     return <>{timeAgo}</>;
 }
@@ -80,9 +76,21 @@ function TimeAgo({ timestamp }: { timestamp: string }) {
 
 export function Header() {
   const pathname = usePathname()
-  const { user, notifications, markNotificationsAsRead } = useUser()
+  const router = useRouter()
+  const { user, notifications, markNotificationsAsRead, setUser } = useUser()
+  const [isSheetOpen, setIsSheetOpen] = React.useState(false)
   
   const unreadCount = notifications.filter(n => !n.read).length
+
+  const handleLogout = () => {
+    setUser(null)
+    router.push('/login')
+  }
+
+  if (!user) {
+    // This shouldn't really happen if the layout protection is working, but as a fallback.
+    return null;
+  }
 
   const isActive = (path: string) => {
     if (path === "/dashboard") {
@@ -192,13 +200,13 @@ export function Header() {
                 <Link href="/profile"><User className="mr-2 h-4 w-4" />Profil</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-                <Link href="/login"><LogOut className="mr-2 h-4 w-4" />Déconnexion</Link>
+            <DropdownMenuItem onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />Déconnexion
             </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
 
-        <Sheet>
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
             <Button
                 variant="outline"
@@ -225,6 +233,7 @@ export function Header() {
                       <Link
                       key={link.href}
                       href={link.href}
+                      onClick={() => setIsSheetOpen(false)}
                       className={cn(
                           "flex items-center gap-4 px-2.5",
                           isActive(link.href) ? "text-foreground" : "text-muted-foreground hover:text-foreground"
