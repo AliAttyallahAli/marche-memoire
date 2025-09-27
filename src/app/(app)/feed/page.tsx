@@ -14,12 +14,16 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { useToast } from "@/hooks/use-toast"
 import { useUser } from "@/context/user-context"
 import type { Post } from "@/lib/data"
-import { MessageSquare, ThumbsUp, Share2, PlusCircle, Image as ImageIcon, Video, Smile, MapPin, ListChecks } from "lucide-react"
+import { MessageSquare, ThumbsUp, Share2, PlusCircle, Image as ImageIcon, Video, Smile, MapPin, ListChecks, Copy, Heart } from "lucide-react"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { stories } from "@/lib/data"
 import Image from "next/image"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { FaWhatsapp, FaTwitter, FaFacebook } from "react-icons/fa"
+import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
 
 const postFormSchema = z.object({
   content: z.string().min(1, "La publication ne peut pas être vide.").max(280, "La publication ne peut pas dépasser 280 caractères."),
@@ -51,7 +55,8 @@ function PostTimestamp({ timestamp }: { timestamp: string }) {
 
 export default function FeedPage() {
   const { toast } = useToast()
-  const { user, posts, addPost } = useUser()
+  const { user, posts, addPost, updatePost } = useUser()
+  const [likedPosts, setLikedPosts] = React.useState<Set<string>>(new Set())
 
   const form = useForm<z.infer<typeof postFormSchema>>({
     resolver: zodResolver(postFormSchema),
@@ -82,6 +87,45 @@ export default function FeedPage() {
       description: "Votre mise à jour a été ajoutée au fil d'actualités.",
     })
   }
+
+  const handleLike = (postId: string) => {
+    const post = posts.find(p => p.id === postId)
+    if (!post) return
+
+    const newLikedPosts = new Set(likedPosts)
+    let newLikesCount
+
+    if (newLikedPosts.has(postId)) {
+      newLikedPosts.delete(postId)
+      newLikesCount = post.likes - 1
+    } else {
+      newLikedPosts.add(postId)
+      newLikesCount = post.likes + 1
+    }
+
+    setLikedPosts(newLikedPosts)
+    updatePost(postId, { likes: newLikesCount })
+  }
+
+  const handleComment = (postId: string) => {
+    const post = posts.find(p => p.id === postId)
+    if (!post) return
+    updatePost(postId, { comments: post.comments + 1 })
+     toast({
+      title: "Commentaire ajouté",
+      description: "Votre commentaire a été ajouté (simulation).",
+    })
+  }
+  
+  const handleCopyLink = (postId: string) => {
+    const url = `${window.location.origin}/feed#${postId}`;
+    navigator.clipboard.writeText(url);
+    toast({
+      title: "Copié !",
+      description: "Le lien de la publication a été copié.",
+    });
+  }
+
 
   const roleVariant = {
     admin: 'default',
@@ -213,8 +257,13 @@ export default function FeedPage() {
         </Card>
 
         <div className="flex flex-col gap-6">
-          {posts.map((post) => (
-            <Card key={post.id}>
+          {posts.map((post) => {
+            const isLiked = likedPosts.has(post.id)
+            const postUrl = typeof window !== 'undefined' ? `${window.location.origin}/feed#${post.id}` : '';
+            const shareText = encodeURIComponent(post.content);
+
+            return (
+            <Card key={post.id} id={post.id}>
               <CardContent className="p-4 flex flex-col gap-4">
                 <div className="flex items-center gap-3">
                     <div className="relative">
@@ -256,26 +305,55 @@ export default function FeedPage() {
                 <Separator />
                 
                 <div className="grid grid-cols-3 gap-2">
-                    <Button variant="ghost" className="flex items-center justify-center gap-2">
-                        <ThumbsUp className="h-5 w-5" />
+                    <Button variant="ghost" className="flex items-center justify-center gap-2" onClick={() => handleLike(post.id)}>
+                        <Heart className={cn("h-5 w-5", isLiked && "fill-red-500 text-red-500")} />
                         <span>J'aime</span>
                     </Button>
-                    <Button variant="ghost" className="flex items-center justify-center gap-2">
+                    <Button variant="ghost" className="flex items-center justify-center gap-2" onClick={() => handleComment(post.id)}>
                         <MessageSquare className="h-5 w-5" />
                         <span>Commenter</span>
                     </Button>
-                    <Button variant="ghost" className="flex items-center justify-center gap-2">
-                        <Share2 className="h-5 w-5" />
-                        <span>Partager</span>
-                    </Button>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="ghost" className="flex items-center justify-center gap-2">
+                                <Share2 className="h-5 w-5" />
+                                <span>Partager</span>
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-md">
+                            <DialogHeader>
+                                <DialogTitle>Partager la publication</DialogTitle>
+                                <DialogDescription>Partagez cette publication sur vos plateformes préférées.</DialogDescription>
+                            </DialogHeader>
+                            <div className="flex justify-center gap-4 py-4">
+                               <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`} target="_blank" rel="noopener noreferrer">
+                                    <Button variant="outline" size="icon" className="h-12 w-12 rounded-full"><FaFacebook className="h-6 w-6" /></Button>
+                               </a>
+                                <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${shareText}`} target="_blank" rel="noopener noreferrer">
+                                    <Button variant="outline" size="icon" className="h-12 w-12 rounded-full"><FaTwitter className="h-6 w-6" /></Button>
+                                </a>
+                                <a href={`https://api.whatsapp.com/send?text=${shareText}%20${encodeURIComponent(postUrl)}`} target="_blank" rel="noopener noreferrer">
+                                    <Button variant="outline" size="icon" className="h-12 w-12 rounded-full"><FaWhatsapp className="h-6 w-6" /></Button>
+                                </a>
+                            </div>
+                            <Separator />
+                            <div className="flex items-center space-x-2 pt-4">
+                                <Input value={postUrl} readOnly className="flex-1 font-mono text-xs" />
+                                <Button size="icon" onClick={() => handleCopyLink(post.id)}>
+                                    <Copy className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
                 </div>
 
               </CardContent>
             </Card>
-          ))}
+          )})}
         </div>
       </div>
     </div>
   )
+}
 
     

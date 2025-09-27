@@ -17,6 +17,7 @@ type AppContextType = {
   addTransaction: (transaction: Transaction) => void;
   posts: Post[];
   addPost: (post: Post) => void;
+  updatePost: (postId: string, updates: Partial<Post>) => void;
   notifications: Notification[];
   addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void;
   markNotificationsAsRead: () => void;
@@ -126,6 +127,14 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setPosts(prevPosts => [newPost, ...prevPosts]);
   }
 
+  const updatePost = (postId: string, updates: Partial<Post>) => {
+    setPosts(prevPosts =>
+      prevPosts.map(post =>
+        post.id === postId ? { ...post, ...updates } : post
+      )
+    );
+  };
+
   const addNotification = (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
     const newNotification: Notification = {
       ...notification,
@@ -142,7 +151,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
 
   return (
-    <AppContext.Provider value={{ user, setUser, addTokens, allUsers, addUser, products, addProduct, transactions, addTransaction, posts, addPost, notifications, addNotification, markNotificationsAsRead }}>
+    <AppContext.Provider value={{ user, setUser, addTokens, allUsers, addUser, products, addProduct, transactions, addTransaction, posts, addPost, updatePost, notifications, addNotification, markNotificationsAsRead }}>
       {children}
     </AppContext.Provider>
   );
@@ -161,3 +170,5 @@ export const useUser = () => {
 
   return { ...context, isMounted };
 };
+
+    
