@@ -4,7 +4,9 @@ import {
   CircleDollarSign,
   ShoppingBag,
   MoreVertical,
+  ArrowUpRight,
 } from "lucide-react"
+import Link from "next/link"
 
 import { allUsers, allTransactions } from "@/lib/data"
 import {
@@ -90,9 +92,17 @@ export default function AdminPage() {
                 </Card>
             </div>
             <Card>
-                <CardHeader>
-                    <CardTitle>Gestion des Utilisateurs</CardTitle>
-                    <CardDescription>Affichez et gérez tous les utilisateurs de la plateforme.</CardDescription>
+                <CardHeader className="flex flex-row items-center">
+                    <div className="grid gap-2">
+                        <CardTitle>Gestion des Utilisateurs</CardTitle>
+                        <CardDescription>Affichez et gérez tous les utilisateurs de la plateforme.</CardDescription>
+                    </div>
+                    <Button asChild size="sm" className="ml-auto gap-1">
+                        <Link href="#">
+                            Gérer les Vérifications
+                            <ArrowUpRight className="h-4 w-4" />
+                        </Link>
+                    </Button>
                 </CardHeader>
                 <CardContent>
                     <Table>
