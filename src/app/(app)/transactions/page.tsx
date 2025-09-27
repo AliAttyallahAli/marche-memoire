@@ -1,10 +1,12 @@
 
 "use client"
 
+import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import QRCode from "qrcode.react"
+import { useSearchParams } from "next/navigation"
 
 import { allTransactions } from "@/lib/data"
 import { Button } from "@/components/ui/button"
@@ -51,10 +53,11 @@ const p2pTransferSchema = z.object({
   amount: z.coerce.number().positive("Le montant doit être supérieur à zéro."),
 })
 
-export default function P2PPage() {
+function P2PTransferPage() {
   const { toast } = useToast()
   const { user } = useUser()
   const p2pTransactions = allTransactions.filter(t => t.type === 'Purchase' || t.type === 'Withdrawal')
+  const searchParams = useSearchParams()
 
 
   const form = useForm<z.infer<typeof p2pTransferSchema>>({
@@ -64,6 +67,13 @@ export default function P2PPage() {
       amount: 0,
     },
   })
+
+  React.useEffect(() => {
+    const recipientFromQuery = searchParams.get("recipient")
+    if (recipientFromQuery) {
+      form.setValue("recipient", recipientFromQuery)
+    }
+  }, [searchParams, form])
 
   function onSubmit(values: z.infer<typeof p2pTransferSchema>) {
     console.log(values)
@@ -204,5 +214,14 @@ export default function P2PPage() {
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+
+export default function P2PPage() {
+  return (
+    <React.Suspense fallback={<div>Chargement...</div>}>
+      <P2PTransferPage />
+    </React.Suspense>
   )
 }

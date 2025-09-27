@@ -19,13 +19,18 @@ export default function DocumentsPage() {
   const [isFlipped, setIsFlipped] = React.useState(false)
   const [cvv, setCvv] = React.useState("")
   const [isMounted, setIsMounted] = React.useState(false)
+  const [qrCodeUrl, setQrCodeUrl] = React.useState("")
 
   React.useEffect(() => {
     setIsMounted(true)
     if (typeof window !== 'undefined') {
       setCvv(Math.floor(100 + Math.random() * 900).toString())
+      if (user?.walletKey) {
+        const url = `${window.location.origin}/transactions?recipient=${user.walletKey}`
+        setQrCodeUrl(url)
+      }
     }
-  }, [])
+  }, [user])
   
   const formatCardNumber = (cardNumber: string) => {
     if (!cardNumber) return "";
@@ -120,9 +125,11 @@ export default function DocumentsPage() {
                         <p className="font-medium uppercase mt-2">{user.name}</p>
                         <p className="font-mono text-xs mt-1 opacity-70">{user.walletKey}</p>
                     </div>
-                    <div className="p-2 bg-white rounded-lg">
-                        <QRCode value={user.walletKey} size={80} bgColor="#ffffff" fgColor="#000000" />
-                    </div>
+                    {qrCodeUrl && (
+                      <div className="p-2 bg-white rounded-lg">
+                          <QRCode value={qrCodeUrl} size={80} bgColor="#ffffff" fgColor="#000000" />
+                      </div>
+                    )}
                 </div>
 
                 <div className="flex justify-between items-end z-10">
