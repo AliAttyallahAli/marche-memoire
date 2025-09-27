@@ -1,4 +1,10 @@
 
+"use client"
+
+import * as React from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 import {
   Users,
   CircleDollarSign,
@@ -34,10 +40,65 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { useToast } from "@/hooks/use-toast"
+
+const addUserFormSchema = z.object({
+  fullName: z.string().min(2, "Le nom complet est requis."),
+  email: z.string().email("L'adresse e-mail est invalide."),
+  role: z.enum(["user", "vendor", "admin"]),
+  initialBalance: z.coerce.number().min(0, "Le solde doit être positif."),
+})
 
 export default function AdminPage() {
+    const { toast } = useToast()
+    const [open, setOpen] = React.useState(false)
     const totalTokens = allUsers.reduce((sum, user) => sum + user.tokenBalance, 0)
     const marketplaceVolume = allTransactions.filter(t => t.type === 'Purchase').reduce((sum, t) => sum - t.amount, 0)
+
+    const form = useForm<z.infer<typeof addUserFormSchema>>({
+        resolver: zodResolver(addUserFormSchema),
+        defaultValues: {
+          fullName: "",
+          email: "",
+          role: "user",
+          initialBalance: 0,
+        },
+    })
+
+    function onAddUserSubmit(values: z.infer<typeof addUserFormSchema>) {
+        console.log("Nouveau utilisateur ajouté:", values)
+        toast({
+          title: "Utilisateur Ajouté",
+          description: `${values.fullName} a été ajouté avec succès.`,
+        })
+        setOpen(false)
+        form.reset()
+    }
 
     const kycStatusVariant = {
         Verified: 'default',
@@ -99,12 +160,93 @@ export default function AdminPage() {
                         <CardDescription>Affichez et gérez tous les utilisateurs de la plateforme.</CardDescription>
                     </div>
                     <div className="ml-auto flex items-center gap-2">
-                        <Button asChild size="sm" className="gap-1">
-                            <Link href="#">
-                                Ajouter un Utilisateur
-                                <PlusCircle className="h-4 w-4" />
-                            </Link>
-                        </Button>
+                        <Dialog open={open} onOpenChange={setOpen}>
+                            <DialogTrigger asChild>
+                                <Button size="sm" className="gap-1">
+                                    Ajouter un Utilisateur
+                                    <PlusCircle className="h-4 w-4" />
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[480px]">
+                                <Form {...form}>
+                                    <form onSubmit={form.handleSubmit(onAddUserSubmit)} className="space-y-8">
+                                        <DialogHeader>
+                                            <DialogTitle>Ajouter un nouvel utilisateur</DialogTitle>
+                                            <DialogDescription>
+                                                Remplissez les détails pour créer un nouveau compte utilisateur.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="grid gap-4 py-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="fullName"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Nom Complet</FormLabel>
+                                                        <FormControl>
+                                                            <Input placeholder="ex: Alex Dupont" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="email"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Adresse E-mail</FormLabel>
+                                                        <FormControl>
+                                                            <Input type="email" placeholder="ex: alex@example.com" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="role"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Rôle</FormLabel>
+                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                            <FormControl>
+                                                                <SelectTrigger>
+                                                                    <SelectValue placeholder="Sélectionnez un rôle" />
+                                                                </SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                <SelectItem value="user">Utilisateur</SelectItem>
+                                                                <SelectItem value="vendor">Vendeur</SelectItem>
+                                                                <SelectItem value="admin">Admin</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="initialBalance"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Solde de Tokens Initial</FormLabel>
+                                                        <FormControl>
+                                                            <Input type="number" placeholder="0" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                        <DialogFooter>
+                                            <Button type="submit">Créer l'utilisateur</Button>
+                                        </DialogFooter>
+                                    </form>
+                                </Form>
+                            </DialogContent>
+                        </Dialog>
+
                         <Button asChild size="sm" className="gap-1">
                             <Link href="/kyc">
                                 Gérer les Vérifications
