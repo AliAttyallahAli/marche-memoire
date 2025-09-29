@@ -87,20 +87,33 @@ export default function ChatPage() {
       setAudioChunks([]);
       
       mediaRecorderRef.current.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          setAudioChunks(prev => [...prev, event.data]);
-        }
+        setAudioChunks(prev => [...prev, event.data]);
       };
 
       mediaRecorderRef.current.onstop = () => {
-        // Cleanup stream
         stream.getTracks().forEach(track => track.stop());
         
-        // Reset recording state
         setIsRecording(false);
         setIsPaused(false);
         if (recordingTimerRef.current) {
           clearInterval(recordingTimerRef.current);
+        }
+        
+        if (audioChunks.length > 0 && selectedConversation) {
+             const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+             const audioUrl = URL.createObjectURL(audioBlob);
+
+             const newAudioMessage: Message = {
+                id: `msg${messages.length + 1}`,
+                conversationId: selectedConversation.id,
+                sender: 'user',
+                type: 'audio',
+                content: `Message vocal (${Math.round(recordingTime)}s)`,
+                audioUrl: audioUrl,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              };
+              setMessages(prev => [...prev, newAudioMessage]);
+              setAudioChunks([]);
         }
       };
 
@@ -126,22 +139,9 @@ export default function ChatPage() {
   const stopRecording = (cancel = false) => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
         mediaRecorderRef.current.stop();
-        if (!cancel && audioChunks.length > 0 && selectedConversation) {
-             const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-             const audioUrl = URL.createObjectURL(audioBlob);
-
-             const newAudioMessage: Message = {
-                id: `msg${messages.length + 1}`,
-                conversationId: selectedConversation.id,
-                sender: 'user',
-                type: 'audio',
-                content: `Message vocal (${Math.round(recordingTime)}s)`,
-                audioUrl: audioUrl,
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-              };
-              setMessages(prev => [...prev, newAudioMessage]);
+        if (cancel) {
+            setAudioChunks([]);
         }
-        setAudioChunks([]);
         setRecordingTime(0);
     }
   };
@@ -436,3 +436,5 @@ export default function ChatPage() {
     </Card>
   )
 }
+
+    
