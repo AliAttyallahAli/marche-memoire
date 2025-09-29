@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Search, Send, Paperclip, ArrowLeft, Phone, Video, Mic, VideoOff, MicOff, X } from "lucide-react"
+import { Search, Send, Paperclip, ArrowLeft, Phone, Video, Mic, VideoOff, MicOff, X, Pause, Play } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
@@ -43,9 +43,12 @@ export default function ChatPage() {
 
   // Voice Message State
   const [isRecording, setIsRecording] = React.useState(false);
+  const [isPaused, setIsPaused] = React.useState(false);
   const [recordingTime, setRecordingTime] = React.useState(0);
   const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
   const recordingTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+  const [audioChunks, setAudioChunks] = React.useState<Blob[]>([]);
+
 
   const handleSelectConversation = (conversation: Conversation) => {
     setSelectedConversation(conversation)
@@ -76,32 +79,23 @@ export default function ChatPage() {
 
   // --- Voice Message Handlers ---
   const startRecording = async () => {
+    if (isRecording) return;
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream);
+      setAudioChunks([]);
       
       mediaRecorderRef.current.ondataavailable = (event) => {
-        // For now, we'll just simulate sending.
-        // In the future, we would handle the event.data (audio blob) here.
-        const audioBlob = event.data;
-        console.log("Audio blob captured:", audioBlob);
+        setAudioChunks(prev => [...prev, event.data]);
       };
 
       mediaRecorderRef.current.onstop = () => {
-        // Simulate sending a voice message
-         if (!selectedConversation) return;
-          const newAudioMessage: Message = {
-            id: `msg${messages.length + 1}`,
-            conversationId: selectedConversation.id,
-            sender: 'user',
-            content: `Message vocal (${Math.round(recordingTime)}s)`,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          };
-          setMessages(prev => [...prev, newAudioMessage]);
-
-        // Cleanup
+        // Cleanup stream
         stream.getTracks().forEach(track => track.stop());
+        
+        // Reset recording state
         setIsRecording(false);
+        setIsPaused(false);
         setRecordingTime(0);
         if (recordingTimerRef.current) {
           clearInterval(recordingTimerRef.current);
@@ -110,6 +104,8 @@ export default function ChatPage() {
 
       mediaRecorderRef.current.start();
       setIsRecording(true);
+      setIsPaused(false);
+      
       recordingTimerRef.current = setInterval(() => {
         setRecordingTime(prevTime => prevTime + 1);
       }, 1000);
@@ -124,20 +120,40 @@ export default function ChatPage() {
     }
   };
 
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
-      mediaRecorderRef.current.stop();
+  const stopRecording = (cancel = false) => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+        mediaRecorderRef.current.stop();
+        if (!cancel && audioChunks.length > 0 && selectedConversation) {
+             const newAudioMessage: Message = {
+                id: `msg${messages.length + 1}`,
+                conversationId: selectedConversation.id,
+                sender: 'user',
+                content: `Message vocal (${Math.round(recordingTime)}s)`,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              };
+              setMessages(prev => [...prev, newAudioMessage]);
+        }
+        setAudioChunks([]);
     }
   };
 
-  const handleMicPress = () => {
-    startRecording();
-  };
-
-  const handleMicRelease = () => {
-    stopRecording();
-  };
-
+  const togglePauseResume = () => {
+    if (!mediaRecorderRef.current) return;
+    
+    if (isPaused) {
+      mediaRecorderRef.current.resume();
+      setIsPaused(false);
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingTime(prevTime => prevTime + 1);
+      }, 1000);
+    } else {
+      mediaRecorderRef.current.pause();
+      setIsPaused(true);
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+      }
+    }
+  }
 
   React.useEffect(() => {
     if (isVideoCallOpen) {
@@ -343,14 +359,28 @@ export default function ChatPage() {
                 </ScrollArea>
                 
                 <div className={cn(
-                    "p-4 border-t bg-muted/20 transition-colors",
-                    isRecording && "bg-red-500/20"
+                    "p-4 border-t bg-muted/20 transition-colors"
                 )}>
                    {isRecording ? (
-                     <div className="flex items-center justify-center gap-4 text-center">
-                        <div className="w-4 h-4 rounded-full bg-red-500 animate-pulse"></div>
-                        <p className="font-mono text-lg">{new Date(recordingTime * 1000).toISOString().substr(14, 5)}</p>
-                        <p className="text-sm text-muted-foreground">Relâchez pour envoyer</p>
+                     <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-2">
+                           <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
+                           <p className="font-mono text-lg">{new Date(recordingTime * 1000).toISOString().substr(14, 5)}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Button variant="ghost" size="icon" onClick={() => stopRecording(true)}>
+                                <X className="h-5 w-5 text-destructive" />
+                                <span className="sr-only">Annuler</span>
+                            </Button>
+                             <Button variant="ghost" size="icon" onClick={togglePauseResume}>
+                                {isPaused ? <Play className="h-5 w-5" /> : <Pause className="h-5 w-5" />}
+                                <span className="sr-only">{isPaused ? 'Reprendre' : 'Pause'}</span>
+                            </Button>
+                            <Button size="icon" onClick={() => stopRecording(false)}>
+                                <Send className="h-5 w-5" />
+                                <span className="sr-only">Envoyer</span>
+                            </Button>
+                        </div>
                      </div>
                    ) : (
                        <form onSubmit={handleSendMessage} className="flex items-center gap-2">
@@ -369,11 +399,7 @@ export default function ChatPage() {
                                 variant="ghost" 
                                 size="icon" 
                                 className="text-muted-foreground" 
-                                onMouseDown={handleMicPress}
-                                onMouseUp={handleMicRelease}
-                                onTouchStart={handleMicPress}
-                                onTouchEnd={handleMicRelease}
-                                onClick={() => handleFeatureClick("Joindre un fichier audio")}
+                                onClick={startRecording}
                             >
                                 <Mic className="h-5 w-5" />
                                 <span className="sr-only">Message vocal</span>
@@ -397,5 +423,3 @@ export default function ChatPage() {
     </Card>
   )
 }
-
-    
