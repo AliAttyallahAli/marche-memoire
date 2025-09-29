@@ -379,7 +379,7 @@ export default function FeedPage() {
                     </div>
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
-                           <p className="font.semibold">{post.authorName}</p>
+                           <p className="font-semibold">{post.authorName}</p>
                            {post.sentiment && <span className="text-sm">{post.sentiment}</span>}
                            <Badge variant={roleVariant[post.authorRole]} className="capitalize text-xs">{post.authorRole}</Badge>
                         </div>
