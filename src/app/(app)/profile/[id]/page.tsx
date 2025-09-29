@@ -52,18 +52,18 @@ function PublicProfileSkeleton() {
 
 export default function PublicProfilePage({ params }: { params: { id: string } }) {
   const { allUsers, posts } = useUser()
-  const { id: userId } = params;
   const [profileUser, setProfileUser] = React.useState<User | null | undefined>(undefined)
   const [userPosts, setUserPosts] = React.useState<Post[]>([])
 
   React.useEffect(() => {
+    const userId = params.id;
     const foundUser = allUsers.find(u => u.id === userId);
     setProfileUser(foundUser)
     if(foundUser) {
         const foundPosts = posts.filter(p => p.authorId === foundUser.id)
         setUserPosts(foundPosts)
     }
-  }, [userId, allUsers, posts])
+  }, [params.id, allUsers, posts])
 
   if (profileUser === undefined) {
     return <PublicProfileSkeleton />
@@ -113,7 +113,7 @@ export default function PublicProfilePage({ params }: { params: { id: string } }
            </CardContent>
         </Card>
       </div>
-      <div className="md:col-span-2">
+      <div className="md-col-span-2">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
