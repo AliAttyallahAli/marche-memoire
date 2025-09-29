@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Search, Send, Paperclip, ArrowLeft, Phone, Video, Mic } from "lucide-react"
+import { Search, Send, Paperclip, ArrowLeft, Phone, Video, Mic, VideoOff, MicOff, X } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
@@ -10,6 +10,15 @@ import { Button } from "@/components/ui/button"
 import {
   Card,
 } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useUser } from "@/context/user-context"
 import { conversations as initialConversations, messages as initialMessages } from "@/lib/data"
@@ -26,6 +35,11 @@ export default function ChatPage() {
   const [selectedConversation, setSelectedConversation] = React.useState<Conversation | null>(null)
   const [newMessage, setNewMessage] = React.useState("")
   const scrollAreaRef = React.useRef<HTMLDivElement>(null)
+
+  // Video Call State
+  const [isVideoCallOpen, setIsVideoCallOpen] = React.useState(false)
+  const [hasCameraPermission, setHasCameraPermission] = React.useState<boolean | null>(null)
+  const videoRef = React.useRef<HTMLVideoElement>(null)
 
   const handleSelectConversation = (conversation: Conversation) => {
     setSelectedConversation(conversation)
@@ -53,6 +67,38 @@ export default function ChatPage() {
       description: `La fonctionnalité "${featureName}" sera bientôt disponible.`,
     })
   }
+
+  React.useEffect(() => {
+    if (isVideoCallOpen) {
+      const getCameraPermission = async () => {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+          setHasCameraPermission(true);
+
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        } catch (error) {
+          console.error('Error accessing camera:', error);
+          setHasCameraPermission(false);
+          toast({
+            variant: 'destructive',
+            title: 'Accès à la caméra refusé',
+            description: 'Veuillez autoriser l\'accès à la caméra dans les paramètres de votre navigateur.',
+          });
+        }
+      };
+
+      getCameraPermission();
+    } else {
+        // Stop camera stream when dialog is closed
+        if (videoRef.current && videoRef.current.srcObject) {
+            const stream = videoRef.current.srcObject as MediaStream;
+            stream.getTracks().forEach(track => track.stop());
+            videoRef.current.srcObject = null;
+        }
+    }
+  }, [isVideoCallOpen, toast]);
 
   React.useEffect(() => {
     const viewport = scrollAreaRef.current?.querySelector('div[data-radix-scroll-area-viewport]');
@@ -160,10 +206,44 @@ export default function ChatPage() {
                             <Phone className="h-5 w-5 text-muted-foreground" />
                             <span className="sr-only">Appel vocal</span>
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => handleFeatureClick('Appel vidéo')}>
-                            <Video className="h-5 w-5 text-muted-foreground" />
-                            <span className="sr-only">Appel vidéo</span>
-                        </Button>
+                        <Dialog open={isVideoCallOpen} onOpenChange={setIsVideoCallOpen}>
+                            <DialogTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                    <Video className="h-5 w-5 text-muted-foreground" />
+                                    <span className="sr-only">Appel vidéo</span>
+                                </Button>
+                            </DialogTrigger>
+                             <DialogContent className="sm:max-w-2xl">
+                                <DialogHeader>
+                                    <DialogTitle>Appel vidéo avec {selectedConversation.name}</DialogTitle>
+                                </DialogHeader>
+                                <div className="aspect-video w-full relative bg-black rounded-md flex items-center justify-center">
+                                    <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted />
+                                    {hasCameraPermission === false && (
+                                        <Alert variant="destructive" className="w-auto">
+                                            <AlertTitle>Accès à la caméra refusé</AlertTitle>
+                                            <AlertDescription>
+                                                Veuillez autoriser l'accès dans votre navigateur.
+                                            </AlertDescription>
+                                        </Alert>
+                                    )}
+                                     {hasCameraPermission === null && (
+                                        <p className="text-white">Connexion à la caméra...</p>
+                                     )}
+                                </div>
+                                <DialogFooter className="sm:justify-center gap-2">
+                                     <Button variant="outline" size="icon" onClick={() => handleFeatureClick('Désactiver la caméra')}>
+                                        <VideoOff className="h-5 w-5" />
+                                    </Button>
+                                    <Button variant="outline" size="icon" onClick={() => handleFeatureClick('Couper le micro')}>
+                                        <MicOff className="h-5 w-5" />
+                                    </Button>
+                                    <Button variant="destructive" size="icon" onClick={() => setIsVideoCallOpen(false)}>
+                                        <X className="h-5 w-5" />
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
                     </div>
                 </div>
                 
