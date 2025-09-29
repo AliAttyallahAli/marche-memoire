@@ -63,21 +63,21 @@ export default function MarketplacePage() {
   })
 
   function handleBuy(product: Product) {
-    if (user.tokenBalance < product.price) {
+    if (!user) return;
+    const transactionCost = product.price + 1; // price + fee
+    if (user.tokenBalance < transactionCost) {
         toast({
             variant: "destructive",
             title: "Solde insuffisant",
-            description: "Vous n'avez pas assez de BZD pour acheter ce produit.",
+            description: "Vous n'avez pas assez de BZD pour acheter ce produit et couvrir les frais.",
         })
         return;
     }
     
     addTransaction({
-        id: `txn${Date.now()}`,
         description: `Achat: ${product.name}`,
         type: 'Purchase',
         status: 'Completed',
-        date: new Date().toISOString(),
         amount: -product.price,
     })
 
@@ -88,6 +88,7 @@ export default function MarketplacePage() {
   }
 
   function onAddProductSubmit(values: z.infer<typeof addProductFormSchema>) {
+    if (!user) return;
     const newProduct: Product = {
         id: `prod${products.length + 1}`,
         name: values.name,

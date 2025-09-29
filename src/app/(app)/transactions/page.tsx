@@ -32,6 +32,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
@@ -76,9 +77,11 @@ function P2PTransferPage() {
   }, [searchParams, form])
 
   function onSubmit(values: z.infer<typeof p2pTransferSchema>) {
+    if (!user) return;
     const recipientUser = allUsers.find(u => u.walletKey === values.recipient || u.cardNumber === values.recipient)
+    const transactionCost = values.amount + 1; // amount + fee
     
-    if (user.tokenBalance < values.amount) {
+    if (user.tokenBalance < transactionCost) {
         toast({
             variant: "destructive",
             title: "Solde insuffisant",
@@ -87,17 +90,12 @@ function P2PTransferPage() {
         return;
     }
     
-    const newTransaction: Transaction = {
-        id: `txn${transactions.length + 1}`,
+    addTransaction({
         description: `Transfert à ${recipientUser ? recipientUser.name : values.recipient.substring(0,10) + '...'}`,
         type: 'Withdrawal',
         status: 'Completed',
-        date: new Date().toISOString(),
         amount: -values.amount,
-    }
-
-    addTransaction(newTransaction)
-    setUser(prev => ({...prev, tokenBalance: prev.tokenBalance - values.amount}))
+    })
     
     toast({
       title: "Transfert Réussi !",
@@ -107,12 +105,15 @@ function P2PTransferPage() {
   }
 
   const handleCopy = () => {
+    if (!user) return;
     navigator.clipboard.writeText(user.walletKey);
     toast({
       title: "Copié !",
       description: "L'adresse de votre portefeuille a été copiée dans le presse-papiers.",
     });
   };
+
+  if (!user) return null;
 
   return (
     <div className="grid gap-8 md:grid-cols-2">
@@ -152,6 +153,9 @@ function P2PTransferPage() {
                       <FormControl>
                         <Input type="number" placeholder="100" {...field} />
                       </FormControl>
+                      <FormDescription>
+                        Des frais de transaction de 1 BZD seront appliqués.
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}

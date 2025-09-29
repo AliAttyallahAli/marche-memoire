@@ -6,6 +6,8 @@ import * as React from 'react';
 import type { User, Product, Transaction, Post, Notification, Comment } from '@/lib/data';
 import { user as initialUser, allUsers as initialUsers, products as initialProducts, allTransactions as initialTransactions, posts as initialPosts, notifications as initialNotifications, allComments as initialComments } from '@/lib/data';
 
+const TRANSACTION_FEE = 1; // 1 BZD fee per transaction
+
 type AppContextType = {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -15,7 +17,7 @@ type AppContextType = {
   products: Product[];
   addProduct: (product: Product) => void;
   transactions: Transaction[];
-  addTransaction: (transaction: Transaction) => void;
+  addTransaction: (transaction: Omit<Transaction, 'id' | 'date'>) => void;
   posts: Post[];
   addPost: (post: Post) => void;
   updatePost: (postId: string, updates: Partial<Post>) => void;
@@ -24,6 +26,7 @@ type AppContextType = {
   markNotificationsAsRead: () => void;
   comments: Comment[];
   addComment: (comment: Omit<Comment, 'id' | 'timestamp'>) => void;
+  adminWalletBalance: number;
 };
 
 const AppContext = React.createContext<AppContextType | undefined>(undefined);
@@ -57,19 +60,21 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [posts, setPosts] = React.useState<Post[]>(() => getInitialState('posts', initialPosts));
   const [notifications, setNotifications] = React.useState<Notification[]>(() => getInitialState('notifications', initialNotifications));
   const [comments, setComments] = React.useState<Comment[]>(() => getInitialState('comments', initialComments));
+  const [adminWalletBalance, setAdminWalletBalance] = React.useState<number>(() => getInitialState('adminWalletBalance', 10000));
   
   const [isInitialized, setIsInitialized] = React.useState(false);
 
   React.useEffect(() => {
     // This effect ensures that the state is re-hydrated on the client side
     // after the initial server render.
-    setUser(getInitialState('user', initialUser));
+    setUser(getInitialState('user', null));
     setAllUsers(getInitialState('allUsers', initialUsers));
     setProducts(getInitialState('products', initialProducts));
     setTransactions(getInitialState('transactions', initialTransactions));
     setPosts(getInitialState('posts', initialPosts));
     setNotifications(getInitialState('notifications', initialNotifications));
     setComments(getInitialState('comments', initialComments));
+    setAdminWalletBalance(getInitialState('adminWalletBalance', 10000));
     setIsInitialized(true);
   }, []);
 
@@ -100,6 +105,10 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   React.useEffect(() => {
     if (isInitialized) localStorage.setItem('comments', JSON.stringify(comments));
   }, [comments, isInitialized]);
+  
+  React.useEffect(() => {
+    if (isInitialized) localStorage.setItem('adminWalletBalance', JSON.stringify(adminWalletBalance));
+  }, [adminWalletBalance, isInitialized]);
 
 
   const addTokens = (amount: number) => {
@@ -128,13 +137,40 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     });
   }
   
-  const addTransaction = (newTransaction: Transaction) => {
+  const addTransaction = (transactionData: Omit<Transaction, 'id' | 'date'>) => {
+    const isFeeApplicable = transactionData.type === 'Purchase' || transactionData.type === 'Withdrawal';
+    const totalAmount = isFeeApplicable ? transactionData.amount - TRANSACTION_FEE : transactionData.amount;
+    
+    setUser(prevUser => {
+        if (!prevUser) return null;
+        return {
+            ...prevUser,
+            tokenBalance: prevUser.tokenBalance + totalAmount
+        }
+    });
+
+    const newTransaction: Transaction = {
+        ...transactionData,
+        id: `txn${Date.now()}`,
+        date: new Date().toISOString(),
+        amount: totalAmount, // The amount for the user's transaction list
+    };
+    
     setTransactions(prevTransactions => [newTransaction, ...prevTransactions]);
-    if(newTransaction.type === 'Withdrawal') {
-        addNotification({
-            title: "Transfert Envoyé",
-            description: `Vous avez envoyé ${Math.abs(newTransaction.amount)} BZD.`
-        });
+    
+    if (isFeeApplicable) {
+        setAdminWalletBalance(prev => prev + TRANSACTION_FEE);
+        
+        const feeTransaction: Transaction = {
+            id: `fee${Date.now()}`,
+            description: `Frais pour la transaction ${newTransaction.id}`,
+            type: 'Deposit',
+            status: 'Completed',
+            date: new Date().toISOString(),
+            amount: TRANSACTION_FEE,
+        };
+        // Maybe add to a separate admin transaction list in future?
+        // For now, it just increases the admin wallet balance.
     }
   }
   
@@ -188,7 +224,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
 
   return (
-    <AppContext.Provider value={{ user, setUser, addTokens, allUsers, addUser, products, addProduct, transactions, addTransaction, posts, addPost, updatePost, notifications, addNotification, markNotificationsAsRead, comments, addComment }}>
+    <AppContext.Provider value={{ user, setUser, addTokens, allUsers, addUser, products, addProduct, transactions, addTransaction, posts, addPost, updatePost, notifications, addNotification, markNotificationsAsRead, comments, addComment, adminWalletBalance }}>
       {children}
     </AppContext.Provider>
   );
