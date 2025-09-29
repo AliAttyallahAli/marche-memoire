@@ -52,17 +52,18 @@ function PublicProfileSkeleton() {
 
 export default function PublicProfilePage({ params }: { params: { id: string } }) {
   const { allUsers, posts } = useUser()
+  const { id: userId } = params;
   const [profileUser, setProfileUser] = React.useState<User | null | undefined>(undefined)
   const [userPosts, setUserPosts] = React.useState<Post[]>([])
 
   React.useEffect(() => {
-    const foundUser = allUsers.find(u => u.id === params.id);
+    const foundUser = allUsers.find(u => u.id === userId);
     setProfileUser(foundUser)
     if(foundUser) {
         const foundPosts = posts.filter(p => p.authorId === foundUser.id)
         setUserPosts(foundPosts)
     }
-  }, [params.id, allUsers, posts])
+  }, [userId, allUsers, posts])
 
   if (profileUser === undefined) {
     return <PublicProfileSkeleton />
