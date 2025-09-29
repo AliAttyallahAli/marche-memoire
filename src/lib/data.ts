@@ -1,6 +1,7 @@
 
 
 export type User = {
+  id: string;
   name: string;
   email: string;
   avatar: string;
@@ -30,6 +31,7 @@ export const stories: Story[] = [
 
 
 export const user: User = {
+  id: 'user0',
   name: 'Ali Atty',
   email: 'aliattyallahali@gmail.com',
   avatar: 'https://placehold.co/100x100.png',
@@ -44,10 +46,10 @@ export const user: User = {
 
 export const allUsers: User[] = [
     { ...user },
-    { name: 'Maria Garcia', email: 'maria.g@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 850.00, walletKey: '0x...1234', kycStatus: 'Verified', role: 'user', status: 'online', stories: [stories[0]], cardNumber: '4022234567890123' },
-    { name: 'James Smith', email: 'james.s@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 2300.50, walletKey: '0x...5678', kycStatus: 'Pending', role: 'vendor', status: 'offline', stories: [stories[1]], cardNumber: '4022345678901234' },
-    { name: 'Patricia Brown', email: 'patricia.b@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 450.25, walletKey: '0x...9101', kycStatus: 'Rejected', role: 'user', status: 'offline', stories: [stories[2]], cardNumber: '4022456789012345' },
-    { name: 'Robert Miller', email: 'robert.m@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 5000.00, walletKey: '0x...1121', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[3]], cardNumber: '4022567890123456' },
+    { id: 'user1', name: 'Maria Garcia', email: 'maria.g@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 850.00, walletKey: '0x...1234', kycStatus: 'Verified', role: 'user', status: 'online', stories: [stories[0]], cardNumber: '4022234567890123' },
+    { id: 'user2', name: 'James Smith', email: 'james.s@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 2300.50, walletKey: '0x...5678', kycStatus: 'Pending', role: 'vendor', status: 'offline', stories: [stories[1]], cardNumber: '4022345678901234' },
+    { id: 'user3', name: 'Patricia Brown', email: 'patricia.b@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 450.25, walletKey: '0x...9101', kycStatus: 'Rejected', role: 'user', status: 'offline', stories: [stories[2]], cardNumber: '4022456789012345' },
+    { id: 'user4', name: 'Robert Miller', email: 'robert.m@example.com', avatar: 'https://placehold.co/100x100.png', tokenBalance: 5000.00, walletKey: '0x...1121', kycStatus: 'Not Submitted', role: 'user', status: 'online', stories: [stories[3]], cardNumber: '4022567890123456' },
 ]
 
 export type Transaction = {
@@ -90,6 +92,7 @@ export const products: Product[] = [
 export type Comment = {
   id: string;
   postId: string;
+  authorId: string;
   authorName: string;
   authorAvatar: string;
   content: string;
@@ -98,6 +101,7 @@ export type Comment = {
 
 export type Post = {
   id: string;
+  authorId: string;
   authorName: string;
   authorHandle: string;
   authorAvatar: string;
@@ -115,13 +119,14 @@ export type Post = {
 };
 
 export const allComments: Comment[] = [
-    { id: 'comment1', postId: 'post1', authorName: 'James Smith', authorAvatar: 'https://placehold.co/100x100.png', content: 'Awesome, can\'t wait to check it out!', timestamp: '2024-07-18T10:05:00Z' },
-    { id: 'comment2', postId: 'post2', authorName: 'Maria Garcia', authorAvatar: 'https://placehold.co/100x100.png', content: 'I\'d love to see a feature for creating polls.', timestamp: '2024-07-17T15:35:00Z' },
+    { id: 'comment1', postId: 'post1', authorId: 'user2', authorName: 'James Smith', authorAvatar: 'https://placehold.co/100x100.png', content: 'Awesome, can\'t wait to check it out!', timestamp: '2024-07-18T10:05:00Z' },
+    { id: 'comment2', postId: 'post2', authorId: 'user1', authorName: 'Maria Garcia', authorAvatar: 'https://placehold.co/100x100.png', content: 'I\'d love to see a feature for creating polls.', timestamp: '2024-07-17T15:35:00Z' },
 ]
 
 export const posts: Post[] = [
   {
     id: 'post1',
+    authorId: 'user1',
     authorName: 'Maria Garcia',
     authorHandle: 'maria.g',
     authorAvatar: 'https://placehold.co/100x100.png',
@@ -138,6 +143,7 @@ export const posts: Post[] = [
   },
   {
     id: 'post2',
+    authorId: 'user2',
     authorName: 'James Smith',
     authorHandle: 'james.s',
     authorAvatar: 'https://placehold.co/100x100.png',
@@ -153,6 +159,7 @@ export const posts: Post[] = [
   },
   {
     id: 'post3',
+    authorId: 'user0',
     authorName: 'Ali Atty',
     authorHandle: 'ali.a',
     authorAvatar: 'https://placehold.co/100x100.png',
@@ -273,8 +280,3 @@ export const notifications: Notification[] = [
     read: true,
   },
 ];
-
-
-
-    
-    

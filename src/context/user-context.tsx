@@ -13,19 +13,19 @@ type AppContextType = {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   addTokens: (amount: number) => void;
   allUsers: User[];
-  addUser: (user: User) => void;
+  addUser: (user: Omit<User, 'id'>) => void;
   products: Product[];
   addProduct: (product: Product) => void;
   transactions: Transaction[];
   addTransaction: (transaction: Omit<Transaction, 'id' | 'date'>) => void;
   posts: Post[];
-  addPost: (post: Post) => void;
+  addPost: (post: Omit<Post, 'id' | 'authorId'>) => void;
   updatePost: (postId: string, updates: Partial<Post>) => void;
   notifications: Notification[];
   addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void;
   markNotificationsAsRead: () => void;
   comments: Comment[];
-  addComment: (comment: Omit<Comment, 'id' | 'timestamp'>) => void;
+  addComment: (comment: Omit<Comment, 'id' | 'timestamp' | 'authorId'>) => void;
   adminWalletBalance: number;
 };
 
@@ -121,8 +121,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     });
   };
 
-  const addUser = (newUser: User) => {
-    setAllUsers(prevUsers => [newUser, ...prevUsers]);
+  const addUser = (newUser: Omit<User, 'id'>) => {
+    const userWithId = { ...newUser, id: `user${Date.now()}` };
+    setAllUsers(prevUsers => [userWithId, ...prevUsers]);
     addNotification({
         title: "Nouvel Utilisateur Ajouté",
         description: `${newUser.name} a été ajouté à la plateforme.`
@@ -174,7 +175,13 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }
   
-  const addPost = (newPost: Post) => {
+  const addPost = (postData: Omit<Post, 'id' | 'authorId'>) => {
+    if (!user) return;
+    const newPost: Post = {
+      ...postData,
+      id: `post${Date.now()}`,
+      authorId: user.id,
+    };
     setPosts(prevPosts => [newPost, ...prevPosts]);
   }
 
@@ -186,11 +193,13 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     );
   };
   
-  const addComment = (commentData: Omit<Comment, 'id' | 'timestamp'>) => {
+  const addComment = (commentData: Omit<Comment, 'id' | 'timestamp' | 'authorId'>) => {
+    if (!user) return;
     const newComment: Comment = {
       ...commentData,
       id: `comment${Date.now()}`,
       timestamp: new Date().toISOString(),
+      authorId: user.id,
     };
     setComments(prev => [newComment, ...prev]);
 

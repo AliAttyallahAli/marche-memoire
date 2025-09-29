@@ -106,6 +106,7 @@ export default function FeedPage() {
     const handlePostCreation = (imageUrl?: string) => {
         const newPost: Post = {
           id: `post${posts.length + 1}`,
+          authorId: user.id,
           authorName: user.name,
           authorHandle: user.email.split('@')[0],
           authorAvatar: user.avatar,
@@ -148,6 +149,7 @@ export default function FeedPage() {
         if (!user) return;
         addComment({
             postId: postId,
+            authorId: user.id,
             authorName: user.name,
             authorAvatar: user.avatar,
             content: values.comment,
@@ -364,12 +366,13 @@ export default function FeedPage() {
             const postUrl = typeof window !== 'undefined' ? `${window.location.origin}/feed#${post.id}` : '';
             const shareText = encodeURIComponent(post.content);
             const embedUrl = post.videoUrl ? getYouTubeEmbedUrl(post.videoUrl) : null;
+            const profileUrl = `/profile/${post.authorId}`;
 
             return (
             <Card key={post.id} id={post.id}>
               <CardContent className="p-4 flex flex-col gap-4">
                 <div className="flex items-start gap-3">
-                   <Link href="/profile" className="relative">
+                   <Link href={profileUrl} className="relative">
                         <Avatar>
                             <AvatarImage src={post.authorAvatar} data-ai-hint="user avatar" />
                             <AvatarFallback>{post.authorName.split(' ').map(n => n[0]).join('')}</AvatarFallback>
@@ -380,7 +383,7 @@ export default function FeedPage() {
                     </Link>
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
-                           <Link href="/profile" className="font-semibold hover:underline">{post.authorName}</Link>
+                           <Link href={profileUrl} className="font-semibold hover:underline">{post.authorName}</Link>
                            {post.sentiment && <span className="text-sm">{post.sentiment}</span>}
                            <Badge variant={roleVariant[post.authorRole]} className="capitalize text-xs">{post.authorRole}</Badge>
                         </div>
@@ -474,7 +477,7 @@ export default function FeedPage() {
                         </Avatar>
                         <div className="bg-muted p-3 rounded-lg flex-1">
                             <div className="flex items-center justify-between">
-                                <p className="font-semibold text-sm">{comment.authorName}</p>
+                                <Link href={`/profile/${comment.authorId}`} className="font-semibold text-sm hover:underline">{comment.authorName}</Link>
                                 <p className="text-xs text-muted-foreground"><PostTimestamp timestamp={comment.timestamp} /></p>
                             </div>
                             <p className="text-sm mt-1">{comment.content}</p>
