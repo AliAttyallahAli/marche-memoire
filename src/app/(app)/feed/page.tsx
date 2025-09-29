@@ -29,6 +29,7 @@ import { getSentiment } from "@/ai/flows/sentiment-flow"
 const postFormSchema = z.object({
   content: z.string().min(1, "La publication ne peut pas être vide.").max(280, "La publication ne peut pas dépasser 280 caractères."),
   image: z.any().optional(),
+  videoUrl: z.string().url("Veuillez entrer une URL de vidéo valide.").optional().or(z.literal('')),
 })
 
 const commentFormSchema = z.object({
@@ -59,18 +60,33 @@ function PostTimestamp({ timestamp }: { timestamp: string }) {
     return postDate.toLocaleDateString();
 }
 
+function getYouTubeEmbedUrl(url: string): string | null {
+  if (!url) return null;
+  let videoId: string | null = null;
+  if (url.includes("youtube.com/watch")) {
+    const urlParams = new URLSearchParams(new URL(url).search);
+    videoId = urlParams.get("v");
+  } else if (url.includes("youtu.be/")) {
+    videoId = url.split("youtu.be/")[1]?.split("?")[0];
+  }
+  
+  return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+}
+
 export default function FeedPage() {
   const { toast } = useToast()
   const { user, posts, addPost, updatePost, addComment } = useUser()
   const [likedPosts, setLikedPosts] = React.useState<Set<string>>(new Set())
   const [activeCommentPostId, setActiveCommentPostId] = React.useState<string | null>(null)
   const [showImageInput, setShowImageInput] = React.useState(false)
+  const [showVideoInput, setShowVideoInput] = React.useState(false)
 
   const postForm = useForm<z.infer<typeof postFormSchema>>({
     resolver: zodResolver(postFormSchema),
     defaultValues: {
       content: "",
       image: undefined,
+      videoUrl: "",
     },
   })
 
@@ -86,7 +102,7 @@ export default function FeedPage() {
   
     const sentiment = await getSentiment(values.content);
 
-    const handleImageAndPost = (imageUrl?: string) => {
+    const handlePostCreation = (imageUrl?: string) => {
         const newPost: Post = {
           id: `post${posts.length + 1}`,
           authorName: user.name,
@@ -100,12 +116,14 @@ export default function FeedPage() {
           comments: 0,
           shares: 0,
           imageUrl: imageUrl,
+          videoUrl: values.videoUrl,
           commentsData: [],
           sentiment: sentiment,
         }
         addPost(newPost);
         postForm.reset()
         setShowImageInput(false)
+        setShowVideoInput(false)
         toast({
           title: "Publié !",
           description: "Votre mise à jour a été ajoutée au fil d'actualités.",
@@ -116,11 +134,11 @@ export default function FeedPage() {
       const reader = new FileReader();
       reader.onload = (e) => {
         const imageUrl = e.target?.result as string;
-        handleImageAndPost(imageUrl);
+        handlePostCreation(imageUrl);
       };
       reader.readAsDataURL(values.image[0]);
     } else {
-        handleImageAndPost();
+        handlePostCreation();
     }
   }
   
@@ -303,15 +321,31 @@ export default function FeedPage() {
                         )}
                       />
                     )}
+                    {showVideoInput && (
+                        <FormField
+                            control={postForm.control}
+                            name="videoUrl"
+                            render={({ field }) => (
+                                <FormItem className="mt-4">
+                                    <FormControl>
+                                        <Input placeholder="Collez l'URL de la vidéo (ex: YouTube)" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    )}
                   </div>
                 </div>
                  <Separator />
                 <div className="flex justify-between items-center">
                     <div className="flex gap-1">
-                        <Button variant="ghost" size="icon" onClick={() => setShowImageInput(!showImageInput)} type="button">
+                        <Button variant="ghost" size="icon" onClick={() => {setShowImageInput(!showImageInput); setShowVideoInput(false)}} type="button">
                             <ImageIcon className={cn("h-5 w-5 text-muted-foreground", showImageInput && "text-primary")} />
                         </Button>
-                        <Button variant="ghost" size="icon" type="button" onClick={() => handleFeatureClick("des vidéos")}><Video className="h-5 w-5 text-muted-foreground" /></Button>
+                        <Button variant="ghost" size="icon" type="button" onClick={() => {setShowVideoInput(!showVideoInput); setShowImageInput(false)}}>
+                            <Video className={cn("h-5 w-5 text-muted-foreground", showVideoInput && "text-primary")} />
+                        </Button>
                         <Button variant="ghost" size="icon" type="button" onClick={() => handleFeatureClick("un sentiment")}><Smile className="h-5 w-5 text-muted-foreground" /></Button>
                         <Button variant="ghost" size="icon" type="button" onClick={() => handleFeatureClick("un sondage")}><ListChecks className="h-5 w-5 text-muted-foreground" /></Button>
                         <Button variant="ghost" size="icon" type="button" onClick={() => handleFeatureClick("votre localisation")}><MapPin className="h-5 w-5 text-muted-foreground" /></Button>
@@ -328,6 +362,7 @@ export default function FeedPage() {
             const isLiked = likedPosts.has(post.id)
             const postUrl = typeof window !== 'undefined' ? `${window.location.origin}/feed#${post.id}` : '';
             const shareText = encodeURIComponent(post.content);
+            const embedUrl = post.videoUrl ? getYouTubeEmbedUrl(post.videoUrl) : null;
 
             return (
             <Card key={post.id} id={post.id}>
@@ -362,6 +397,20 @@ export default function FeedPage() {
                     <div className="relative aspect-video rounded-lg overflow-hidden border">
                         <Image src={post.imageUrl} alt="Contenu de la publication" fill className="object-cover" data-ai-hint="post image" />
                     </div>
+                )}
+                
+                {embedUrl && (
+                  <div className="relative aspect-video rounded-lg overflow-hidden border">
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      src={embedUrl}
+                      title="YouTube video player"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="absolute top-0 left-0 w-full h-full"
+                    ></iframe>
+                  </div>
                 )}
 
                 <div className="flex justify-between text-muted-foreground text-sm">
@@ -474,6 +523,4 @@ export default function FeedPage() {
   )
 }
 
-
-    
     

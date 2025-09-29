@@ -193,7 +193,7 @@ export default function ChatPage() {
                 
                 <div className="p-4 border-t bg-muted/20">
                    <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => handleFeatureClick('Joindre un fichier')}>
+                        <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => handleFeatureClick('Pièce jointe')}>
                             <Paperclip className="h-5 w-5" />
                             <span className="sr-only">Joindre un fichier</span>
                         </Button>
@@ -225,3 +225,5 @@ export default function ChatPage() {
     </Card>
   )
 }
+
+    
