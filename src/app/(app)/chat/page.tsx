@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Search, Send, Paperclip, ArrowLeft } from "lucide-react"
+import { Search, Send, Paperclip, ArrowLeft, Phone, Video, Mic } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
@@ -16,9 +16,11 @@ import { conversations as initialConversations, messages as initialMessages } fr
 import type { Conversation, Message } from "@/lib/data"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
+import { useToast } from "@/hooks/use-toast"
 
 export default function ChatPage() {
   const { user } = useUser()
+  const { toast } = useToast()
   const [conversations, setConversations] = React.useState<Conversation[]>(initialConversations)
   const [messages, setMessages] = React.useState<Message[]>(initialMessages)
   const [selectedConversation, setSelectedConversation] = React.useState<Conversation | null>(null)
@@ -43,6 +45,13 @@ export default function ChatPage() {
     
     setMessages([...messages, newMessageObj])
     setNewMessage("")
+  }
+
+  const handleFeatureClick = (featureName: string) => {
+    toast({
+      title: "Fonctionnalité à venir",
+      description: `La fonctionnalité "${featureName}" sera bientôt disponible.`,
+    })
   }
 
   React.useEffect(() => {
@@ -142,9 +151,19 @@ export default function ChatPage() {
                             <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-card" />
                         )}
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex-1 flex items-center gap-2">
                         <p className="font-semibold">{selectedConversation.name}</p>
                         <Badge variant={roleVariant[selectedConversation.role]} className="capitalize text-xs">{selectedConversation.role}</Badge>
+                    </div>
+                     <div className="flex items-center gap-1">
+                        <Button variant="ghost" size="icon" onClick={() => handleFeatureClick('Appel vocal')}>
+                            <Phone className="h-5 w-5 text-muted-foreground" />
+                            <span className="sr-only">Appel vocal</span>
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => handleFeatureClick('Appel vidéo')}>
+                            <Video className="h-5 w-5 text-muted-foreground" />
+                            <span className="sr-only">Appel vidéo</span>
+                        </Button>
                     </div>
                 </div>
                 
@@ -174,7 +193,7 @@ export default function ChatPage() {
                 
                 <div className="p-4 border-t bg-muted/20">
                    <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" className="text-muted-foreground">
+                        <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => handleFeatureClick('Joindre un fichier')}>
                             <Paperclip className="h-5 w-5" />
                             <span className="sr-only">Joindre un fichier</span>
                         </Button>
@@ -184,6 +203,10 @@ export default function ChatPage() {
                             value={newMessage}
                             onChange={(e) => setNewMessage(e.target.value)}
                         />
+                        <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => handleFeatureClick('Message vocal')}>
+                            <Mic className="h-5 w-5" />
+                            <span className="sr-only">Message vocal</span>
+                        </Button>
                         <Button type="submit" size="icon">
                             <Send className="h-5 w-5" />
                             <span className="sr-only">Envoyer</span>
