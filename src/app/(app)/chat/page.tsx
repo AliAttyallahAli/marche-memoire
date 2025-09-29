@@ -41,6 +41,12 @@ export default function ChatPage() {
   const [hasCameraPermission, setHasCameraPermission] = React.useState<boolean | null>(null)
   const videoRef = React.useRef<HTMLVideoElement>(null)
 
+  // Voice Message State
+  const [isRecording, setIsRecording] = React.useState(false);
+  const [recordingTime, setRecordingTime] = React.useState(0);
+  const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
+  const recordingTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+
   const handleSelectConversation = (conversation: Conversation) => {
     setSelectedConversation(conversation)
   }
@@ -67,6 +73,71 @@ export default function ChatPage() {
       description: `La fonctionnalité "${featureName}" sera bientôt disponible.`,
     })
   }
+
+  // --- Voice Message Handlers ---
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      
+      mediaRecorderRef.current.ondataavailable = (event) => {
+        // For now, we'll just simulate sending.
+        // In the future, we would handle the event.data (audio blob) here.
+        const audioBlob = event.data;
+        console.log("Audio blob captured:", audioBlob);
+      };
+
+      mediaRecorderRef.current.onstop = () => {
+        // Simulate sending a voice message
+         if (!selectedConversation) return;
+          const newAudioMessage: Message = {
+            id: `msg${messages.length + 1}`,
+            conversationId: selectedConversation.id,
+            sender: 'user',
+            content: `Message vocal (${Math.round(recordingTime)}s)`,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          };
+          setMessages(prev => [...prev, newAudioMessage]);
+
+        // Cleanup
+        stream.getTracks().forEach(track => track.stop());
+        setIsRecording(false);
+        setRecordingTime(0);
+        if (recordingTimerRef.current) {
+          clearInterval(recordingTimerRef.current);
+        }
+      };
+
+      mediaRecorderRef.current.start();
+      setIsRecording(true);
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingTime(prevTime => prevTime + 1);
+      }, 1000);
+
+    } catch (error) {
+      console.error("Error accessing microphone:", error);
+      toast({
+        variant: "destructive",
+        title: "Accès au micro refusé",
+        description: "Veuillez autoriser l'accès au microphone.",
+      });
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+      mediaRecorderRef.current.stop();
+    }
+  };
+
+  const handleMicPress = () => {
+    startRecording();
+  };
+
+  const handleMicRelease = () => {
+    stopRecording();
+  };
+
 
   React.useEffect(() => {
     if (isVideoCallOpen) {
@@ -271,27 +342,48 @@ export default function ChatPage() {
                     </div>
                 </ScrollArea>
                 
-                <div className="p-4 border-t bg-muted/20">
-                   <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-                        <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => handleFeatureClick('Pièce jointe')}>
-                            <Paperclip className="h-5 w-5" />
-                            <span className="sr-only">Joindre un fichier</span>
-                        </Button>
-                        <Input 
-                            placeholder="Écrivez votre message..." 
-                            className="bg-background"
-                            value={newMessage}
-                            onChange={(e) => setNewMessage(e.target.value)}
-                        />
-                        <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => handleFeatureClick('Message vocal')}>
-                            <Mic className="h-5 w-5" />
-                            <span className="sr-only">Message vocal</span>
-                        </Button>
-                        <Button type="submit" size="icon">
-                            <Send className="h-5 w-5" />
-                            <span className="sr-only">Envoyer</span>
-                        </Button>
-                   </form>
+                <div className={cn(
+                    "p-4 border-t bg-muted/20 transition-colors",
+                    isRecording && "bg-red-500/20"
+                )}>
+                   {isRecording ? (
+                     <div className="flex items-center justify-center gap-4 text-center">
+                        <div className="w-4 h-4 rounded-full bg-red-500 animate-pulse"></div>
+                        <p className="font-mono text-lg">{new Date(recordingTime * 1000).toISOString().substr(14, 5)}</p>
+                        <p className="text-sm text-muted-foreground">Relâchez pour envoyer</p>
+                     </div>
+                   ) : (
+                       <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+                            <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => handleFeatureClick('Pièce jointe')}>
+                                <Paperclip className="h-5 w-5" />
+                                <span className="sr-only">Joindre un fichier</span>
+                            </Button>
+                            <Input 
+                                placeholder="Écrivez votre message..." 
+                                className="bg-background"
+                                value={newMessage}
+                                onChange={(e) => setNewMessage(e.target.value)}
+                            />
+                            <Button 
+                                type="button" 
+                                variant="ghost" 
+                                size="icon" 
+                                className="text-muted-foreground" 
+                                onMouseDown={handleMicPress}
+                                onMouseUp={handleMicRelease}
+                                onTouchStart={handleMicPress}
+                                onTouchEnd={handleMicRelease}
+                                onClick={() => handleFeatureClick("Joindre un fichier audio")}
+                            >
+                                <Mic className="h-5 w-5" />
+                                <span className="sr-only">Message vocal</span>
+                            </Button>
+                            <Button type="submit" size="icon">
+                                <Send className="h-5 w-5" />
+                                <span className="sr-only">Envoyer</span>
+                            </Button>
+                       </form>
+                   )}
                 </div>
 
                 </>
