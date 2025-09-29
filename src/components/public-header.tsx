@@ -12,7 +12,6 @@ export function PublicHeader() {
     const pathname = usePathname();
 
     const navLinks = [
-        { href: "/marketplace", label: "Marketplace" },
     ]
 
     return (
