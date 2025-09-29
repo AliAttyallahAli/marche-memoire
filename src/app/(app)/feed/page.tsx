@@ -14,7 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { useToast } from "@/hooks/use-toast"
 import { useUser } from "@/context/user-context"
 import type { Post } from "@/lib/data"
-import { MessageSquare, ThumbsUp, Share2, PlusCircle, Image as ImageIcon, Video, Smile, MapPin, ListChecks, Copy, Heart, Send } from "lucide-react"
+import { MessageSquare, ThumbsUp, Share2, PlusCircle, Image as ImageIcon, Video, Smile, MapPin, ListChecks, Copy, Heart, Send, Link as LinkIcon } from "lucide-react"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { stories } from "@/lib/data"
@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { getSentiment } from "@/ai/flows/sentiment-flow"
 import Link from "next/link"
+import type { LinkPreviewData } from "@/lib/data"
 
 const postFormSchema = z.object({
   content: z.string().min(1, "La publication ne peut pas être vide.").max(280, "La publication ne peut pas dépasser 280 caractères."),
@@ -72,6 +73,23 @@ function getYouTubeEmbedUrl(url: string): string | null {
   }
   
   return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+}
+
+function LinkPreview({ data }: { data: LinkPreviewData }) {
+    return (
+        <a href={data.url} target="_blank" rel="noopener noreferrer" className="block mt-4 border rounded-lg overflow-hidden hover:bg-muted/50 transition-colors">
+            {data.image && (
+                 <div className="relative aspect-video w-full">
+                    <Image src={data.image} alt={data.title} fill className="object-cover" />
+                 </div>
+            )}
+            <div className="p-4">
+                <p className="text-xs text-muted-foreground uppercase tracking-wider">{data.domain}</p>
+                <h3 className="font-semibold text-sm mt-1 truncate">{data.title}</h3>
+                <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{data.description}</p>
+            </div>
+        </a>
+    )
 }
 
 export default function FeedPage() {
@@ -416,6 +434,8 @@ export default function FeedPage() {
                     ></iframe>
                   </div>
                 )}
+
+                {post.linkPreview && <LinkPreview data={post.linkPreview} />}
 
                 <div className="flex justify-between text-muted-foreground text-sm">
                     <div>{post.likes} J'aime</div>

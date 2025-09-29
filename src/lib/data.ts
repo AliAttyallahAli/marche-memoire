@@ -99,6 +99,14 @@ export type Comment = {
   timestamp: string;
 }
 
+export type LinkPreviewData = {
+    url: string;
+    title: string;
+    description: string;
+    image: string;
+    domain: string;
+}
+
 export type Post = {
   id: string;
   authorId: string;
@@ -116,6 +124,7 @@ export type Post = {
   videoUrl?: string;
   sentiment?: string;
   commentsData: Comment[];
+  linkPreview?: LinkPreviewData;
 };
 
 export const allComments: Comment[] = [
@@ -149,13 +158,20 @@ export const posts: Post[] = [
     authorAvatar: 'https://placehold.co/100x100.png',
     authorStatus: 'offline',
     authorRole: 'vendor',
-    content: 'Excited to see the community growing so quickly! The new P2P transfer feature is a game-changer. What other features would you all like to see?',
+    content: 'Excited to see the community growing so quickly! The new P2P transfer feature is a game-changer. What other features would you all like to see? Check out the latest Next.js updates: https://nextjs.org/blog/next-14',
     timestamp: '2024-07-17T15:30:00Z',
     likes: 128,
     comments: 1,
     shares: 12,
     sentiment: '🚀',
     commentsData: [allComments[1]],
+    linkPreview: {
+        url: 'https://nextjs.org/blog/next-14',
+        title: 'Next.js 14',
+        description: 'Learn about the latest features in Next.js 14, including Turbopack, Server Actions, and more.',
+        image: 'https://nextjs.org/api/og?title=Next.js%2014',
+        domain: 'nextjs.org'
+    }
   },
   {
     id: 'post3',
