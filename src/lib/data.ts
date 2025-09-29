@@ -184,7 +184,9 @@ export type Message = {
   id: string;
   conversationId: string;
   sender: 'user' | 'contact';
+  type: 'text' | 'audio';
   content: string;
+  audioUrl?: string;
   timestamp: string;
 };
 
@@ -195,13 +197,13 @@ export const conversations: Conversation[] = [
 ];
 
 export const messages: Message[] = [
-  { id: 'msg1', conversationId: 'convo1', sender: 'contact', content: 'Hey, tu as vu la nouvelle fonctionnalité sur la marketplace ?', timestamp: '10:40' },
-  { id: 'msg2', conversationId: 'convo1', sender: 'user', content: 'Non, pas encore. C\'est quoi ?', timestamp: '10:41' },
-  { id: 'msg3', conversationId: 'convo1', sender: 'contact', content: 'On peut maintenant lister des services en plus des produits.', timestamp: '10:41' },
-  { id: 'msg4', conversationId: 'convo1', sender: 'user', content: 'Super ! Merci pour l\'info.', timestamp: '10:42' },
-  { id: 'msg5', conversationId: 'convo2', sender: 'user', content: 'Salut James, tu es dispo pour un appel rapide ?', timestamp: '15:30' },
-  { id: 'msg6', conversationId: 'convo2', sender: 'contact', content: 'Salut Alex, je suis en réunion pour le moment. Demain matin ça te va ?', timestamp: '15:32' },
-  { id: 'msg7', conversationId: 'convo2', sender: 'user', content: 'Oui, je serai disponible demain.', timestamp: '15:35' },
+  { id: 'msg1', conversationId: 'convo1', sender: 'contact', type: 'text', content: 'Hey, tu as vu la nouvelle fonctionnalité sur la marketplace ?', timestamp: '10:40' },
+  { id: 'msg2', conversationId: 'convo1', sender: 'user', type: 'text', content: 'Non, pas encore. C\'est quoi ?', timestamp: '10:41' },
+  { id: 'msg3', conversationId: 'convo1', sender: 'contact', type: 'text', content: 'On peut maintenant lister des services en plus des produits.', timestamp: '10:41' },
+  { id: 'msg4', conversationId: 'convo1', sender: 'user', type: 'text', content: 'Super ! Merci pour l\'info.', timestamp: '10:42' },
+  { id: 'msg5', conversationId: 'convo2', sender: 'user', type: 'text', content: 'Salut James, tu es dispo pour un appel rapide ?', timestamp: '15:30' },
+  { id: 'msg6', conversationId: 'convo2', sender: 'contact', type: 'text', content: 'Salut Alex, je suis en réunion pour le moment. Demain matin ça te va ?', timestamp: '15:32' },
+  { id: 'msg7', conversationId: 'convo2', sender: 'user', type: 'text', content: 'Oui, je serai disponible demain.', timestamp: '15:35' },
 ];
 
 export type Operator = {
