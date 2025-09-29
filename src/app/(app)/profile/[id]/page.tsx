@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { notFound } from "next/navigation"
+import { notFound, useParams } from "next/navigation"
 import { useUser } from "@/context/user-context"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -50,18 +50,21 @@ function PublicProfileSkeleton() {
   )
 }
 
-export default function PublicProfilePage({ params }: { params: { id: string } }) {
+export default function PublicProfilePage() {
   const { allUsers, posts } = useUser()
+  const params = useParams()
+  const userId = params.id as string;
   const [profileUser, setProfileUser] = React.useState<User | null | undefined>(undefined)
   const [userPosts, setUserPosts] = React.useState<Post[]>([])
-  const userId = params.id;
 
   React.useEffect(() => {
-    const foundUser = allUsers.find(u => u.id === userId);
-    setProfileUser(foundUser)
-    if(foundUser) {
-        const foundPosts = posts.filter(p => p.authorId === foundUser.id)
-        setUserPosts(foundPosts)
+    if (userId) {
+        const foundUser = allUsers.find(u => u.id === userId);
+        setProfileUser(foundUser)
+        if(foundUser) {
+            const foundPosts = posts.filter(p => p.authorId === foundUser.id)
+            setUserPosts(foundPosts)
+        }
     }
   }, [userId, allUsers, posts])
 
