@@ -25,6 +25,7 @@ import { FaWhatsapp, FaTwitter, FaFacebook } from "react-icons/fa"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { getSentiment } from "@/ai/flows/sentiment-flow"
+import Link from "next/link"
 
 const postFormSchema = z.object({
   content: z.string().min(1, "La publication ne peut pas être vide.").max(280, "La publication ne peut pas dépasser 280 caractères."),
@@ -367,8 +368,8 @@ export default function FeedPage() {
             return (
             <Card key={post.id} id={post.id}>
               <CardContent className="p-4 flex flex-col gap-4">
-                <div className="flex items-center gap-3">
-                    <div className="relative">
+                <div className="flex items-start gap-3">
+                   <Link href="/profile" className="relative">
                         <Avatar>
                             <AvatarImage src={post.authorAvatar} data-ai-hint="user avatar" />
                             <AvatarFallback>{post.authorName.split(' ').map(n => n[0]).join('')}</AvatarFallback>
@@ -376,10 +377,10 @@ export default function FeedPage() {
                         {post.authorStatus === 'online' && (
                              <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-card" />
                         )}
-                    </div>
+                    </Link>
                     <div className="flex-1">
                         <div className="flex items-center gap-2">
-                           <p className="font-semibold">{post.authorName}</p>
+                           <Link href="/profile" className="font-semibold hover:underline">{post.authorName}</Link>
                            {post.sentiment && <span className="text-sm">{post.sentiment}</span>}
                            <Badge variant={roleVariant[post.authorRole]} className="capitalize text-xs">{post.authorRole}</Badge>
                         </div>
@@ -522,5 +523,3 @@ export default function FeedPage() {
     </div>
   )
 }
-
-    
