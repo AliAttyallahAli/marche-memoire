@@ -99,21 +99,16 @@ export default function ChatPage() {
           clearInterval(recordingTimerRef.current);
         }
         
-        if (audioChunks.length > 0 && selectedConversation) {
-             const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-             const audioUrl = URL.createObjectURL(audioBlob);
-
-             const newAudioMessage: Message = {
-                id: `msg${messages.length + 1}`,
-                conversationId: selectedConversation.id,
-                sender: 'user',
-                type: 'audio',
-                content: `Message vocal (${Math.round(recordingTime)}s)`,
-                audioUrl: audioUrl,
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-              };
-              setMessages(prev => [...prev, newAudioMessage]);
-              setAudioChunks([]);
+        if (audioChunks.length > 0) {
+            // This is where you would handle the audio blob, e.g., upload it
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            console.log("Audio recorded:", audioBlob);
+            // For now, we'll just log it. We will implement sending/playing it next.
+            toast({
+                title: "Message vocal enregistré",
+                description: "La fonctionnalité d'envoi sera bientôt disponible.",
+            })
+            setAudioChunks([]);
         }
       };
 
@@ -359,11 +354,7 @@ export default function ChatPage() {
                                      ? "bg-primary text-primary-foreground rounded-br-none"
                                      : "bg-muted rounded-bl-none"
                                 )}>
-                                    {message.type === 'audio' && message.audioUrl ? (
-                                        <audio controls src={message.audioUrl} className="w-full"></audio>
-                                    ) : (
-                                        <p className="text-sm">{message.content}</p>
-                                    )}
+                                    <p className="text-sm">{message.content}</p>
                                     <p className="text-xs text-right mt-1 opacity-70">{message.timestamp}</p>
                                 </div>
                             </div>
@@ -436,5 +427,3 @@ export default function ChatPage() {
     </Card>
   )
 }
-
-    

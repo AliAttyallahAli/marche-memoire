@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { notFound, useParams } from "next/navigation"
+import { useParams } from "next/navigation"
 import { useUser } from "@/context/user-context"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -50,21 +50,18 @@ function PublicProfileSkeleton() {
   )
 }
 
-export default function PublicProfilePage() {
+export default function PublicProfilePage({ params }: { params: { id: string } }) {
   const { allUsers, posts } = useUser()
-  const params = useParams()
-  const userId = params.id as string;
+  const { id: userId } = params;
   const [profileUser, setProfileUser] = React.useState<User | null | undefined>(undefined)
   const [userPosts, setUserPosts] = React.useState<Post[]>([])
 
   React.useEffect(() => {
-    if (userId) {
-        const foundUser = allUsers.find(u => u.id === userId);
-        setProfileUser(foundUser)
-        if(foundUser) {
-            const foundPosts = posts.filter(p => p.authorId === foundUser.id)
-            setUserPosts(foundPosts)
-        }
+    const foundUser = allUsers.find(u => u.id === userId);
+    setProfileUser(foundUser)
+    if(foundUser) {
+        const foundPosts = posts.filter(p => p.authorId === foundUser.id)
+        setUserPosts(foundPosts)
     }
   }, [userId, allUsers, posts])
 
@@ -73,8 +70,8 @@ export default function PublicProfilePage() {
   }
 
   if (profileUser === null) {
-    notFound()
-    return null;
+    // A more sophisticated app would have a proper 404 page
+    return <p>User not found.</p>
   }
   
   const kycStatusVariant = {
