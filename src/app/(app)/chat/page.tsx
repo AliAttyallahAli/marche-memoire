@@ -2,7 +2,7 @@
 "use client"
 
 import * as React from "react"
-import { Search, Send, Paperclip, ArrowLeft, Phone, Video, Mic, VideoOff, MicOff, X, Pause, Play } from "lucide-react"
+import { Search, Send, Paperclip, ArrowLeft, Phone, Video, Mic, VideoOff, MicOff, X, Pause, Play, Smile } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
@@ -225,7 +225,7 @@ export default function ChatPage() {
                 </div>
                 <div className="relative mt-4">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Rechercher..." className="pl-8 bg-background" />
+                    <Input placeholder="Rechercher ou démarrer une nouvelle discussion" className="pl-8 bg-background rounded-full" />
                 </div>
             </div>
             <ScrollArea className="flex-1">
@@ -335,35 +335,39 @@ export default function ChatPage() {
                     </div>
                 </div>
                 
-                <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
-                    <div className="flex flex-col gap-4">
-                        {currentMessages.map((message) => (
-                            <div
-                                key={message.id}
-                                className={cn(
-                                    "flex w-full",
-                                    message.sender === 'user' ? "justify-end" : "justify-start"
-                                )}
-                            >
-                                <div className={cn(
-                                     "max-w-xs md:max-w-md lg:max-w-xl rounded-lg px-4 py-2 relative",
-                                     message.sender === 'user'
-                                     ? "bg-primary text-primary-foreground rounded-br-none"
-                                     : "bg-muted rounded-bl-none"
-                                )}>
-                                    <p className="text-sm">{message.content}</p>
-                                    <p className="text-xs text-right mt-1 opacity-70">{message.timestamp}</p>
+                <div className="flex-1 bg-muted/40" style={{backgroundImage: "url('https://www.transparenttextures.com/patterns/az-subtle.png')"}}>
+                    <ScrollArea className="h-full p-4" ref={scrollAreaRef}>
+                        <div className="flex flex-col gap-2 py-2">
+                            {currentMessages.map((message) => (
+                                <div
+                                    key={message.id}
+                                    className={cn(
+                                        "flex w-full",
+                                        message.sender === 'user' ? "justify-end" : "justify-start"
+                                    )}
+                                >
+                                    <div className={cn(
+                                        "max-w-xs md:max-w-md lg:max-w-xl rounded-lg px-3 py-2 shadow-sm relative",
+                                        message.sender === 'user'
+                                        ? "bg-[#dcf8c6] dark:bg-[#056162]"
+                                        : "bg-background"
+                                    )}>
+                                        <p className="text-sm pb-4 whitespace-pre-wrap">{message.content}</p>
+                                        <div className="absolute bottom-1.5 right-2">
+                                            <p className="text-xs text-muted-foreground/80">{message.timestamp}</p>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
-                </ScrollArea>
+                            ))}
+                        </div>
+                    </ScrollArea>
+                </div>
                 
                 <div className={cn(
-                    "p-4 border-t bg-muted/20 transition-colors"
+                    "p-2 border-t bg-muted/20"
                 )}>
                    {isRecording ? (
-                     <div className="flex items-center justify-between gap-4">
+                     <div className="flex items-center justify-between gap-4 h-10">
                         <div className="flex items-center gap-2 flex-1">
                            <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
                            <p className="font-mono text-lg">{new Date(recordingTime * 1000).toISOString().substr(14, 5)}</p>
@@ -377,7 +381,7 @@ export default function ChatPage() {
                                 {isPaused ? <Play className="h-5 w-5" /> : <Pause className="h-5 w-5" />}
                                 <span className="sr-only">{isPaused ? 'Reprendre' : 'Pause'}</span>
                             </Button>
-                            <Button size="icon" onClick={() => stopRecording(false)}>
+                            <Button size="icon" onClick={() => stopRecording(false)} className="rounded-full h-10 w-10 bg-green-500 hover:bg-green-600">
                                 <Send className="h-5 w-5" />
                                 <span className="sr-only">Envoyer</span>
                             </Button>
@@ -385,44 +389,51 @@ export default function ChatPage() {
                      </div>
                    ) : (
                        <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-                            <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => handleFeatureClick('Pièce jointe')}>
+                            <Button variant="ghost" size="icon" className="text-muted-foreground rounded-full" onClick={() => handleFeatureClick('Smileys')}>
+                                <Smile className="h-5 w-5" />
+                                <span className="sr-only">Smileys</span>
+                            </Button>
+                             <Button variant="ghost" size="icon" className="text-muted-foreground rounded-full" onClick={() => handleFeatureClick('Pièce jointe')}>
                                 <Paperclip className="h-5 w-5" />
                                 <span className="sr-only">Joindre un fichier</span>
                             </Button>
                             <Input 
                                 placeholder="Écrivez votre message..." 
-                                className="bg-background"
+                                className="bg-background rounded-full h-10 px-4"
                                 value={newMessage}
                                 onChange={(e) => setNewMessage(e.target.value)}
                             />
-                            <Button 
-                                type="button" 
-                                variant="ghost" 
-                                size="icon" 
-                                className="text-muted-foreground" 
-                                onClick={startRecording}
-                            >
-                                <Mic className="h-5 w-5" />
-                                <span className="sr-only">Message vocal</span>
-                            </Button>
-                            <Button type="submit" size="icon">
-                                <Send className="h-5 w-5" />
-                                <span className="sr-only">Envoyer</span>
-                            </Button>
+                            {newMessage ? (
+                                <Button type="submit" size="icon" className="rounded-full h-10 w-10 bg-green-500 hover:bg-green-600">
+                                    <Send className="h-5 w-5" />
+                                    <span className="sr-only">Envoyer</span>
+                                </Button>
+                            ) : (
+                                <Button 
+                                    type="button" 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    className="text-muted-foreground rounded-full" 
+                                    onClick={startRecording}
+                                >
+                                    <Mic className="h-5 w-5" />
+                                    <span className="sr-only">Message vocal</span>
+                                </Button>
+                            )}
                        </form>
                    )}
                 </div>
 
                 </>
             ) : (
-                <div className="flex flex-col items-center justify-center h-full text-center">
-                    <h2 className="text-xl font-semibold">Bienvenue sur le Chat ZOUDOU</h2>
-                    <p className="text-muted-foreground">Sélectionnez une conversation pour commencer à discuter.</p>
+                <div className="flex flex-col items-center justify-center h-full text-center bg-muted/40" style={{backgroundImage: "url('https://www.transparenttextures.com/patterns/az-subtle.png')"}}>
+                    <div className="p-8 bg-background rounded-xl shadow-md">
+                        <h2 className="text-xl font-semibold">Bienvenue sur le Chat ZOUDOU</h2>
+                        <p className="text-muted-foreground mt-1">Sélectionnez une conversation pour commencer à discuter.</p>
+                    </div>
                 </div>
             )}
         </div>
     </Card>
   )
 }
-
-    
