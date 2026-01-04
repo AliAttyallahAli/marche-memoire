@@ -84,7 +84,7 @@ export default function ChatPage() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream);
-      setAudioChunks([]);
+      mediaRecorderRef.current.start();
       
       mediaRecorderRef.current.ondataavailable = (event) => {
         setAudioChunks(prev => [...prev, event.data]);
@@ -92,29 +92,26 @@ export default function ChatPage() {
 
       mediaRecorderRef.current.onstop = () => {
         stream.getTracks().forEach(track => track.stop());
-        
-        setIsRecording(false);
-        setIsPaused(false);
-        if (recordingTimerRef.current) {
-          clearInterval(recordingTimerRef.current);
-        }
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
         
         if (audioChunks.length > 0) {
-            // This is where you would handle the audio blob, e.g., upload it
-            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            // This is where you would handle the audio blob, e.g., upload it or create a local URL
             console.log("Audio recorded:", audioBlob);
-            // For now, we'll just log it. We will implement sending/playing it next.
             toast({
                 title: "Message vocal enregistré",
-                description: "La fonctionnalité d'envoi sera bientôt disponible.",
+                description: "La fonctionnalité d'envoi et de lecture sera implémentée prochainement.",
             })
-            setAudioChunks([]);
         }
+        
+        // Reset state
+        setAudioChunks([]);
+        setIsRecording(false);
+        setIsPaused(false);
+        if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+        setRecordingTime(0);
       };
 
-      mediaRecorderRef.current.start();
       setIsRecording(true);
-      setIsPaused(false);
       setRecordingTime(0);
       
       recordingTimerRef.current = setInterval(() => {
@@ -126,18 +123,18 @@ export default function ChatPage() {
       toast({
         variant: "destructive",
         title: "Accès au micro refusé",
-        description: "Veuillez autoriser l'accès au microphone.",
+        description: "Veuillez autoriser l'accès au microphone dans les paramètres de votre navigateur.",
       });
     }
   };
 
   const stopRecording = (cancel = false) => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
-        mediaRecorderRef.current.stop();
-        if (cancel) {
-            setAudioChunks([]);
+        if(cancel) {
+            // Prevent ondataavailable from being called before stopping
+            mediaRecorderRef.current.ondataavailable = null;
         }
-        setRecordingTime(0);
+        mediaRecorderRef.current.stop();
     }
   };
 
@@ -309,9 +306,9 @@ export default function ChatPage() {
                                     <DialogTitle>Appel vidéo avec {selectedConversation.name}</DialogTitle>
                                 </DialogHeader>
                                 <div className="aspect-video w-full relative bg-black rounded-md flex items-center justify-center">
-                                    <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted />
+                                    <video ref={videoRef} className="w-full aspect-video rounded-md" autoPlay muted playsInline />
                                     {hasCameraPermission === false && (
-                                        <Alert variant="destructive" className="w-auto">
+                                        <Alert variant="destructive" className="w-auto absolute top-4 left-4 right-4">
                                             <AlertTitle>Accès à la caméra refusé</AlertTitle>
                                             <AlertDescription>
                                                 Veuillez autoriser l'accès dans votre navigateur.
@@ -367,7 +364,7 @@ export default function ChatPage() {
                 )}>
                    {isRecording ? (
                      <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-1">
                            <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
                            <p className="font-mono text-lg">{new Date(recordingTime * 1000).toISOString().substr(14, 5)}</p>
                         </div>
@@ -427,3 +424,5 @@ export default function ChatPage() {
     </Card>
   )
 }
+
+    
