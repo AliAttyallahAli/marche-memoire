@@ -13,14 +13,15 @@ import { Separator } from "@/components/ui/separator"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { useToast } from "@/hooks/use-toast"
 import { useUser } from "@/context/user-context"
-import type { Post } from "@/lib/data"
-import { MessageSquare, ThumbsUp, Share2, PlusCircle, Image as ImageIcon, Video, Smile, MapPin, ListChecks, Copy, Heart, Send, Link as LinkIcon } from "lucide-react"
+import type { Post, Reaction, UserReaction } from "@/lib/data"
+import { MessageSquare, ThumbsUp, Share2, PlusCircle, Image as ImageIcon, Video, Smile, MapPin, ListChecks, Copy, Heart, Send, Link as LinkIcon, MoreHorizontal, Angry, Laugh, ThumbsDown } from "lucide-react"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { stories } from "@/lib/data"
 import Image from "next/image"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { FaWhatsapp, FaTwitter, FaFacebook } from "react-icons/fa"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
@@ -92,10 +93,25 @@ function LinkPreview({ data }: { data: LinkPreviewData }) {
     )
 }
 
+const reactionTypes: { name: Reaction, icon: string }[] = [
+    { name: 'like', icon: '👍' },
+    { name: 'love', icon: '❤️' },
+    { name: 'haha', icon: '😂' },
+    { name: 'wow', icon: '😮' },
+    { name: 'sad', icon: '😢' },
+    { name: 'angry', icon: '😠' },
+];
+
+function ReactionIcon({ reaction }: { reaction: Reaction }) {
+    const reactionEmoji = reactionTypes.find(r => r.name === reaction)?.icon;
+    if (!reactionEmoji) return null;
+    return <span className="text-sm">{reactionEmoji}</span>
+}
+
 export default function FeedPage() {
   const { toast } = useToast()
   const { user, posts, addPost, updatePost, addComment } = useUser()
-  const [likedPosts, setLikedPosts] = React.useState<Set<string>>(new Set())
+  const [userReactions, setUserReactions] = React.useState<UserReaction>({})
   const [activeCommentPostId, setActiveCommentPostId] = React.useState<string | null>(null)
   const [showImageInput, setShowImageInput] = React.useState(false)
   const [showVideoInput, setShowVideoInput] = React.useState(false)
@@ -133,6 +149,7 @@ export default function FeedPage() {
           content: values.content,
           timestamp: new Date().toISOString(),
           likes: 0,
+          reactions: { like: 0, love: 0, haha: 0, wow: 0, sad: 0, angry: 0 },
           comments: 0,
           shares: 0,
           imageUrl: imageUrl,
@@ -181,23 +198,35 @@ export default function FeedPage() {
     };
   }
 
-  const handleLike = (postId: string) => {
+  const handleReaction = (postId: string, reaction: Reaction) => {
     const post = posts.find(p => p.id === postId)
     if (!post) return
 
-    const newLikedPosts = new Set(likedPosts)
-    let newLikesCount
+    const newReactions = { ...post.reactions };
+    let newTotalLikes = post.likes;
+    const currentUserReaction = userReactions[postId];
 
-    if (newLikedPosts.has(postId)) {
-      newLikedPosts.delete(postId)
-      newLikesCount = post.likes - 1
-    } else {
-      newLikedPosts.add(postId)
-      newLikesCount = post.likes + 1
+    // Create a new object for user reactions to trigger state update
+    const newUserReactions = { ...userReactions };
+
+    // If user has reacted before
+    if (currentUserReaction) {
+        newReactions[currentUserReaction]--; // Decrement old reaction
+        newTotalLikes--;
     }
 
-    setLikedPosts(newLikedPosts)
-    updatePost(postId, { likes: newLikesCount })
+    // If user is selecting a new reaction (or re-selecting the same one to toggle)
+    if (currentUserReaction !== reaction) {
+        newReactions[reaction]++; // Increment new reaction
+        newTotalLikes++;
+        newUserReactions[postId] = reaction;
+    } else {
+        // If user is de-selecting the reaction
+        delete newUserReactions[postId];
+    }
+    
+    setUserReactions(newUserReactions);
+    updatePost(postId, { reactions: newReactions, likes: newTotalLikes })
   }
   
   const handleCopyLink = (postId: string) => {
@@ -380,11 +409,13 @@ export default function FeedPage() {
 
         <div className="flex flex-col gap-6">
           {posts.map((post) => {
-            const isLiked = likedPosts.has(post.id)
             const postUrl = typeof window !== 'undefined' ? `${window.location.origin}/feed#${post.id}` : '';
             const shareText = encodeURIComponent(post.content);
             const embedUrl = post.videoUrl ? getYouTubeEmbedUrl(post.videoUrl) : null;
             const profileUrl = `/profile/${post.authorId}`;
+            const currentUserReaction = userReactions[post.id];
+
+            const activeReactions = reactionTypes.filter(r => post.reactions[r.name] > 0);
 
             return (
             <Card key={post.id} id={post.id}>
@@ -437,18 +468,39 @@ export default function FeedPage() {
 
                 {post.linkPreview && <LinkPreview data={post.linkPreview} />}
 
-                <div className="flex justify-between text-muted-foreground text-sm">
-                    <div>{post.likes} J'aime</div>
+                <div className="flex justify-between text-muted-foreground text-sm items-center">
+                    <div className="flex items-center gap-2">
+                        {activeReactions.length > 0 && (
+                            <div className="flex items-center">
+                                {activeReactions.map(r => <ReactionIcon key={r.name} reaction={r.name} />)}
+                            </div>
+                        )}
+                        <span>{post.likes}</span>
+                    </div>
                     <div>{post.comments} Commentaires</div>
                 </div>
 
                 <Separator />
                 
                 <div className="grid grid-cols-3 gap-2">
-                    <Button variant="ghost" className="flex items-center justify-center gap-2" onClick={() => handleLike(post.id)}>
-                        <Heart className={cn("h-5 w-5", isLiked && "fill-red-500 text-red-500")} />
-                        <span>J'aime</span>
-                    </Button>
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button variant="ghost" className="flex items-center justify-center gap-2">
+                               {currentUserReaction ? <ReactionIcon reaction={currentUserReaction} /> : <ThumbsUp className="h-5 w-5" />}
+                               <span className={cn(currentUserReaction && "font-bold text-primary")}>Réagir</span>
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-1 rounded-full">
+                            <div className="flex gap-1">
+                                {reactionTypes.map(reaction => (
+                                    <Button key={reaction.name} variant="ghost" size="icon" className="rounded-full h-9 w-9 text-2xl" onClick={() => handleReaction(post.id, reaction.name)}>
+                                        {reaction.icon}
+                                    </Button>
+                                ))}
+                            </div>
+                        </PopoverContent>
+                    </Popover>
+
                     <Button variant="ghost" className="flex items-center justify-center gap-2" onClick={() => setActiveCommentPostId(post.id)}>
                         <MessageSquare className="h-5 w-5" />
                         <span>Commenter</span>

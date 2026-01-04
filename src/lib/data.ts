@@ -99,6 +99,24 @@ export type Comment = {
   timestamp: string;
 }
 
+export type Reaction = 'like' | 'love' | 'haha' | 'wow' | 'sad' | 'angry';
+
+export type Reactions = {
+    [key in Reaction]: number;
+}
+
+export type UserReaction = {
+    [postId: string]: Reaction;
+}
+
+export type LinkPreviewData = {
+    url: string;
+    image: string;
+    title: string;
+    description: string;
+    domain: string;
+}
+
 export type Post = {
   id: string;
   authorId: string;
@@ -109,13 +127,15 @@ export type Post = {
   authorRole: 'user' | 'admin' | 'vendor';
   content: string;
   timestamp: string;
-  likes: number;
+  likes: number; // Keep this for backward compatibility and simple count
+  reactions: Reactions;
   comments: number;
   shares: number;
   imageUrl?: string;
   videoUrl?: string;
   sentiment?: string;
   commentsData: Comment[];
+  linkPreview?: LinkPreviewData;
 };
 
 export const allComments: Comment[] = [
@@ -135,6 +155,7 @@ export const posts: Post[] = [
     content: 'Just launched a new bundle of exclusive content on the marketplace! Check it out and let me know what you think. #community #tokens',
     timestamp: '2024-07-18T10:00:00Z',
     likes: 42,
+    reactions: { like: 20, love: 15, wow: 7, haha: 0, sad: 0, angry: 0 },
     comments: 1,
     shares: 5,
     imageUrl: 'https://placehold.co/600x400.png',
@@ -152,10 +173,18 @@ export const posts: Post[] = [
     content: 'Excited to see the community growing so quickly! The new P2P transfer feature is a game-changer. What other features would you all like to see?',
     timestamp: '2024-07-17T15:30:00Z',
     likes: 128,
+    reactions: { like: 100, love: 20, wow: 8, haha: 0, sad: 0, angry: 0 },
     comments: 1,
     shares: 12,
     sentiment: '🚀',
     commentsData: [allComments[1]],
+    linkPreview: {
+        url: 'https://zoudou.com/features',
+        title: 'Découvrez les nouvelles fonctionnalités de ZOUDOU',
+        description: 'Nous avons récemment lancé des outils puissants pour vous aider à mieux gérer votre communauté et vos actifs numériques.',
+        image: 'https://picsum.photos/seed/linkpreview/1200/630',
+        domain: 'zoudou.com'
+    }
   },
   {
     id: 'post3',
@@ -168,6 +197,7 @@ export const posts: Post[] = [
     content: 'Daily mining session done! ✨ Slowly but surely stacking up those BZD tokens. Consistency is key!',
     timestamp: '2024-07-16T08:00:00Z',
     likes: 77,
+    reactions: { like: 50, love: 20, wow: 5, haha: 2, sad: 0, angry: 0 },
     comments: 0,
     shares: 3,
     commentsData: [],
