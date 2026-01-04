@@ -106,7 +106,6 @@ export default function DocumentsPage() {
                 "bg-gradient-to-br from-gray-800 via-gray-900 to-black shadow-2xl rounded-2xl overflow-hidden"
                 )}
             >
-                <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5"></div>
                 
                 <div className="flex justify-between items-start z-10">
                 <Logo />
