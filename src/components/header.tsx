@@ -39,6 +39,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Logo } from "./logo"
 import { ThemeToggle } from "./theme-toggle"
 import { Badge } from "./ui/badge"
+import { ScrollArea } from "./ui/scroll-area"
 
 function TimeAgo({ timestamp }: { timestamp: string }) {
     const [timeAgo, setTimeAgo] = React.useState('');
@@ -217,33 +218,32 @@ export function Header() {
                 <span className="sr-only">Ouvrir le menu de navigation</span>
             </Button>
             </SheetTrigger>
-            <SheetContent side="right">
+            <SheetContent side="right" className="flex flex-col">
               <SheetHeader>
                   <SheetTitle className="sr-only">Menu de Navigation</SheetTitle>
               </SheetHeader>
-              <nav className="grid gap-6 text-lg font-medium mt-4">
-                  <Link
-                  href="#"
-                  className="flex items-center gap-2 text-lg font-semibold"
-                  >
-                  <Logo />
+              <div className="flex items-center gap-2 text-lg font-semibold mt-4">
+                 <Logo />
                   <span className="sr-only">ZOUDOU</span>
-                  </Link>
-                  {navLinks.map((link) => (
-                      <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setIsSheetOpen(false)}
-                      className={cn(
-                          "flex items-center gap-4 px-2.5",
-                          isActive(link.href) ? "text-foreground" : "text-muted-foreground hover:text-foreground"
-                      )}
-                      >
-                       <link.icon className="h-5 w-5" />
-                      {link.label}
-                      </Link>
-                  ))}
-              </nav>
+              </div>
+              <ScrollArea className="flex-1 -mx-6">
+                <nav className="grid gap-6 text-lg font-medium px-6 mt-4">
+                    {navLinks.map((link) => (
+                        <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setIsSheetOpen(false)}
+                        className={cn(
+                            "flex items-center gap-4 px-2.5",
+                            isActive(link.href) ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                        )}
+                        >
+                        <link.icon className="h-5 w-5" />
+                        {link.label}
+                        </Link>
+                    ))}
+                </nav>
+              </ScrollArea>
             </SheetContent>
         </Sheet>
       </div>
