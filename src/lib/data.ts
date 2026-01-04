@@ -246,7 +246,7 @@ export const messages: Message[] = [
 export type Operator = {
   name: string;
   logo: string;
-}
+};
 
 export type CountryOperators = {
   country: string;

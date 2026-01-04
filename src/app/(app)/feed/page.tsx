@@ -202,7 +202,7 @@ export default function FeedPage() {
     const post = posts.find(p => p.id === postId)
     if (!post) return
 
-    const newReactions = { ...post.reactions };
+    const newReactions = { ...(post.reactions || { like: 0, love: 0, haha: 0, wow: 0, sad: 0, angry: 0 }) };
     let newTotalLikes = post.likes;
     const currentUserReaction = userReactions[postId];
 
@@ -415,7 +415,7 @@ export default function FeedPage() {
             const profileUrl = `/profile/${post.authorId}`;
             const currentUserReaction = userReactions[post.id];
 
-            const activeReactions = reactionTypes.filter(r => post.reactions[r.name] > 0);
+            const activeReactions = reactionTypes.filter(r => post.reactions && post.reactions[r.name] > 0);
 
             return (
             <Card key={post.id} id={post.id}>
